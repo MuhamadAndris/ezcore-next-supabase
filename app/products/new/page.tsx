@@ -6,7 +6,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem,
 import { Field, FieldGroup, FieldLabel, FieldLegend, FieldSeparator, FieldSet } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { IconCameraPlus, IconChevronDown, IconChevronRight, IconImageGeneration, IconPhotoPlus } from "@tabler/icons-react";
+import { IconCameraPlus, IconChevronDown } from "@tabler/icons-react";
 import Image from "next/image";
 import Link from "next/link";
 

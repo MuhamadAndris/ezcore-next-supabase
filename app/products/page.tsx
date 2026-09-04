@@ -1,119 +1,177 @@
+"use client"
+
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuPortal, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuSeparator, DropdownMenuSub, DropdownMenuSubContent, DropdownMenuSubTrigger, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableFooter, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import LINK from "@/const/LINK";
-import { IconAlertCircle, IconAlertTriangle, IconPencil, IconReceipt, IconSearch, IconTag, IconTrendingUp } from "@tabler/icons-react";
+import { IconFilter, IconPencil, IconReceipt, IconSearch, IconTag, IconTrendingUp } from "@tabler/icons-react";
 import Image from "next/image";
 import Link from "next/link";
+import { useState } from "react";
 
 export default function ProductsPage() {
+    const [ category, setCategory ] = useState("Semua kategori")
+    const [ brand, setBrand ] = useState("Semua Brand")
     return (
         <>
             {/* header */}
-            <div className="flex justify-between items-center">
+            <div className="flex gap-6 justify-between items-center p-2 m-4 md:p-0">
                 <div>
-                    <h1 className="text-[32px]">Katalog Produk</h1>
-                    <p className="text-muted-foreground">Kelola inventaris, harga, dan ketersedian produk</p>
+                    <h1 className="
+                        font-semibold
+                        text-2xl
+                        md:text-[32px]
+                    ">
+                        Katalog Produk
+                    </h1>
+                    <p className="text-muted-foreground text-sm md:text-md">Kelola inventaris, harga, dan ketersedian produk</p>
                 </div>
                 <div>
-                    <Link href={LINK.NEW_PRODUCT} className="bg-primary text-primary-foreground hover:bg-primary/90 px-4 py-2 rounded-md">
+                    <Link
+                        href={LINK.NEW_PRODUCT}
+                        className="
+                            bg-primary
+                            hover:bg-primary/90
+                            text-primary-foreground
+                            px-4 py-2
+                            rounded-md
+                            truncate
+                        ">
                         Tambah Produk
                     </Link>
                 </div>
             </div>
 
             {/* cards */}
-            <div className="flex gap-4 my-6">
+            <div className="
+                mx-4
+                my-0
+                md:my-6
+                grid grid-cols-[repeat(auto-fit,minmax(50px,1fr))] gap-1
+                md:flex md:gap-4
+                p-2 md:p-0
+                md:text-md
+                lg:text-lg
+                text-[10px]
+            ">
                 
                 {/* total sku card */}
-                <div className="w-full bg-[#FCF9F8] border border-[#DFC0B7] rounded-md">
-                    <div className="p-6">
+                <div className="w-full bg-accent border rounded-[0.35em]">
+                    <div className="p-[1.3em]">
                         <div className="flex justify-between">
-                            <p className="text-muted-foreground">TOTAL SKU</p>
-                            <IconReceipt />
+                            <p className="text-[.8em] text-muted-foreground">TOTAL SKU</p>
+                            <IconReceipt className="w-[1.5em] h-[1.5em]" />
                         </div>
-                        <p className="text-2xl font-semibold my-2">123</p>
-                        <div className="text-[#006575] flex gap-3">
-                            <IconTrendingUp />
-                            <p> +12 bulan ini</p>
+                        <p className="text-[1.4em] font-semibold my-[.4em]">123</p>
+                        <div className="text-[#006575] flex items-center gap-[.3em]">
+                            <IconTrendingUp className="w-[.8em] h-[.8em]" />
+                            <p className="text-[.67em]"> +12 bulan ini</p>
                         </div>
-                    </div>
-                </div>
-
-                {/* STOK RENDAH */}
-                <div className="w-full bg-[#FCF9F8] border border-[#DFC0B7] rounded-md">
-                    <div className="p-6">
-                        <div className="flex justify-between">
-                            <p className="text-muted-foreground">STOK RENDAH</p>
-                            <IconAlertTriangle className="text-destructive" />
-                        </div>
-                        <p className="text-2xl font-semibold my-2">123</p>
-                        <p className="text-muted-foreground">Butuh re-Order segera</p>
                     </div>
                 </div>
                 
-                {/* SLOW MOVING */}
-                <div className="w-full bg-[#FCF9F8] border border-[#DFC0B7] rounded-md">
-                    <div className="p-6">
+                {/* total sku card */}
+                <div className="w-full bg-accent border rounded-[0.35em]">
+                    <div className="p-[1.3em]">
                         <div className="flex justify-between">
-                            <p className="text-muted-foreground">SLOW MOVING</p>
-                            <IconAlertCircle className="text-destructive" />
+                            <p className="text-[.8em] text-muted-foreground">TOTAL SKU</p>
+                            <IconReceipt className="w-[1.5em] h-[1.5em]" />
                         </div>
-                        <p className="text-2xl font-semibold my-2">123</p>
-                        <p className="text-muted-foreground">Kehilangan potensi penjaualan</p>
+                        <p className="text-[1.4em] font-semibold my-[.4em]">123</p>
+                        <div className="text-[#006575] flex items-center gap-[.3em]">
+                            <IconTrendingUp className="w-[.9em] h-[.9em]" />
+                            <p className="text-[.67em]"> +12 bulan ini</p>
+                        </div>
                     </div>
                 </div>
                 
-                {/* PRODUK PROMO */}
-                <div className="w-full bg-[#FCF9F8] border border-[#DFC0B7] rounded-md">
-                    <div className="p-6">
+                {/* total sku card */}
+                <div className="w-full bg-accent border rounded-[0.35em]">
+                    <div className="p-[1.3em]">
                         <div className="flex justify-between">
-                            <p className="text-muted-foreground">PRODUK PROMO</p>
-                            <IconTag className="text-[#006575]" />
+                            <p className="text-[.8em] text-muted-foreground">TOTAL SKU</p>
+                            <IconReceipt className="w-[1.5em] h-[1.5em]" />
                         </div>
-                        <p className="text-2xl font-semibold my-2">123</p>
-                        <p className="text-muted-foreground">Aktif di 3 campaign</p>
+                        <p className="text-[1.4em] font-semibold my-[.4em]">123</p>
+                        <div className="text-[#006575] flex items-center gap-[.3em]">
+                            <IconTrendingUp className="w-[.9em] h-[.9em]" />
+                            <p className="text-[.67em]"> +12 bulan ini</p>
+                        </div>
                     </div>
                 </div>
+                
+                {/* total sku card */}
+                <div className="w-full bg-accent border rounded-[0.35em]">
+                    <div className="p-[1.3em]">
+                        <div className="flex justify-between">
+                            <p className="text-[.8em] text-muted-foreground">TOTAL SKU</p>
+                            <IconReceipt className="w-[1.5em] h-[1.5em]" />
+                        </div>
+                        <p className="text-[1.4em] font-semibold my-[.4em]">123</p>
+                        <div className="text-[#006575] flex items-center gap-[.3em]">
+                            <IconTrendingUp className="w-[.9em] h-[.9em]" />
+                            <p className="text-[.67em]"> +12 bulan ini</p>
+                        </div>
+                    </div>
+                </div>
+                
             </div>
 
             {/* table */}
             <div className="border">
-                <div className="m-4 flex justify-between">
+                <div className="m-4 md:flex items-center gap-4">
                     {/* search */}
                     <div className="relative flex items-center">
                         <IconSearch className="absolute left-2 text-muted-foreground" />
-                        <Input placeholder="Cari SKU atau nama produk..." className="w-[320px] h-10 pl-10" />
+                        <Input
+                            placeholder="Cari SKU atau nama produk..."
+                            className="md:w-[320px] h-10 pl-10"
+                        />
                     </div>
 
                     {/* filter */}
-                    <div className="flex gap-3">
-                        {/* kategori */}
-                        <DropdownMenu>
-                            <DropdownMenuTrigger render={<Button variant="outline">Semua Kategori</Button>} />
-                            <DropdownMenuContent>
-                                <DropdownMenuGroup>
-                                    <DropdownMenuItem>Semua Kategori</DropdownMenuItem>
-                                    <DropdownMenuItem>Kategori 1</DropdownMenuItem>
-                                    <DropdownMenuItem>Kategori 2</DropdownMenuItem>
-                                </DropdownMenuGroup>
-                            </DropdownMenuContent>
-                        </DropdownMenu>
-                        
-                        {/* brand */}
-                        <DropdownMenu>
-                            <DropdownMenuTrigger render={<Button variant="outline">Semua Brand</Button>} />
-                            <DropdownMenuContent>
-                                <DropdownMenuGroup>
-                                    <DropdownMenuItem>Semua Brand</DropdownMenuItem>
-                                    <DropdownMenuItem>Brand 1</DropdownMenuItem>
-                                    <DropdownMenuItem>Brand 2</DropdownMenuItem>
-                                </DropdownMenuGroup>
-                            </DropdownMenuContent>
-                        </DropdownMenu>
-                    </div>
+                    <DropdownMenu>
+                        <DropdownMenuTrigger render={<Button variant="outline"><IconFilter /></Button>} />
+                        <DropdownMenuContent>
+
+                            {/* FILTER BY KATEGORI */}
+                            <DropdownMenuGroup>
+                                <DropdownMenuSub>
+                                    <DropdownMenuSubTrigger>Filter Kategori</DropdownMenuSubTrigger>
+                                    <DropdownMenuPortal>
+                                        <DropdownMenuSubContent>
+                                            <DropdownMenuRadioGroup value={category} onValueChange={setCategory}>
+                                                <DropdownMenuRadioItem value="Semua Kategori">Semua Kategori</DropdownMenuRadioItem>
+                                                <DropdownMenuRadioItem value="Travel">Travel</DropdownMenuRadioItem>
+                                                <DropdownMenuRadioItem value="Non Travel">Non Travel</DropdownMenuRadioItem>
+                                            </DropdownMenuRadioGroup>
+                                        </DropdownMenuSubContent>
+                                    </DropdownMenuPortal>
+                                </DropdownMenuSub>
+                            </DropdownMenuGroup>
+
+                            <DropdownMenuSeparator />
+
+                            {/* FILTER BY BRAND */}
+                            <DropdownMenuGroup>
+                                <DropdownMenuSub>
+                                    <DropdownMenuSubTrigger>Filter Brand</DropdownMenuSubTrigger>
+                                    <DropdownMenuPortal>
+                                        <DropdownMenuSubContent>
+                                            <DropdownMenuRadioGroup value={brand} onValueChange={setBrand}>
+                                                <DropdownMenuRadioItem value="Semua Brand">Semua Brand</DropdownMenuRadioItem>
+                                                <DropdownMenuRadioItem value="LOJEL">LOJEL</DropdownMenuRadioItem>
+                                                <DropdownMenuRadioItem value="BAGASI">BAGASI</DropdownMenuRadioItem>
+                                            </DropdownMenuRadioGroup>
+                                        </DropdownMenuSubContent>
+                                    </DropdownMenuPortal>
+                                </DropdownMenuSub>
+                            </DropdownMenuGroup>
+
+                        </DropdownMenuContent>
+                    </DropdownMenu>
                 </div>
 
                 <Table>

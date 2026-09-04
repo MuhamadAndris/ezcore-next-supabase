@@ -1,3 +1,5 @@
+"use client"
+
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
@@ -6,27 +8,34 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { IconCameraPlus, IconChevronDown, IconChevronRight, IconImageGeneration, IconPhotoPlus } from "@tabler/icons-react";
 import Image from "next/image";
+import Link from "next/link";
 
 export default function NewProductPage() {
     return (
         <div className="max-w-200 mx-auto my-8">
-            <Breadcrumb className="text-[14px]">
-                <BreadcrumbList>
-                    <BreadcrumbItem>
-                        <BreadcrumbLink href="/">Beranda</BreadcrumbLink>
-                    </BreadcrumbItem>
-                    <BreadcrumbSeparator />
-                    <BreadcrumbItem>
-                        <BreadcrumbLink href="/products">Katalog Produk</BreadcrumbLink>
-                    </BreadcrumbItem>
-                    <BreadcrumbSeparator />
-                    <BreadcrumbItem>
-                        <BreadcrumbPage>Produk Baru</BreadcrumbPage>
-                    </BreadcrumbItem>
-                </BreadcrumbList>
-            </Breadcrumb>
+            <div className="mx-6 md:mx-0">
+                <Breadcrumb className="text-[14px]">
+                    <BreadcrumbList>
+                        <BreadcrumbItem>
+                            <BreadcrumbLink render={
+                                <Link href="/">Beranda</Link>
+                            } />
+                        </BreadcrumbItem>
+                        <BreadcrumbSeparator />
+                        <BreadcrumbItem>
+                            <BreadcrumbLink render={
+                                <Link href="/products">Katalog Produk</Link>
+                            } />
+                        </BreadcrumbItem>
+                        <BreadcrumbSeparator />
+                        <BreadcrumbItem>
+                            <BreadcrumbPage>Produk Baru</BreadcrumbPage>
+                        </BreadcrumbItem>
+                    </BreadcrumbList>
+                </Breadcrumb>
 
-            <h1 className="text-[32px] font-semibold mb-6 mt-2">Tambah Produk Baru</h1>
+                <h1 className="text-[32px] font-semibold mb-6 mt-2">Tambah Produk Baru</h1>
+            </div>
 
             <form className="space-y-6">
                 {/* informasi dasar */}
@@ -76,14 +85,20 @@ export default function NewProductPage() {
                     <FieldSet>
                         <FieldLegend className="font-semibold text-[24px]!">Media</FieldLegend>
 
-                        <div className="flex gap-5">
+                        <div className="
+                            flex gap-5
+                            flex-col
+                            md:flex-row
+                        ">
 
                             {/* preview */}
                             <div className="
                                 relative
-                                w-125 aspect-square
+                                aspect-square
                                 p-1 border
                                 rounded-md
+                                w-full
+                                md:w-125
                             ">
                                 <Image
                                     src="https://dynamic.zacdn.com/AuBaktBQsjcaJfWhwZgWjVybCOo=/filters:quality(70):format(webp)/https://static-id.zacdn.com/p/lojel-8584-0519232-1.jpg"
@@ -118,24 +133,6 @@ export default function NewProductPage() {
                                             fill
                                         />
                                     </div>
-                                    
-
-                                    {/* <div className="
-                                        w-26.75 aspect-square
-                                        border border-dashed
-                                        text-muted-foreground
-                                    ">
-                                        <button
-                                            type="button"
-                                            className="
-                                                h-full w-full
-                                                flex justify-center items-center
-                                                cursor-pointer
-                                            "
-                                        >
-                                            <IconPhotoPlus />
-                                        </button>
-                                    </div> */}
                                 </div>
 
                                 {/* upload image */}
@@ -143,7 +140,7 @@ export default function NewProductPage() {
                                     w-full h-full
                                     flex flex-col justify-center items-center
                                     bg-[#F6F3F2]
-                                    mt-2
+                                    mt-2 p-4
                                     border border-dashed
                                     rounded-md
                                     cursor-pointer
@@ -169,7 +166,7 @@ export default function NewProductPage() {
                     <FieldSet>
                         <FieldLegend className="font-semibold text-[24px]!">Harga</FieldLegend>
                         <FieldSeparator />
-                        <FieldGroup className="flex-row">
+                        <FieldGroup className="md:flex-row">
                             <Field>
                                 <FieldLabel className="text-[12px] font-semibold">HARGA NORMAL *</FieldLabel>
                                 <Input className="text-[14px]" type="number" placeholder="HARGA" required />
@@ -203,7 +200,7 @@ export default function NewProductPage() {
                 {/* Footer */}
                 <FieldGroup className="border p-6 rounded-md">
                     <div className="flex ml-auto">
-                        <Button type="button" variant="outline" className="mr-2">BATAL</Button>
+                        <Link href="/products" className="mr-2">BATAL</Link>
                         <Button type="submit">SIMPAN</Button>
                     </div>
                 </FieldGroup>

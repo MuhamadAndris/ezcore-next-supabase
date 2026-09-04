@@ -311,8 +311,8 @@ product_images
 ### 1. Clone the repository
 
 ```bash
-git clone <repository-url>
-cd <project-folder>
+git clone https://github.com/MuhamadAndris/ezcore-next-supabase.git
+cd ezcore-next-supabase
 ```
 
 ### 2. Install dependencies

@@ -1,6 +1,6 @@
 export default function ProductsLayout({ children }: { children: React.ReactNode }) {
     return (
-        <div className="container p-5 mx-auto">
+        <div className="container mx-auto">
             {children}
         </div>
     )

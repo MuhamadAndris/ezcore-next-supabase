@@ -1,46 +1,32 @@
 "use client"
 
-import FormBaseProduct from "@/components/products/formBaseProduct";
-import FormImageProduct from "@/components/products/formImageProduct";
-import FormPriceProduct from "@/components/products/formPriceProduct";
-import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
+import FormBaseProduct from "@/components/products/form-base-product";
+import FormImageProduct from "@/components/products/form-image-product";
+import FormPriceProduct from "@/components/products/form-price-product";
+import AppBreadcrumb, { AppBreadcrumbMenu } from "@/components/ui/app-breadcrumb";
 import { Button } from "@/components/ui/button";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { Field, FieldGroup, FieldLabel, FieldLegend, FieldSeparator, FieldSet } from "@/components/ui/field";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { IconCameraPlus, IconChevronDown } from "@tabler/icons-react";
-import Image from "next/image";
+import { FieldGroup } from "@/components/ui/field";
 import Link from "next/link";
+
+const MENUS:AppBreadcrumbMenu[] = [
+    {
+        label: "Beranda",
+        url: "/"
+    },
+    {
+        label: "Katalog Produk",
+        url: "/products"
+    },
+    {
+        label: "Produk Baru"
+    }
+]
 
 export default function NewProductPage() {
     return (
         <div className="max-w-200 mx-auto my-8">
             <div className="mx-6 md:mx-0">
-                <Breadcrumb>
-                    <BreadcrumbList>
-                        <BreadcrumbItem>
-                            <BreadcrumbLink
-                                className="text-xs md:text-sm"
-                                render={
-                                <Link href="/">Beranda</Link>
-                            } />
-                        </BreadcrumbItem>
-                        <BreadcrumbSeparator />
-                        <BreadcrumbItem>
-                            <BreadcrumbLink render={
-                                <Link 
-                                    className="text-xs md:text-sm"
-                                    href="/products">Katalog Produk
-                                </Link>
-                            } />
-                        </BreadcrumbItem>
-                        <BreadcrumbSeparator />
-                        <BreadcrumbItem>
-                            <BreadcrumbPage className="text-xs md:text-sm">Produk Baru</BreadcrumbPage>
-                        </BreadcrumbItem>
-                    </BreadcrumbList>
-                </Breadcrumb>
+                <AppBreadcrumb menus={MENUS} />
 
                 <h1 className="text-xl md:text-[32px] font-semibold mb-3 md:mb-6 mt-2">Tambah Produk Baru</h1>
             </div>

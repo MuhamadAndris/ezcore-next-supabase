@@ -7,7 +7,7 @@ A web-based sales management system built with **Next.js** and **Supabase** for 
 The UI/UX design of this application is created using Figma.
 
 **Figma Design:**
-[Open Figma Design](#)
+[Open Figma Design](https://www.figma.com/design/IcupmKmgT1gf2pvDzxeRLL/Untitled?node-id=5-2&p=f&t=CiZzz0GYHrxKhfEw-0)
 
 ---
 
@@ -311,8 +311,8 @@ product_images
 ### 1. Clone the repository
 
 ```bash
-git clone <repository-url>
-cd <project-folder>
+git clone https://github.com/MuhamadAndris/ezcore-next-supabase.git
+cd ezcore-next-supabase
 ```
 
 ### 2. Install dependencies

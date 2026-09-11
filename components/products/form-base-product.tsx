@@ -1,4 +1,4 @@
-import { Input } from "@base-ui/react";
+import { Input } from "../ui/input";
 import { Field, FieldGroup, FieldLabel, FieldLegend, FieldSeparator, FieldSet } from "../ui/field";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuTrigger } from "../ui/dropdown-menu";
 import { Button } from "../ui/button";
@@ -7,7 +7,7 @@ import { Textarea } from "../ui/textarea";
 
 export default function FormBaseProduct() {
     return (
-        <FieldGroup className="border p-6 rounded-md">
+        <FieldGroup className="border p-4 md:p-6 rounded-md">
             <FieldSet>
                 <FieldLegend className="font-semibold text-sm md:text-[24px]!">Informasi Dasar</FieldLegend>
                 <FieldSeparator />

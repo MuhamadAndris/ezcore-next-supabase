@@ -24,8 +24,8 @@ const MENUS:AppBreadcrumbMenu[] = [
 
 export default function NewProductPage() {
     return (
-        <div className="max-w-200 mx-auto my-8">
-            <div className="mx-6 md:mx-0">
+        <div className="max-w-200 mx-auto my-4 md:my-8">
+            <div className="mx-4 md:mx-0">
                 <AppBreadcrumb menus={MENUS} />
 
                 <h1 className="text-xl md:text-[32px] font-semibold mb-3 md:mb-6 mt-2">Tambah Produk Baru</h1>
@@ -42,9 +42,9 @@ export default function NewProductPage() {
                 <FormPriceProduct />
 
                 {/* Footer */}
-                <FieldGroup className="border p-6 rounded-md">
-                    <div className="flex ml-auto">
-                        <Link href="/products" className="mr-2">BATAL</Link>
+                <FieldGroup>
+                    <div className="flex gap-5 ml-auto items-center">
+                        <Link href="/products">BATAL</Link>
                         <Button type="submit">SIMPAN</Button>
                     </div>
                 </FieldGroup>

@@ -4,9 +4,9 @@ import Image from "next/image";
 
 export default function FormImageProduct() {
     return (
-        <FieldGroup className="border p-6 rounded-md">
+        <FieldGroup className="border p-4 md:p-6 rounded-md">
             <FieldSet>
-                <FieldLegend className="font-semibold text-[24px]!">Media</FieldLegend>
+                <FieldLegend className="font-semibold text-sm md:text-[24px]!">Media</FieldLegend>
 
                 <div className="
                     flex gap-5
@@ -71,11 +71,11 @@ export default function FormImageProduct() {
                             after:absolute after:inset-0 after:bg-black/5 after:opacity-0 hover:after:opacity-100
                         ">
                             <IconCameraPlus className="text-foreground/80" />
-                            <p className="text-center text-[14px] font-semibold">
+                            <p className="text-center text-sm font-semibold">
                                 <span className="text-primary">Klik untuk unggah </span>
                                 <span className="text-foreground/80">atau seret gambar ke sini</span>
                             </p>
-                            <span className="text-center text-[12px] text-muted-foreground">
+                            <span className="text-center text-xs text-muted-foreground">
                                 Format: JPG, PNG, WEBP (Maks 5MB)
                             </span>
                         </div>

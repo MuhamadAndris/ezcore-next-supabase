@@ -12,20 +12,16 @@ export default function FormBaseProduct() {
                 <FieldLegend className="font-semibold text-sm md:text-[24px]!">Informasi Dasar</FieldLegend>
                 <FieldSeparator />
                 <FieldGroup>
-                    <Field>
-                        <FieldLabel className="text-xs font-semibold">NAMA PRODUK *</FieldLabel>
-                        <Input className="text-xs md:text-[14px]" type="text" placeholder="Nama Produk" required />
-                    </Field>
                     <FieldGroup className="flex-row">
                         <Field>
-                            <FieldLabel className="text-xs font-semibold">SKU *</FieldLabel>
-                            <Input className="text-xs md:text-[14px]" type="text" placeholder="SKU" required />
+                            <FieldLabel className="text-xs md:text-sm font-semibold">SKU *</FieldLabel>
+                            <Input className="text-xs md:text-sm" type="text" placeholder="SKU" required />
                         </Field>
                         <Field>
-                            <FieldLabel className="text-xs md:text-[14px] font-semibold">BRAND *</FieldLabel>
+                            <FieldLabel className="text-xs md:text-sm font-semibold">BRAND *</FieldLabel>
                             <DropdownMenu>
                                 <DropdownMenuTrigger
-                                    className="text-xs md:text-[14px]"
+                                    className="text-xs md:text-sm"
                                     render={
                                         <Button
                                             className="justify-between"
@@ -38,17 +34,34 @@ export default function FormBaseProduct() {
                                 />
                                 <DropdownMenuContent>
                                     <DropdownMenuGroup>
-                                        <DropdownMenuItem className="text-xs md:text-[14px]">Brand 1</DropdownMenuItem>
-                                        <DropdownMenuItem className="text-xs md:text-[14px]">Brand 2</DropdownMenuItem>
-                                        <DropdownMenuItem className="text-xs md:text-[14px]">Brand 3</DropdownMenuItem>
+                                        <DropdownMenuItem className="text-xs md:text-sm">Brand 1</DropdownMenuItem>
+                                        <DropdownMenuItem className="text-xs md:text-sm">Brand 2</DropdownMenuItem>
+                                        <DropdownMenuItem className="text-xs md:text-sm">Brand 3</DropdownMenuItem>
                                     </DropdownMenuGroup>
                                 </DropdownMenuContent>
                             </DropdownMenu>         
                         </Field>
                     </FieldGroup>
+
                     <Field>
-                        <FieldLabel className="text-xs md:text-[14px] font-semibold">DESKRIPSI </FieldLabel>
-                        <Textarea className="text-xs md:text-[14px]" placeholder="DESKRIPSI    " />
+                        <FieldLabel className="text-xs font-semibold">NAMA PRODUK *</FieldLabel>
+                        <Input className="text-xs md:text-sm" type="text" placeholder="Nama Produk" required />
+                    </Field>
+
+                    <FieldGroup className="flex-row">
+                        <Field>
+                            <FieldLabel className="text-xs font-semibold">COLOR *</FieldLabel>
+                            <Input className="text-xs md:text-sm" type="text" placeholder="COLOR" required />
+                        </Field>
+                        <Field>
+                            <FieldLabel className="text-xs md:text-sm font-semibold">SIZE *</FieldLabel>
+                            <Input className="text-xs md:text-sm" type="text" placeholder="SIZE" required />     
+                        </Field>
+                    </FieldGroup>
+
+                    <Field>
+                        <FieldLabel className="text-xs md:text-sm font-semibold">DESKRIPSI </FieldLabel>
+                        <Textarea className="text-xs md:text-sm" placeholder="DESKRIPSI    " />
                     </Field>
                 </FieldGroup>
             </FieldSet>

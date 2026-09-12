@@ -1,5 +1,6 @@
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
 import Link from "next/link";
+import { Fragment } from "react/jsx-runtime";
 
 export type AppBreadcrumbMenu = {
     label: string
@@ -18,7 +19,7 @@ export default function AppBreadcrumb({
             <BreadcrumbList>
                 { menus.map((menu) => 
                     menu.url
-                    ? <>
+                    ? <Fragment key={menu.url}>
                             <BreadcrumbItem>
                                 <BreadcrumbLink
                                     className="text-xs md:text-sm"
@@ -27,8 +28,8 @@ export default function AppBreadcrumb({
                                 } />
                             </BreadcrumbItem>
                             <BreadcrumbSeparator />
-                        </>
-                    : <BreadcrumbItem>
+                        </Fragment>
+                    : <BreadcrumbItem key={menu.label}>
                         <BreadcrumbPage className="text-xs md:text-sm">{menu.label}</BreadcrumbPage>
                     </BreadcrumbItem>
                 )}

@@ -1,17 +1,28 @@
-import { IconReceipt, IconTrendingUp } from "@tabler/icons-react";
+import { TablerIcon } from "@tabler/icons-react"
 
-export default function DashboardCard() {
+export interface DashboardCardProps {
+    label: string
+    icon: TablerIcon
+    value: number
+    description: string
+    descriptionIcon?: TablerIcon
+}
+
+export default function DashboardCard({card} : {card: DashboardCardProps}) {
+    const Icon = card.icon
+    const IconDesc = card.descriptionIcon
+
     return (
-        <div className="w-full bg-accent border rounded-[0.35em]">
-            <div className="p-[1.3em]">
-                <div className="flex justify-between">
-                    <p className="text-[.8em] text-muted-foreground">TOTAL SKU</p>
-                    <IconReceipt className="w-[1.5em] h-[1.5em]" />
+        <div className="w-full bg-accent border rounded-md">
+            <div className="p-3 md:p-6">
+                <div className="flex justify-between items-center">
+                    <p className="text-xs md:text-sm text-muted-foreground">{card.label}</p>
+                    <Icon className="hidden md:block w-4 md:w-7 h-4 md:h-7" />
                 </div>
-                <p className="text-[1.4em] font-semibold my-[.4em]">123</p>
-                <div className="text-[#006575] flex items-center gap-[.3em]">
-                    <IconTrendingUp className="w-[.8em] h-[.8em]" />
-                    <p className="text-[.67em]"> +12 bulan ini</p>
+                <p className="text-xl md:text-3xl font-semibold my-2 md:my-4">{card.value}</p>
+                <div className="text-[#006575] hidden md:flex items-center gap-1">
+                    { IconDesc && <IconDesc /> }
+                    <p className="text-[10px] md:text-xs"> { card.description }</p>
                 </div>
             </div>
         </div>

@@ -1,7 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  allowedDevOrigins: ['192.168.1.8'],
+  allowedDevOrigins: ['172.25.175.104'],
 
   images: {
     remotePatterns: [
@@ -11,7 +11,7 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: "https",
-        hostname: "static-id.zacdn.com",
+        hostname: "https://dynamic.zacdn.com",
       },
     ],
   },

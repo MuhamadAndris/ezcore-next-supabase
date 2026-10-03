@@ -1,11 +1,28 @@
-"use client"
-
 import DashboardProduct from "@/components/products/dashboard-products";
 import TableProducts from "@/components/products/table-products";
-import LINK from "@/const/LINK";
-import Link from "next/link";
+import { createClient } from "@/lib/client";
+import { productSchema } from "@/schemas/product.schema";
 
-export default function ProductsPage() {
+export default async function ProductsPage() {
+    const supabase = createClient();
+    
+    const { count, data, error } = await supabase
+        .from("products")
+        .select("*", { count: "exact" })
+        .order("created_at", { ascending: false })
+        .order("id", { ascending: false })
+        .range(0, 9);
+
+    if (error) console.error(error)
+        
+    const parsed = productSchema.array().safeParse(data ?? [])
+    
+    if(!parsed.success) {
+        console.error(parsed.error)
+    }
+
+    const products = parsed.success ? parsed.data : []
+
     return (
         <>
             {/* header */}
@@ -20,27 +37,13 @@ export default function ProductsPage() {
                     </h1>
                     <p className="text-muted-foreground text-sm md:text-md">Kelola inventaris, harga, dan ketersedian produk</p>
                 </div>
-                <div>
-                    {/* <Link
-                        href={LINK.NEW_PRODUCT}
-                        className="
-                            bg-primary
-                            hover:bg-primary/90
-                            text-primary-foreground
-                            px-4 py-2
-                            rounded-md
-                            truncate
-                        ">
-                        Tambah Produk
-                    </Link> */}
-                </div>
             </div>
 
             {/* Dashboard - cards */}
             <DashboardProduct />
 
             {/* table */}
-            <TableProducts />
+            <TableProducts count={count} data={products} />
 
         </>
     )

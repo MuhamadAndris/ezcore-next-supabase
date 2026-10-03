@@ -4,25 +4,25 @@ import DashboardCard, { DashboardCardProps } from "./dashboard-card";
 const CARDS:DashboardCardProps[] = [
     {
         label: "SKU",
-        value: 21,
+        value: 0,
         description: "+25% form last month",
         icon: IconDashboard
     },
     {
         label: "KOLEKSI",
-        value: 10,
+        value: 0,
         description: "+25% form last month",
         icon: IconLuggage
     },
     {
         label: "PROMO",
-        value: 100,
+        value: 0,
         description: "+25% form last month",
         icon: IconDiscount
     },
     {
         label: "STOCK",
-        value: 210,
+        value: 0,
         description: "+25% form last month",
         icon: IconBackpack
     },

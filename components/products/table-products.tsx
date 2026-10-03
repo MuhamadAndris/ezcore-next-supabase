@@ -13,6 +13,7 @@ import { Product } from "@/schemas/product.schema";
 import { useRef, useState } from "react";
 import { createClient } from "@/lib/client";
 import { toast } from "sonner";
+import SearchProduct from "./search-product";
 
 interface TableProductsProps {
     count: number | null
@@ -44,6 +45,7 @@ export default function TableProducts({
         const { data, error } = await supabse
             .from("products")
             .select("*")
+            .eq("is_deleted", false)
             .order("created_at", { ascending: false })
             .order("id", { ascending: false })
             .range(from, to);
@@ -68,13 +70,7 @@ export default function TableProducts({
               <div className="flex-1 flex gap-4 items-center">
                 
                 {/* search input */}
-                <div className="relative flex items-center w-full">
-                  <IconSearch className="absolute left-2 text-muted-foreground" />
-                  <Input
-                      placeholder="Cari SKU atau nama produk..."
-                      className="w-full h-10 pl-10"
-                  />
-                </div>
+                <SearchProduct setProducts={setProducts} />
 
                 {/* filter */}
                 <TableFilter />

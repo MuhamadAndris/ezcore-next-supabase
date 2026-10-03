@@ -9,6 +9,7 @@ export default async function ProductsPage() {
     const { count, data, error } = await supabase
         .from("products")
         .select("*", { count: "exact" })
+        .eq("is_deleted", false)
         .order("created_at", { ascending: false })
         .order("id", { ascending: false })
         .range(0, 9);

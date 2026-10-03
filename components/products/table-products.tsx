@@ -12,6 +12,7 @@ import Link from "next/link";
 import { Product } from "@/schemas/product.schema";
 import { useRef, useState } from "react";
 import { createClient } from "@/lib/client";
+import { toast } from "sonner";
 
 interface TableProductsProps {
     count: number | null
@@ -48,16 +49,17 @@ export default function TableProducts({
             .range(from, to);
         
         if (error) {
-            console.error(error);
+            toast.error("Gagal memuat produk")
             setIsLoading(false);
             return;
         }
-
+    
         setProducts((prev) => [...prev, ...data] );
 
         currentpage.current = nextPage;
         if(data.length < PAGE_SIZE) setHasMore(false)
         setIsLoading(false);
+
     }
 
     return (

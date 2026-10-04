@@ -10,7 +10,7 @@ import TableRowProducts from "./table-row-product";
 import LINK from "@/const/LINK";
 import Link from "next/link";
 import { Product } from "@/schemas/product.schema";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { createClient } from "@/lib/client";
 import { toast } from "sonner";
 import SearchProduct from "./search-product";
@@ -20,7 +20,7 @@ interface TableProductsProps {
     data: Product[] | []
 }
 
-const PAGE_SIZE = 10
+const PAGE_SIZE = 15
 
 export default function TableProducts({
     count,
@@ -29,6 +29,15 @@ export default function TableProducts({
     const [ products, setProducts ] = useState<Product[] | []>(data ?? [])
     const [ hasMore, setHasMore ] = useState<boolean>(true)
     const [ isLoading, setIsLoading ] = useState<boolean>(false)
+
+    const [ productSelectedIds, setProductSelectedIds ] = useState<number[]>([])
+    const [ onHaveSelected, setOnHaveSelected ] = useState<boolean>(false)
+    const [ onSelectedAll, setOnSelectedAll ] = useState<boolean>(false)
+
+    useEffect(() => {
+        console.log("productSelectedIds", productSelectedIds)
+        setOnHaveSelected(productSelectedIds.length > 0)
+    }, [productSelectedIds])
 
     const currentpage = useRef(1);
 
@@ -39,7 +48,6 @@ export default function TableProducts({
         const nextPage = currentpage.current + 1;
         const from = (nextPage -1) * PAGE_SIZE;
         const to = nextPage * PAGE_SIZE - 1
-        console.log("fetching products from", from, "to", to)
 
         const supabse = createClient();
         const { data, error } = await supabse
@@ -94,17 +102,27 @@ export default function TableProducts({
             </div>
 
             <Table>
-                <TableHeaderProducts />
+                <TableHeaderProducts
+                    onHaveSelected={onHaveSelected}
+                    setOnSelectedAll={setOnSelectedAll}
+                />
                 <TableBody>
                     { products.map((p, index) => 
-                        <TableRowProducts key={p.sku} product={p} index={index} />
+                        <TableRowProducts
+                            key={p.sku}
+                            product={p}
+                            index={index}
+                            onHaveSelected={onHaveSelected}
+                            onSelectedAll={onSelectedAll}
+                            setProductSelectedIds={setProductSelectedIds}
+                        />
                     )}
                 </TableBody>
-                <TableFooter>
+                {/* <TableFooter>
                     <TableRow>
                         <TableCell colSpan={8} className="p-4.25">
                             <div className="flex justify-between items-center">
-                                <p className="text-muted-foreground">Menampilkan 1-{Math.min(currentpage.current * PAGE_SIZE, count || 0)} dari {count} produk</p>
+                                <p className="text-muted-foreground">Menampilkan {Math.min(currentpage.current * PAGE_SIZE, count || 0)} dari {count} produk</p>
                                 <div className="flex gap-2">
                                     {hasMore && (
                                         <Button variant="outline" onClick={handleFetchProduct} disabled={isLoading}>
@@ -115,8 +133,22 @@ export default function TableProducts({
                             </div>
                         </TableCell>
                     </TableRow>
-                </TableFooter>
+                </TableFooter> */}
             </Table>
+
+            {/* footer */}
+            <div className="p-3 border-t">
+                <div className="flex justify-between items-center">
+                    <p className="text-muted-foreground text-sm">Menampilkan {Math.min(currentpage.current * PAGE_SIZE, count || 0)} dari {count} produk</p>
+                    <div className="flex gap-2">
+                        {hasMore && (
+                            <Button variant="outline" onClick={handleFetchProduct} disabled={isLoading}>
+                                {isLoading ? "Memuat..." : "Muat lebih banyak"}
+                            </Button>
+                        )}
+                    </div>
+                </div>
+            </div>
         </div>
     )
 }

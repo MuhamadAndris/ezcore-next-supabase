@@ -3,6 +3,7 @@ import { Input } from "../ui/input";
 import { useState } from "react";
 import { createClient } from "@/lib/client";
 import { Product } from "@/schemas/product.schema";
+import { toast } from "sonner";
 
 interface SearchProductProps {
     setProducts: (products:Product[] | []) => void
@@ -34,8 +35,9 @@ export default function SearchProduct({ setProducts }: SearchProductProps) {
             .range(0, 9)
         ;
 
+        if(error) toast.error("Gagal memuat produk")
+
         setProducts(data ?? []);
-        console.log("search result", data, error);
     }
 
     return (

@@ -1,46 +1,108 @@
 import { Button } from "@/components/ui/button";
-import { IconTag, IconPencil, IconTrash, IconLuggage } from "@tabler/icons-react";
+import { IconTag, IconPencil, IconTrash, IconLuggage, IconDotsVertical } from "@tabler/icons-react";
 import { TableRow, TableCell } from "../ui/table";
 import { Checkbox } from "../ui/checkbox";
 import Image from "next/image"
-import Link from "next/link";
-import { formatNumber } from "@/lib/utils";
+import { cn, formatNumber } from "@/lib/utils";
 import { Product } from "@/schemas/product.schema";
+import { Dispatch, SetStateAction, use, useEffect, useState } from "react";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../ui/dropdown-menu";
 
 interface TableRowProductsProps {
     product: Product
-    index?: number
+    index: number
+    onHaveSelected: boolean
+    onSelectedAll: boolean
+    setProductSelectedIds: Dispatch<SetStateAction<number[]>>
 }
 
 export default function TableRowProducts({
-    product, index 
+    product,
+    index,
+    onHaveSelected,
+    onSelectedAll,
+    setProductSelectedIds
 } : TableRowProductsProps) {
+    const [ onSelected, setOnSelected ] = useState<boolean>(false)
+
+    const handleSelectProduct = (checked: boolean) => {
+        setOnSelected(checked)
+    }
+    
+    useEffect(() => {
+        setOnSelected(onSelectedAll)
+    }, [onSelectedAll])
+
+    useEffect(() => {
+        setProductSelectedIds((prev) => {
+            if (onSelected) {
+                return prev.includes(product.id)
+                    ? prev
+                    : [...prev, product.id]
+            }
+
+            return prev.filter((id) => id !== product.id)
+        })
+    }, [onSelected, product.id, setProductSelectedIds])
+
     return (
-        <TableRow className="hover:bg-accent">
-            <TableCell className="p-4.25"><Checkbox className="cursor-pointer" /></TableCell>
+        <TableRow
+            onClick={() => {
+                if(onHaveSelected) handleSelectProduct(!onSelected)
+            }}
+
+            className={cn(
+                "hover:bg-accent",
+                onSelected && "bg-accent",
+                onHaveSelected && "cursor-pointer"
+            )}
+        >
+
+            {/* Checkbox */}
+            { onHaveSelected &&
+                <TableCell className="p-4.25">
+                    <Checkbox
+                        className="cursor-pointer"
+                        checked={onSelected}
+                        onClick={(e) => e.stopPropagation()}
+                        onCheckedChange={(checked) => handleSelectProduct(!!checked)}
+                    />
+                </TableCell>
+            }
+
+            {/* index */}
             <TableCell className="p-3 text-center">{index !== undefined ? index + 1 : '-'}</TableCell>
-            <TableCell className="flex gap-3 p-3">
-                <div className="aspect-square h-10 relative">
-                    {/* <Image
+
+            {/* Image */}
+            <TableCell className="p-3">
+                <div className="aspect-square h-10 relative mx-auto">
+                    <Image
                         fill
-                        src={product.image_url}
-                        alt={product.name}
+                        src="https://s1.lojelcdn.com/wp-content/uploads/2017/11/Lojel-Voja-WarmGray-Front-Small.jpg"
+                        alt="voja"
                         className="object-contain"
                         sizes="48px"
-                    /> */}
+                    />
                 </div>
+            </TableCell>
+
+            {/* Description */}
+            <TableCell className="flex gap-3 p-3">
                 <div>
                     <p>{product.name}</p>
                     <p className="text-muted-foreground">
                         {product.sku}
-                        {/* NOTE: SELANJUTANYA BUAT AGAR FITUR MEBAMPILKAN DATANYA PER PAGE */}
                         {product.size && ` | ${product.size}` }
                         {product.color && ` | ${product.color}` }
 
                     </p>
                 </div>
             </TableCell>
+
+            {/* category */}
             <TableCell className="p-3">{product.category}</TableCell>
+
+            {/* stock */}
             <TableCell className="p-3 text-center">0</TableCell>
 
             {/* price */}
@@ -68,7 +130,7 @@ export default function TableRowProducts({
             </TableCell>
 
             {/* Action */}
-            <TableCell className="p-3">
+            {/* <TableCell className="p-3">
                 <Link href={`/products/edit/${product.id}`}>
                     <Button variant="ghost">
                         <IconPencil />
@@ -77,6 +139,33 @@ export default function TableRowProducts({
                 <Button variant="destructive" className="bg-transparent">
                     <IconTrash />
                 </Button>
+            </TableCell> */}
+            <TableCell>
+                <DropdownMenu>
+                    <DropdownMenuTrigger 
+                        render={
+                            <Button variant="ghost" className="cursor-pointer">
+                                <IconDotsVertical />
+                            </Button>
+                        }
+                        onClick={(e) => e.stopPropagation()}
+                    />
+
+                    <DropdownMenuContent>
+                        <DropdownMenuItem onClick={(e) => {
+                            e.stopPropagation()
+                            handleSelectProduct(true)
+                        }}>
+                            Pilih
+                        </DropdownMenuItem>
+                        <DropdownMenuItem>
+                            Ubah
+                        </DropdownMenuItem>
+                        <DropdownMenuItem className="text-destructive">
+                            Hapus
+                        </DropdownMenuItem>
+                    </DropdownMenuContent>
+                </DropdownMenu>
             </TableCell>
         </TableRow>
     )

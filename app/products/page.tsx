@@ -12,7 +12,7 @@ export default async function ProductsPage() {
         .eq("is_deleted", false)
         .order("created_at", { ascending: false })
         .order("id", { ascending: false })
-        .range(0, 9);
+        .range(0, 14);
 
     if (error) console.error(error)
         

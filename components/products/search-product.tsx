@@ -1,15 +1,17 @@
 import { IconSearch } from "@tabler/icons-react";
 import { Input } from "../ui/input";
-import { useState } from "react";
+import { memo, useState } from "react";
 import { createClient } from "@/lib/client";
 import { Product } from "@/schemas/product.schema";
 import { toast } from "sonner";
 
 interface SearchProductProps {
-    setProducts: (products:Product[] | []) => void
+    setProducts: (p: Product[]) => void
 }
 
-export default function SearchProduct({ setProducts }: SearchProductProps) {
+const SearchProduct = memo(({ setProducts }: SearchProductProps) => {
+    console.log("render - Search product")
+
     const [searchValue, setSearchValue] = useState<string>("")
 
     const handleSearch = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -52,4 +54,6 @@ export default function SearchProduct({ setProducts }: SearchProductProps) {
             />
         </div>
     )
-}
+})
+
+export default SearchProduct

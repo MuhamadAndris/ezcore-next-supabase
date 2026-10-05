@@ -5,45 +5,40 @@ import { Checkbox } from "../ui/checkbox";
 import Image from "next/image"
 import { cn, formatNumber } from "@/lib/utils";
 import { Product } from "@/schemas/product.schema";
-import { Dispatch, SetStateAction, use, useEffect, useState } from "react";
+import { Dispatch, memo, RefObject, SetStateAction, use, useEffect, useState } from "react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../ui/dropdown-menu";
+import { ColumnVisible } from "./table-products";
 
 interface TableRowProductsProps {
     product: Product
     index: number
     onHaveSelected: boolean
     onSelectedAll: boolean
-    setProductSelectedIds: Dispatch<SetStateAction<number[]>>
+    columns: ColumnVisible[]
+    onSelectionChange: (id: number, checked: boolean) => void
 }
 
-export default function TableRowProducts({
+const TableRowProducts = memo(({
     product,
     index,
+    columns,
     onHaveSelected,
     onSelectedAll,
-    setProductSelectedIds
-} : TableRowProductsProps) {
+    onSelectionChange
+} : TableRowProductsProps) => {
+    console.log("render - table row")
+
     const [ onSelected, setOnSelected ] = useState<boolean>(false)
 
     const handleSelectProduct = (checked: boolean) => {
         setOnSelected(checked)
+
+        onSelectionChange(product.id, checked)
     }
     
     useEffect(() => {
-        setOnSelected(onSelectedAll)
+        handleSelectProduct(onSelectedAll)
     }, [onSelectedAll])
-
-    useEffect(() => {
-        setProductSelectedIds((prev) => {
-            if (onSelected) {
-                return prev.includes(product.id)
-                    ? prev
-                    : [...prev, product.id]
-            }
-
-            return prev.filter((id) => id !== product.id)
-        })
-    }, [onSelected, product.id, setProductSelectedIds])
 
     return (
         <TableRow
@@ -74,61 +69,73 @@ export default function TableRowProducts({
             <TableCell className="p-3 text-center">{index !== undefined ? index + 1 : '-'}</TableCell>
 
             {/* Image */}
-            <TableCell className="p-3">
-                <div className="aspect-square h-10 relative mx-auto">
-                    <Image
-                        fill
-                        src="https://s1.lojelcdn.com/wp-content/uploads/2017/11/Lojel-Voja-WarmGray-Front-Small.jpg"
-                        alt="voja"
-                        className="object-contain"
-                        sizes="48px"
-                    />
-                </div>
-            </TableCell>
+            { columns[0].isVisible &&
+                <TableCell className="p-3">
+                    <div className="aspect-square h-10 relative mx-auto">
+                        <Image
+                            fill
+                            src="https://s1.lojelcdn.com/wp-content/uploads/2017/11/Lojel-Voja-WarmGray-Front-Small.jpg"
+                            alt="voja"
+                            className="object-contain"
+                            sizes="48px"
+                        />
+                    </div>
+                </TableCell>
+            }
 
             {/* Description */}
-            <TableCell className="flex gap-3 p-3">
-                <div>
-                    <p>{product.name}</p>
-                    <p className="text-muted-foreground">
-                        {product.sku}
-                        {product.size && ` | ${product.size}` }
-                        {product.color && ` | ${product.color}` }
+            { columns[1].isVisible &&
+                <TableCell className="flex gap-3 p-3">
+                    <div>
+                        <p>{product.name}</p>
+                        <p className="text-muted-foreground">
+                            {product.sku}
+                            {product.size && ` | ${product.size}` }
+                            {product.color && ` | ${product.color}` }
 
-                    </p>
-                </div>
-            </TableCell>
+                        </p>
+                    </div>
+                </TableCell>
+            }
 
             {/* category */}
-            <TableCell className="p-3">{product.category}</TableCell>
+            { columns[2].isVisible &&
+                <TableCell className="p-3">{product.category}</TableCell>
+            }
 
             {/* stock */}
-            <TableCell className="p-3 text-center">0</TableCell>
+            { columns[3].isVisible &&
+                <TableCell className="p-3 text-center">0</TableCell>
+            }
 
             {/* price */}
-            <TableCell className="p-3">
-                <div>
-                    {/* { product.normal_price !== product.promo_price && 
-                        <p className="text-muted-foreground text-xs line-through text-right">
+            { columns[4].isVisible &&
+                <TableCell className="p-3">
+                    <div>
+                        {/* { product.normal_price !== product.promo_price && 
+                            <p className="text-muted-foreground text-xs line-through text-right">
+                                {formatNumber(product.normal_price)}
+                            </p>
+                        } */}
+                        <p className="text-right">
                             {formatNumber(product.normal_price)}
                         </p>
-                    } */}
-                    <p className="text-right">
-                        {formatNumber(product.normal_price)}
-                    </p>
-                </div>
-            </TableCell>
-            
-            {/* promo */}
-            <TableCell className="p-3">
-                {/* {product.promos.map((p) => 
-                    <Button key={p.id} variant="outline">
-                        <IconTag className="text-[#006575]" />
-                        <p className="ml-2">{p.name}</p>
-                    </Button>
-                )} */}
-            </TableCell>
+                    </div>
+                </TableCell>
+            }
 
+            {/* promo */}
+            { columns[5].isVisible &&
+                <TableCell className="p-3">
+                    {/* {product.promos.map((p) => 
+                        <Button key={p.id} variant="outline">
+                            <IconTag className="text-[#006575]" />
+                            <p className="ml-2">{p.name}</p>
+                        </Button>
+                    )} */}
+                </TableCell>
+            }
+            
             {/* Action */}
             {/* <TableCell className="p-3">
                 <Link href={`/products/edit/${product.id}`}>
@@ -169,4 +176,6 @@ export default function TableRowProducts({
             </TableCell>
         </TableRow>
     )
-}
+})
+
+export default TableRowProducts

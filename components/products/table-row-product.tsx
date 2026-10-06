@@ -1,11 +1,11 @@
 import { Button } from "@/components/ui/button";
-import { IconTag, IconPencil, IconTrash, IconLuggage, IconDotsVertical } from "@tabler/icons-react";
+import { IconDotsVertical } from "@tabler/icons-react";
 import { TableRow, TableCell } from "../ui/table";
 import { Checkbox } from "../ui/checkbox";
 import Image from "next/image"
 import { cn, formatNumber } from "@/lib/utils";
 import { Product } from "@/schemas/product.schema";
-import { Dispatch, memo, RefObject, SetStateAction, use, useEffect, useState } from "react";
+import { memo, useEffect, useState } from "react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../ui/dropdown-menu";
 import { ColumnVisible } from "./table-products";
 
@@ -16,6 +16,7 @@ interface TableRowProductsProps {
     onSelectedAll: boolean
     columns: ColumnVisible[]
     onSelectionChange: (id: number, checked: boolean) => void
+    handleEditProduct: (productId: number) => void
 }
 
 const TableRowProducts = memo(({
@@ -24,7 +25,8 @@ const TableRowProducts = memo(({
     columns,
     onHaveSelected,
     onSelectedAll,
-    onSelectionChange
+    onSelectionChange,
+    handleEditProduct
 } : TableRowProductsProps) => {
     console.log("render - table row")
 
@@ -137,16 +139,6 @@ const TableRowProducts = memo(({
             }
             
             {/* Action */}
-            {/* <TableCell className="p-3">
-                <Link href={`/products/edit/${product.id}`}>
-                    <Button variant="ghost">
-                        <IconPencil />
-                    </Button>
-                </Link>
-                <Button variant="destructive" className="bg-transparent">
-                    <IconTrash />
-                </Button>
-            </TableCell> */}
             <TableCell>
                 <DropdownMenu>
                     <DropdownMenuTrigger 
@@ -165,10 +157,13 @@ const TableRowProducts = memo(({
                         }}>
                             Pilih
                         </DropdownMenuItem>
-                        <DropdownMenuItem>
+                        <DropdownMenuItem onClick={(e) => {
+                            e.stopPropagation()
+                            handleEditProduct(product.id)
+                        }}>
                             Ubah
                         </DropdownMenuItem>
-                        <DropdownMenuItem className="text-destructive">
+                        <DropdownMenuItem className="text-destructive hover:text-destructive">
                             Hapus
                         </DropdownMenuItem>
                     </DropdownMenuContent>

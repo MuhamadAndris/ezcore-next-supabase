@@ -16,6 +16,8 @@ import Toolbar from "./table-toolbar-product";
 import useProductSelection from "@/hooks/product/use-product-selection";
 import useProducts from "@/hooks/product/use-products";
 import FooterTableProduct from "./table-footer-product";
+import EditProduct from "./edit-product";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "../ui/alert-dialog";
 
 interface TableProductsProps {
     count: number | null
@@ -31,7 +33,7 @@ export type ColumnVisible = {
 const columns = [
     {
         label: "GAMBAR",
-        isVisible: true,
+        isVisible: false,
         align: "text-center"
     },
     {
@@ -41,11 +43,10 @@ const columns = [
     {
         label: "KATEGORI",
         isVisible: true,
-        align: "text-center"
     },
     {
         label: "STOK",
-        isVisible: true,
+        isVisible: false,
         align: "text-center"
     },
     {
@@ -55,7 +56,7 @@ const columns = [
     },
     {
         label: "PROMO",
-        isVisible: true
+        isVisible: false
     },
 ]
 
@@ -67,10 +68,18 @@ export default function TableProducts({
     const { handleSelectionChange, onHaveSelected, productSelectedIds } = useProductSelection()
     const { hasMore, isLoading, loadMore, products, replaceProducts} = useProducts(data)
     const [ onSelectedAll, setOnSelectedAll ] = useState<boolean>(false)
-
     const [ columnVisible, setColumnVisible ] = useState<ColumnVisible[]>(columns)
 
-    
+    const [ isModalOpened, setIsModalOpened ] = useState(false)
+
+    const isDirty = useRef(false)
+
+    const productId = useRef<number | null>(null)
+
+    const handleEditProduct = useCallback(async (id:number) => {
+        setIsModalOpened(true)
+        productId.current = id
+    }, [])
 
     return (
         <div className="border md:rounded-md md:mx-4">
@@ -93,6 +102,7 @@ export default function TableProducts({
                             onSelectedAll={onSelectedAll}
                             onSelectionChange={handleSelectionChange}
                             columns={columnVisible}
+                            handleEditProduct={handleEditProduct}
                         />
                     )}
                 </TableBody>
@@ -107,6 +117,41 @@ export default function TableProducts({
                 loadMore={loadMore}
                 shown={products.length}
             />
+
+            {/* Modal edit product */}
+            <EditProduct
+                productId={productId.current}
+                open={isModalOpened}
+                onOpenChange={(isOpen) => {
+                    console.log("is open: " + isOpen)
+                    isDirty.current = !isOpen
+                }}
+            />
+
+            {/* Alert confirmation */}
+            <AlertDialog open={isDirty.current}>
+                <AlertDialogContent>
+                    <AlertDialogHeader>
+                        <AlertDialogTitle>
+                            Perubahan belum disimpan
+                        </AlertDialogTitle>
+                        <AlertDialogDescription>
+                            Anda memiliki perubahan yang belum disimpan. Yakin ingin membatalkannya?
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                        <AlertDialogCancel>Lanjut Mengedit</AlertDialogCancel>
+                        <AlertDialogAction
+                            onClick={() => {
+                                setIsModalOpened(false)
+                                isDirty.current = false
+                                // NOTE: NEXT BUAT AGAR PAS ADA PERUBAHAN, DAN PAS MAU DI CLOSE SHEET NYA MUNCUL KAN ALERT KONFIRMASI
+
+                            }}
+                        >Buang Perubahan</AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
         </div>
     )
 }

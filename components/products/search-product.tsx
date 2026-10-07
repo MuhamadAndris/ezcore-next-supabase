@@ -4,6 +4,7 @@ import { memo, useState } from "react";
 import { createClient } from "@/lib/client";
 import { Product } from "@/schemas/product.schema";
 import { toast } from "sonner";
+import { InputGroup, InputGroupAddon, InputGroupInput } from "../ui/input-group";
 
 interface SearchProductProps {
     setProducts: (p: Product[]) => void
@@ -43,16 +44,17 @@ const SearchProduct = memo(({ setProducts }: SearchProductProps) => {
     }
 
     return (
-        <div className="relative flex items-center w-full">
-            <IconSearch className="absolute left-2 text-muted-foreground" />
-            <Input
+        <InputGroup>
+            <InputGroupInput
                 placeholder="Cari SKU atau nama produk..."
-                className="w-full h-10 pl-10"
-                onChange={handleSearch}
                 value={searchValue}
+                onChange={handleSearch}
                 type="search"
             />
-        </div>
+            <InputGroupAddon>
+                <IconSearch />
+            </InputGroupAddon>
+        </InputGroup>
     )
 })
 

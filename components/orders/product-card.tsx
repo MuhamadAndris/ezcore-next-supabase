@@ -5,6 +5,7 @@ import Image from "next/image";
 import { Badge } from "../ui/badge";
 import { formatNumber } from "@/lib/utils";
 import { memo } from "react";
+import { IconShoppingCartPlus } from "@tabler/icons-react";
 
 interface ProductCardProps {
     product: Product
@@ -27,10 +28,8 @@ const ProductCard = memo(({
             <CardHeader>
                 <CardTitle className="truncate">
                     {product.name}
-                    {product.size && ` ${product.size}` }
-                    {product.color && ` ${product.color}` }
                 </CardTitle>
-                <CardDescription>
+                <CardDescription className="truncate">
                     {product.sku}
                     {product.size && ` | ${product.size}` }
                     {product.color && ` | ${product.color}` }
@@ -38,7 +37,10 @@ const ProductCard = memo(({
                 <CardTitle>Rp {formatNumber(product.normal_price)}</CardTitle>
             </CardHeader>
             <CardFooter>
-                <Button className="w-full">Pesan</Button>
+                <Button className="w-full cursor-pointer" variant="default">
+                    <IconShoppingCartPlus />
+                    Pilih
+                </Button>
             </CardFooter>
         </Card>
     )

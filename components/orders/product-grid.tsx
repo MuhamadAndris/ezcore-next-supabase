@@ -16,8 +16,8 @@ export default function ProductGirid({
             "gap-2 md:gap-4",
             "grid-cols-[repeat(auto-fit,minmax(150px,1fr))]",
             products.length <= 4
-                ? "lg:grid-cols-[repeat(auto-fit,minmax(150px,200px))]"
-                : "lg:grid-cols-[repeat(auto-fit,minmax(200px,1fr))]"
+                ? "lg:grid-cols-[repeat(auto-fit,minmax(150px,250px))]"
+                : "lg:grid-cols-[repeat(auto-fit,minmax(250px,1fr))]"
         )}
         >
             {products.map((p) => 

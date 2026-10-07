@@ -1,10 +1,10 @@
 import DashboardProduct from "@/components/products/dashboard-products";
 import TableProducts from "@/components/products/table-products";
-import { createClient } from "@/lib/client";
+import { createClient } from "@/lib/server";
 import { productSchema } from "@/schemas/product.schema";
 
 export default async function ProductsPage() {
-    const supabase = createClient();
+    const supabase = await createClient();
     
     const { count, data, error } = await supabase
         .from("products")

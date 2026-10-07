@@ -1,21 +1,20 @@
-"use client"
+import { productSchema } from "@/schemas/product.schema";
+import NewOrderContent from "./content";
+import { createClient } from "@/lib/server"
 
-import CartContent from "@/components/orders/cart-content";
-import NavbarNewOrder from "@/components/orders/navbar-new-order";
-import ProductGirid from "@/components/orders/product-grid";
-import useProducts from "@/hooks/product/use-products";
+export default async function NewOrderPage() {
+    const supabase = await createClient()
 
-export default function NewOrderPage() {
-    const { products, replaceProducts } = useProducts([])
+    const { data, error} = await supabase
+        .from("products")
+        .select("*")
+        .eq("is_deleted", false)
+        .order("created_at", {ascending:false})
+        .limit(14)
 
-    return (
-        <section className="flex w-full h-full container mx-auto">
-            <div className="flex flex-col flex-1">
-                <NavbarNewOrder setProducts={replaceProducts} />
-                <ProductGirid products={products} />
-            </div>
+    if(error) console.error(error)
 
-            <CartContent />
-        </section>
-    )
+    const product = productSchema.array().parse(data)
+    
+    return <NewOrderContent defaultProduct={product} />
 }

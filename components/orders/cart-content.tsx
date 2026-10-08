@@ -9,6 +9,7 @@ import { format } from "date-fns";
 import { IconChevronDown } from "@tabler/icons-react";
 import { Calendar } from "../ui/calendar";
 import { id as idLocale } from "date-fns/locale"
+import CartItem from "./cart-item";
 
 type Store = {
     value: string
@@ -99,6 +100,18 @@ export default function CartContent() {
                                 />
                             </PopoverContent>
                         </Popover>
+                    </Field>
+                </FieldGroup>
+
+                {/* Items */}
+                <FieldGroup>
+                    <Field>
+                        <FieldLabel>DAFTAR PRODUK</FieldLabel>
+                        <CartItem />
+                        <CartItem />
+                        <CartItem />
+                        <CartItem />
+                        <CartItem />
                     </Field>
                 </FieldGroup>
                 

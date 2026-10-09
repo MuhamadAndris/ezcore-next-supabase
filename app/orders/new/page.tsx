@@ -1,5 +1,5 @@
 import { productSchema } from "@/schemas/product.schema";
-import NewOrderContent from "./content";
+import NewOrderContent from "../../../components/orders/neworder-content";
 import { createClient } from "@/lib/server"
 
 export default async function NewOrderPage() {

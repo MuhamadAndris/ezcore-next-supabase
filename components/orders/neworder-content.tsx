@@ -16,7 +16,7 @@ export default function NewOrderContent({
     defaultProduct
 }:NewOrderContentProps) {
     const { products, replaceProducts } = useProducts(defaultProduct)
-    const [ showCart, setShowCart ] = useState(true)
+    const [ showCart, setShowCart ] = useState(false)
 
     return (
         <section className="grid grid-cols-[1fr_auto] h-screen overflow-auto gap-1 container mx-auto">

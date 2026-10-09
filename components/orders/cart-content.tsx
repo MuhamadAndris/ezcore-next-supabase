@@ -3,7 +3,6 @@ import { Button } from "../ui/button";
 import { Card, CardAction, CardDescription, CardFooter, CardHeader, CardTitle } from "../ui/card";
 import { Field, FieldGroup, FieldLabel } from "../ui/field";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
-import { Separator } from "../ui/separator";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { format } from "date-fns";
 import { IconChevronDown, IconCloudUpload, IconPlus, IconUpload, IconX } from "@tabler/icons-react";
@@ -111,7 +110,7 @@ export default function CartContent({
                 </Field>
 
                 {/* Receipt */}
-                <Field className="sticky top-0 bg-background z-10">
+                <Field className="sticky top-0 bg-background z-10 pb-3">
                     <FieldLabel className="flex justify-between">
                         <span>Bon aktif</span>
                         <Button variant="outline" size="icon" className="rounded-full">

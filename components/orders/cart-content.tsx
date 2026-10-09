@@ -44,7 +44,7 @@ export default function CartContent({
     return (
         <Card className={cn(
             "md:relative md:w-80 md:h-full md:grid md:grid-rows-[auto_1fr_auto]",
-            "fixed top-0 right-0 w-full z-100"
+            "fixed top-0 right-0 w-full h-full"
         )}>
             <CardHeader className="sticky top-0">
                 <CardTitle>Pesanan</CardTitle>
@@ -61,7 +61,7 @@ export default function CartContent({
             <FieldGroup className="overflow-y-auto px-3">
                 {/* Select Store */}
                 <Field>
-                    <FieldLabel htmlFor="store">TOKO</FieldLabel>
+                    <FieldLabel htmlFor="store">Toko</FieldLabel>
                     <Select items={stores} value={store} onValueChange={(v) => setStore(v)}>
                         <SelectTrigger id="store">
                             <SelectValue placeholder="Pilih toko" />
@@ -82,7 +82,7 @@ export default function CartContent({
                 
                 {/* Select Date */}
                 <Field>
-                    <FieldLabel htmlFor="date">TANGGAL</FieldLabel>
+                    <FieldLabel htmlFor="date">Tanggal</FieldLabel>
                     <Popover open={showCalender} onOpenChange={setShowCalender}>
                         <PopoverTrigger id="date" render={
                             <Button 
@@ -113,7 +113,7 @@ export default function CartContent({
                 {/* Receipt */}
                 <Field className="sticky top-0 bg-background z-10">
                     <FieldLabel className="flex justify-between">
-                        <span>BON AKTIF</span>
+                        <span>Bon aktif</span>
                         <Button variant="outline" size="icon" className="rounded-full">
                             <IconPlus />
                         </Button>
@@ -129,18 +129,30 @@ export default function CartContent({
 
                 {/* Items */}
                 <Field>
-                    <FieldLabel>DAFTAR PRODUK</FieldLabel>
+                    <FieldLabel>Daftar produk</FieldLabel>
+                    <CartItem />
+                    <CartItem />
+                    <CartItem />
+                    <CartItem />
+                    <CartItem />
                     <CartItem />
                 </Field>
 
                 {/* Payment proof */}
                 <Field>
-                    <FieldLabel>BUKTI PEMBAYARAN</FieldLabel>
+                    <FieldLabel>Bukti pembayaran</FieldLabel>
                     <div className="flex gap-2">
-                        <div className="flex-1 flex flex-col justify-center items-center border border-dotted rounded-md p-1">
+                        <Button
+                            variant="outline"
+                            className="
+                                text-muted-foreground
+                                flex-1 flex flex-col justify-center items-center
+                                border-3 border-dotted hover:border-foreground/60
+                                h-full p-1 rounded-lg cursor-pointer
+                            ">
                             <IconCloudUpload />
-                            Bukti pembayaran
-                        </div>
+                            Upload foto Struk
+                        </Button>
                         <div className="relative bg-yellow-300 aspect-square h-15">
                                 <Image
                                 src="https://s1.lojelcdn.com/wp-content/uploads/2017/11/Lojel-Voja-WarmGray-Front-Small.jpg" 
@@ -155,24 +167,24 @@ export default function CartContent({
 
                 {/* Sub-total */}
                 <Field>
-                    <FieldLabel>SUB TOTAL</FieldLabel>
+                    <FieldLabel>Sub total</FieldLabel>
                     <p className="text-muted-foreground flex justify-between">
                         <span>107655</span>
-                        <span>Rp. 100.000</span>
+                        <span>100.000</span>
                     </p>
                     <p className="text-muted-foreground flex justify-between">
                         <span>107655</span>
-                        <span>Rp. 100.000</span>
+                        <span>100.000</span>
                     </p>
                     <p className="text-muted-foreground flex justify-between">
                         <span>107655</span>
-                        <span>Rp. 100.000</span>
+                        <span>100.000</span>
                     </p>
                 </Field>
             </FieldGroup>
 
-            <CardFooter className="flex justify-end gap-3">
-                <Button variant="secondary">Batal</Button>
+            <CardFooter className="flex justify-between gap-3">
+                <p className="font-bold text-lg">500.000</p>
                 <Button>Simpan</Button>
             </CardFooter>
         </Card>

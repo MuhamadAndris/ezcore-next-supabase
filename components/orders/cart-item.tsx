@@ -20,9 +20,9 @@ export default function CartItem() {
             {/* Description */}
             <div className="flex-1 flex justify-between">
                 <div>
-                    <h3 className="font-medium">CUBO REFRESH</h3>
+                    <h3 className="font-medium">Cubo refresh</h3>
                     <p className="text-xs text-muted-foreground">971253123 | M | BLUE</p>
-                    <p>Rp. 500.000</p>
+                    <p className="text-sm">Rp. 500.000</p>
 
                     <ButtonGroup>
                         <Button variant="outline" size="icon-xs"><IconMinus /></Button>

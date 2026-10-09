@@ -1,20 +1,30 @@
-import { Dispatch } from "react";
+import { Dispatch, SetStateAction } from "react";
 import SearchProduct from "../products/search-product";
 import { Product } from "@/schemas/product.schema";
 import { Badge } from "../ui/badge";
-import { ButtonGroup } from "../ui/button-group";
+import { Button } from "../ui/button";
+import { IconShoppingCart } from "@tabler/icons-react";
 
 interface NavbarNewOrderProps {
     setProducts: (p:Product[]) => void
+    setShowCart: Dispatch<SetStateAction<boolean>>
 }
 
 export default function NavbarNewOrder({
-    setProducts
+    setProducts,
+    setShowCart
 }:NavbarNewOrderProps) {
-
+    const handleShowCart = () => {
+        setShowCart((prev) => !prev)
+    }
     return (
         <nav className="flex flex-col gap-2 sticky top-0 bg-background z-100 p-5">
-            <SearchProduct setProducts={setProducts} />
+            <div className="flex justify-between gap-3">
+                <SearchProduct setProducts={setProducts} />
+                <Button onClick={handleShowCart}>
+                    <IconShoppingCart />
+                </Button>
+            </div>
             <div className="space-x-2">
                 <Badge>Semua</Badge>
                 <Badge variant="outline">Tranvel</Badge>

@@ -18,7 +18,11 @@ export default function NavbarNewOrder({
         setShowCart((prev) => !prev)
     }
     return (
-        <nav className="flex flex-col gap-2 sticky top-0 bg-background p-5">
+        <nav className="
+            bg-background p-5
+            flex flex-col gap-2
+            sticky top-0 lg:z-10
+        ">
             <div className="flex justify-between gap-3">
                 <SearchProduct setProducts={setProducts} />
                 <Button onClick={handleShowCart}>

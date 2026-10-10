@@ -19,8 +19,11 @@ export default function NewOrderContent({
     const [ showCart, setShowCart ] = useState(false)
 
     return (
-        <section className="grid grid-cols-[1fr_auto] h-screen overflow-auto gap-1 container mx-auto">
-            <div className="grid grid-rows-[auto_1fr] min-h-0">
+        <section className="
+            fixed w-full h-full min-h-0
+            grid gap-1 grid-cols-[1fr_auto]
+            xl:container inset-x-0 mx-auto">
+            <div className="min-h-0 overflow-auto">
                 <NavbarNewOrder
                     setProducts={replaceProducts}
                     setShowCart={setShowCart}

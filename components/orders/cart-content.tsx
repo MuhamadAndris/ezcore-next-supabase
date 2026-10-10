@@ -114,11 +114,8 @@ export default function CartContent({
 
                     {/* Receipt */}
                     <Field className="sticky top-0 bg-background z-10 pb-3">
-                        <FieldLabel className="flex justify-between">
+                        <FieldLabel>
                             <span>Bon aktif</span>
-                            <Button variant="outline" size="icon" className="rounded-full">
-                                <IconPlus />
-                            </Button>
                         </FieldLabel>
                         <ButtonGroup className="w-full overflow-x-scroll">
                             <Button>107655</Button>
@@ -126,6 +123,9 @@ export default function CartContent({
                             <Button variant="outline">107657</Button>
                             <Button variant="outline">107658</Button>
                             <Button variant="outline">107659</Button>
+                            <Button variant="outline">
+                                <IconPlus />
+                            </Button>
                         </ButtonGroup>
                     </Field>
 

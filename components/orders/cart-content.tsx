@@ -45,6 +45,7 @@ export default function CartContent({
             "md:relative md:w-80 md:h-full md:grid md:grid-rows-[auto_1fr_auto]",
             "fixed top-0 right-0 w-full h-full"
         )}>
+            {/* Header */}
             <CardHeader className="sticky top-0">
                 <CardTitle>Pesanan</CardTitle>
                 <CardDescription>ID: #ORD-0042</CardDescription>
@@ -111,11 +112,8 @@ export default function CartContent({
 
                 {/* Receipt */}
                 <Field className="sticky top-0 bg-background z-10 pb-3">
-                    <FieldLabel className="flex justify-between">
+                    <FieldLabel>
                         <span>Bon aktif</span>
-                        <Button variant="outline" size="icon" className="rounded-full">
-                            <IconPlus />
-                        </Button>
                     </FieldLabel>
                     <ButtonGroup className="w-full overflow-x-scroll">
                         <Button>107655</Button>
@@ -123,6 +121,9 @@ export default function CartContent({
                         <Button variant="outline">107657</Button>
                         <Button variant="outline">107658</Button>
                         <Button variant="outline">107659</Button>
+                        <Button variant="outline">
+                            <IconPlus />
+                        </Button>
                     </ButtonGroup>
                 </Field>
 

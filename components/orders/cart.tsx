@@ -8,10 +8,8 @@ import { format } from "date-fns";
 import { IconChevronDown, IconCloudUpload, IconPlus, IconUpload, IconX } from "@tabler/icons-react";
 import { Calendar } from "../ui/calendar";
 import { id as idLocale } from "date-fns/locale"
-import CartItem from "./cart-item";
-import Image from "next/image";
-import { ButtonGroup } from "../ui/button-group";
 import { cn } from "@/lib/utils";
+import CartReceipts from "./cart-receipts";
 
 type Store = {
     value: string
@@ -29,23 +27,25 @@ const stores:Store[] = [
         }
     ]
 
-interface CartContentProps {
+interface CartProps {
     closeCart: (v:boolean) => void
 }
 
-const CartContent = memo(({
+const Cart = memo(({
     closeCart
-}:CartContentProps) => {
+}:CartProps) => {
+
     const [ store, setStore ] = useState<string | null>("0E1")
     const [ date, setDate ] = useState<Date>()
     const [ showCalender, setShowCalender ] = useState(false)
     console.log("render cart")
+    
     return (
         <Card className={cn(
             "lg:relative",
             "lg:w-80 lg:h-full",
             "lg:grid lg:grid-rows-[1fr_auto]",
-            "fixed top-0 right-0 w-full h-full"
+            "fixed top-0 right-0 w-full h-full z-11"
         )}>
             <div className="overflow-y-auto ">
                 <CardHeader className="sticky top-0 bg-background pb-3">
@@ -113,63 +113,11 @@ const CartContent = memo(({
                     </Field>
 
                     {/* Receipt */}
-                    <Field className="sticky top-0 bg-background z-10 pb-3">
-                        <FieldLabel>
-                            <span>Bon aktif</span>
-                        </FieldLabel>
-                        <ButtonGroup className="w-full overflow-x-scroll">
-                            <Button>107655</Button>
-                            <Button variant="outline">107656</Button>
-                            <Button variant="outline">107657</Button>
-                            <Button variant="outline">107658</Button>
-                            <Button variant="outline">107659</Button>
-                            <Button variant="outline">
-                                <IconPlus />
-                            </Button>
-                        </ButtonGroup>
-                    </Field>
-
-                    {/* Items */}
-                    <Field>
-                        <FieldLabel>Daftar produk</FieldLabel>
-                        <CartItem />
-                        <CartItem />
-                        <CartItem />
-                        <CartItem />
-                        <CartItem />
-                        <CartItem />
-                    </Field>
-
-                    {/* Payment proof */}
-                    <Field>
-                        <FieldLabel>Bukti pembayaran</FieldLabel>
-                        <div className="flex gap-2">
-                            <Button
-                                variant="outline"
-                                className="
-                                    text-muted-foreground
-                                    flex-1 flex flex-col justify-center items-center
-                                    border-3 border-dotted hover:border-foreground/60
-                                    h-full p-1 rounded-lg cursor-pointer
-                                ">
-                                <IconCloudUpload />
-                                Upload foto Struk
-                            </Button>
-                            <div className="relative bg-yellow-300 aspect-square h-15">
-                                    <Image
-                                    src="https://s1.lojelcdn.com/wp-content/uploads/2017/11/Lojel-Voja-WarmGray-Front-Small.jpg" 
-                                    alt="dummy Image"
-                                    className="object-contain"
-                                    fill
-                                    sizes="60px"
-                                />
-                            </div>
-                        </div>
-                    </Field>
+                    <CartReceipts />
 
                     {/* Sub-total */}
                     <Field>
-                        <FieldLabel>Sub total</FieldLabel>
+                        <FieldLabel>Detail</FieldLabel>
                         <p className="text-muted-foreground flex justify-between">
                             <span>107655</span>
                             <span>100.000</span>
@@ -188,10 +136,16 @@ const CartContent = memo(({
 
             <CardFooter className="flex justify-between gap-3">
                 <p className="font-bold text-lg">500.000</p>
-                <Button>Simpan</Button>
+                <div className="space-x-2">
+                    <Button
+                        variant="ghost"
+                        onClick={() => closeCart(false)}
+                    >Batal</Button>
+                    <Button>Simpan</Button>
+                </div>
             </CardFooter>
         </Card>
     )
 })
 
-export default CartContent
+export default Cart

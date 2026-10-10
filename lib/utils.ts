@@ -8,3 +8,5 @@ export function cn(...inputs: ClassValue[]) {
 export function formatNumber(value: number): string {
   return value.toLocaleString("id-ID")
 }
+
+export const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms))

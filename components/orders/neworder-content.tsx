@@ -1,12 +1,13 @@
 "use client"
 
-import CartContent from "@/components/orders/cart-content";
+import Cart from "@/components/orders/cart";
 import NavbarNewOrder from "@/components/orders/navbar-new-order";
 import ProductGirid from "@/components/orders/product-grid";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 import useProducts from "@/hooks/product/use-products";
+import { cn } from "@/lib/utils";
 import { Product } from "@/schemas/product.schema";
-import { useState } from "react";
+import { Activity, useState } from "react";
 
 interface NewOrderContentProps {
     defaultProduct: Product[]
@@ -32,13 +33,12 @@ export default function NewOrderContent({
                     <ProductGirid products={products} />
                 </div>
             </div>
+            {/* NOTE SELANJUTNYA BUTA HOOK UNTUKK AMBIL AMBIL DAN KELOLA DATA UNTUK DI CART */}
 
-            {/* Cart for Desktop */}
-            { showCart &&
-                <div className="min-h-0 h-full">
-                    <CartContent closeCart={setShowCart} />
-                </div>
-            }
+            {/* Cart */}
+            <Activity mode={showCart ? "visible" : "hidden"}>
+                <Cart closeCart={setShowCart} />
+            </Activity>
         </section>
     )
 }

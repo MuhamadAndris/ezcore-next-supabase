@@ -22,7 +22,7 @@ const NavbarNewOrder = memo(({
         <nav className="
             bg-background p-5
             flex flex-col gap-2
-            sticky top-0 lg:z-10
+            sticky top-0 z-10
         ">
             <div className="flex justify-between gap-3">
                 <SearchProduct setProducts={setProducts} />

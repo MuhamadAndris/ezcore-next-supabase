@@ -47,20 +47,6 @@ export default function CartContent({
             "lg:grid lg:grid-rows-[1fr_auto]",
             "fixed top-0 right-0 w-full h-full"
         )}>
-<<<<<<< HEAD
-            {/* Header */}
-            <CardHeader className="sticky top-0">
-                <CardTitle>Pesanan</CardTitle>
-                <CardDescription>ID: #ORD-0042</CardDescription>
-                <CardAction>
-                    <Button variant="ghost" className="rounded-full" onClick={
-                        () => closeCart(false)
-                    }>
-                        <IconX />
-                    </Button>
-                </CardAction>
-            </CardHeader>
-=======
             <div className="overflow-y-auto ">
                 <CardHeader className="sticky top-0 bg-background pb-3">
                     <CardTitle>Pesanan</CardTitle>
@@ -73,7 +59,6 @@ export default function CartContent({
                         </Button>
                     </CardAction>
                 </CardHeader>
->>>>>>> main
 
                 <FieldGroup className="px-3">
                     {/* Select Store */}
@@ -144,24 +129,6 @@ export default function CartContent({
                         </ButtonGroup>
                     </Field>
 
-<<<<<<< HEAD
-                {/* Receipt */}
-                <Field className="sticky top-0 bg-background z-10 pb-3">
-                    <FieldLabel>
-                        <span>Bon aktif</span>
-                    </FieldLabel>
-                    <ButtonGroup className="w-full overflow-x-scroll">
-                        <Button>107655</Button>
-                        <Button variant="outline">107656</Button>
-                        <Button variant="outline">107657</Button>
-                        <Button variant="outline">107658</Button>
-                        <Button variant="outline">107659</Button>
-                        <Button variant="outline">
-                            <IconPlus />
-                        </Button>
-                    </ButtonGroup>
-                </Field>
-=======
                     {/* Items */}
                     <Field>
                         <FieldLabel>Daftar produk</FieldLabel>
@@ -172,7 +139,6 @@ export default function CartContent({
                         <CartItem />
                         <CartItem />
                     </Field>
->>>>>>> main
 
                     {/* Payment proof */}
                     <Field>

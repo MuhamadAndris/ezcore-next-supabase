@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, memo, SetStateAction } from "react";
 import SearchProduct from "../products/search-product";
 import { Product } from "@/schemas/product.schema";
 import { Badge } from "../ui/badge";
@@ -10,10 +10,11 @@ interface NavbarNewOrderProps {
     setShowCart: Dispatch<SetStateAction<boolean>>
 }
 
-export default function NavbarNewOrder({
+const NavbarNewOrder = memo(({
     setProducts,
     setShowCart
-}:NavbarNewOrderProps) {
+}:NavbarNewOrderProps) => {
+    console.log("render navbar")
     const handleShowCart = () => {
         setShowCart((prev) => !prev)
     }
@@ -37,4 +38,6 @@ export default function NavbarNewOrder({
             </div>
         </nav>
     )
-}
+})
+
+export default NavbarNewOrder

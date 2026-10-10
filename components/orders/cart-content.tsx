@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { memo, useState } from "react";
 import { Button } from "../ui/button";
 import { Card, CardAction, CardDescription, CardFooter, CardHeader, CardTitle } from "../ui/card";
 import { Field, FieldGroup, FieldLabel } from "../ui/field";
@@ -33,13 +33,13 @@ interface CartContentProps {
     closeCart: (v:boolean) => void
 }
 
-export default function CartContent({
+const CartContent = memo(({
     closeCart
-}:CartContentProps) {
+}:CartContentProps) => {
     const [ store, setStore ] = useState<string | null>("0E1")
     const [ date, setDate ] = useState<Date>()
     const [ showCalender, setShowCalender ] = useState(false)
-
+    console.log("render cart")
     return (
         <Card className={cn(
             "lg:relative",
@@ -192,4 +192,6 @@ export default function CartContent({
             </CardFooter>
         </Card>
     )
-}
+})
+
+export default CartContent

@@ -1,15 +1,19 @@
 import { Product } from "@/schemas/product.schema"
 import ProductCard from "./product-card"
 import { cn } from "@/lib/utils"
+import { memo } from "react"
 
 interface ProductGridProps {
     products: Product[]
 }
 
-export default function ProductGirid({
+const ProductGirid = memo(({
     products
-}:ProductGridProps) {
-
+}:ProductGridProps) => {
+    console.log({
+        "render": "Product Grid",
+        "jumlah data": products.length
+    })
     return (
         <div className={cn(
             "grid p-1",
@@ -25,4 +29,6 @@ export default function ProductGirid({
             )}
             </div>
     )
-}
+})
+
+export default ProductGirid

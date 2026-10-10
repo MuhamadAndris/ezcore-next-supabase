@@ -14,6 +14,11 @@ interface ProductCardProps {
 const ProductCard = memo(({
     product
 }:ProductCardProps) => {
+    console.log({
+        "render": "Product card",
+        "product ID": product.id
+    })
+    
     return (
         <Card>
             <div className="relative w-full">

@@ -1,5 +1,4 @@
 import { IconSearch } from "@tabler/icons-react";
-import { Input } from "../ui/input";
 import { memo, useState } from "react";
 import { createClient } from "@/lib/client";
 import { Product } from "@/schemas/product.schema";

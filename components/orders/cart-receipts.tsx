@@ -1,30 +1,36 @@
-import { IconPlus, IconCloudUpload } from "@tabler/icons-react";
-import { ButtonGroup } from "../ui/button-group";
-import { Field, FieldLabel } from "../ui/field";
-import CartItem from "./cart-item";
-import { Button } from "../ui/button";
-import Image from "next/image";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
-import { useState } from "react";
+import { IconPlus, IconCloudUpload } from "@tabler/icons-react"
+import { ButtonGroup } from "../ui/button-group"
+import { Field, FieldLabel } from "../ui/field"
+import CartItem from "./cart-item"
+import { Button } from "../ui/button"
+import Image from "next/image"
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "../ui/select"
+import { useState } from "react"
 
 type User = {
     value: number
     label: string
 }
 
-const users:User[] = [
+const users: User[] = [
     {
-        "value": 1,
-        "label": "Muhamad Andris"
+        value: 1,
+        label: "Muhamad Andris",
     },
     {
-        "value": 2,
-        "label": "Muhamad Alfarijal"
+        value: 2,
+        label: "Muhamad Alfarijal",
     },
 ]
 
 export default function CartReceipts() {
-    const [ saleByUserId, setSaleByUserId ] = useState()
+    const [saleByUserId, setSaleByUserId] = useState()
     return (
         <>
             <Field className="sticky top-0 bg-background z-10 pb-3">
@@ -52,11 +58,11 @@ export default function CartReceipts() {
                     </SelectTrigger>
 
                     <SelectContent>
-                        {users.map((u) => 
+                        {users.map((u) => (
                             <SelectItem key={u.value} value={u.value}>
                                 {u.label}
                             </SelectItem>
-                        )}
+                        ))}
                     </SelectContent>
                 </Select>
             </Field>
@@ -89,13 +95,14 @@ export default function CartReceipts() {
                             flex-1 flex flex-col justify-center items-center
                             border-3 border-dotted hover:border-foreground/60
                             h-full p-1 rounded-lg cursor-pointer
-                        ">
+                        "
+                    >
                         <IconCloudUpload />
                         Upload foto Struk
                     </Button>
                     <div className="relative bg-yellow-300 aspect-square h-15">
-                            <Image
-                            src="https://s1.lojelcdn.com/wp-content/uploads/2017/11/Lojel-Voja-WarmGray-Front-Small.jpg" 
+                        <Image
+                            src="https://s1.lojelcdn.com/wp-content/uploads/2017/11/Lojel-Voja-WarmGray-Front-Small.jpg"
                             alt="dummy Image"
                             className="object-contain"
                             fill

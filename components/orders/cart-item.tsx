@@ -1,7 +1,7 @@
-import { IconMinus, IconPencil, IconPlus, IconTrash } from "@tabler/icons-react";
-import { Button } from "../ui/button";
-import { ButtonGroup, ButtonGroupText } from "../ui/button-group";
-import Image from "next/image";
+import { IconMinus, IconPencil, IconPlus, IconTrash } from "@tabler/icons-react"
+import { Button } from "../ui/button"
+import { ButtonGroup, ButtonGroupText } from "../ui/button-group"
+import Image from "next/image"
 
 export default function CartItem() {
     return (
@@ -9,7 +9,7 @@ export default function CartItem() {
             {/* Image */}
             <div className="flex justify-center items-center relative aspect-square w-15">
                 <Image
-                    src="https://s1.lojelcdn.com/wp-content/uploads/2017/11/Lojel-Voja-WarmGray-Front-Small.jpg" 
+                    src="https://s1.lojelcdn.com/wp-content/uploads/2017/11/Lojel-Voja-WarmGray-Front-Small.jpg"
                     alt="dummy Image"
                     className="object-contain"
                     fill
@@ -21,15 +21,19 @@ export default function CartItem() {
             <div className="flex-1 flex justify-between">
                 <div>
                     <h3 className="font-medium">Cubo refresh</h3>
-                    <p className="text-xs text-muted-foreground">971253123 | M | BLUE</p>
+                    <p className="text-xs text-muted-foreground">
+                        971253123 | M | BLUE
+                    </p>
                     <p className="text-sm">Rp. 500.000</p>
 
                     <ButtonGroup>
-                        <Button variant="outline" size="icon-xs"><IconMinus /></Button>
-                        <ButtonGroupText>
-                            1
-                        </ButtonGroupText>
-                        <Button variant="outline" size="icon-xs"><IconPlus /></Button>
+                        <Button variant="outline" size="icon-xs">
+                            <IconMinus />
+                        </Button>
+                        <ButtonGroupText>1</ButtonGroupText>
+                        <Button variant="outline" size="icon-xs">
+                            <IconPlus />
+                        </Button>
                     </ButtonGroup>
                 </div>
 
@@ -38,7 +42,11 @@ export default function CartItem() {
                     <Button variant="ghost" size="icon-sm">
                         <IconPencil />
                     </Button>
-                    <Button variant="destructive" size="icon-sm" className="bg-transparent">
+                    <Button
+                        variant="destructive"
+                        size="icon-sm"
+                        className="bg-transparent"
+                    >
                         <IconTrash />
                     </Button>
                 </div>

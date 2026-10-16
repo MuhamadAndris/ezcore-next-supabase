@@ -1,29 +1,29 @@
-import { Product } from "@/schemas/product.schema";
-import { Card, CardAction, CardDescription, CardFooter, CardHeader, CardTitle } from "../ui/card";
-import { Button } from "../ui/button";
-import Image from "next/image";
-import { Badge } from "../ui/badge";
-import { formatNumber } from "@/lib/utils";
-import { memo } from "react";
-import { IconShoppingCartPlus } from "@tabler/icons-react";
+import { Product } from "@/schemas/product.schema"
+import {
+    Card,
+    CardAction,
+    CardDescription,
+    CardFooter,
+    CardHeader,
+    CardTitle,
+} from "../ui/card"
+import { Button } from "../ui/button"
+import Image from "next/image"
+import { Badge } from "../ui/badge"
+import { formatNumber } from "@/lib/utils"
+import { memo } from "react"
+import { IconShoppingCartPlus } from "@tabler/icons-react"
 
 interface ProductCardProps {
     product: Product
 }
 
-const ProductCard = memo(({
-    product
-}:ProductCardProps) => {
-    console.log({
-        "render": "Product card",
-        "product ID": product.id
-    })
-    
+const ProductCard = memo(({ product }: ProductCardProps) => {
     return (
         <Card>
             <div className="relative w-full">
                 <Image
-                    src="https://s1.lojelcdn.com/wp-content/uploads/2017/11/Lojel-Voja-WarmGray-Front-Small.jpg" 
+                    src="https://s1.lojelcdn.com/wp-content/uploads/2017/11/Lojel-Voja-WarmGray-Front-Small.jpg"
                     alt="dummy Image"
                     className="object-contain mx-auto"
                     height={500}
@@ -31,13 +31,11 @@ const ProductCard = memo(({
                 />
             </div>
             <CardHeader>
-                <CardTitle className="truncate">
-                    {product.name}
-                </CardTitle>
+                <CardTitle className="truncate">{product.name}</CardTitle>
                 <CardDescription className="truncate">
                     {product.sku}
-                    {product.size && ` | ${product.size}` }
-                    {product.color && ` | ${product.color}` }
+                    {product.size && ` | ${product.size}`}
+                    {product.color && ` | ${product.color}`}
                 </CardDescription>
                 <CardTitle>Rp {formatNumber(product.normal_price)}</CardTitle>
             </CardHeader>

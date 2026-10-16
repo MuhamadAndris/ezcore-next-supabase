@@ -30,20 +30,21 @@ import { id as idLocale } from "date-fns/locale"
 import { cn } from "@/lib/utils"
 import CartReceipts from "./cart-receipts"
 import useOrderCart from "@/hooks/order/use-order-cart"
+import { Spinner } from "../ui/spinner"
 
 type Store = {
-    value: string
+    value: number
     label: string
 }
 
 // NOTE NANTI GANTI DENGAN LIST STORE DARI DB
 const stores: Store[] = [
     {
-        value: "E1",
+        value: 1,
         label: "AEON SENTUL",
     },
     {
-        value: "E3",
+        value: 2,
         label: "AEON BSD",
     },
 ]
@@ -52,16 +53,8 @@ interface CartProps {
     closeCart: (v: boolean) => void
 }
 
-const Cart = memo(({ closeCart }: CartProps) => {
-    const {
-        purchasedAt,
-        setPurchasedAt,
-        storeSelected,
-        setStoreSelected,
-        grandTotal,
-        setGrandTotal,
-        refetch,
-    } = useOrderCart()
+const CartContent = memo(({ closeCart }: CartProps) => {
+    const { updateCart, cart } = useOrderCart()
     const [showCalender, setShowCalender] = useState(false)
 
     console.log("render cart")
@@ -96,11 +89,16 @@ const Cart = memo(({ closeCart }: CartProps) => {
                         <FieldLabel htmlFor="store">Toko</FieldLabel>
                         <Select
                             items={stores}
-                            value={storeSelected}
-                            onValueChange={(v) => setStoreSelected(v)}
+                            value={cart?.storeId ?? null}
+                            onValueChange={(newStoreSelected) => {
+                                if (cart?.storeId === newStoreSelected) return
+                                updateCart({ storeId: newStoreSelected })
+                            }}
                         >
                             <SelectTrigger id="store">
                                 <SelectValue placeholder="Pilih toko" />
+
+                                {/* {isLoading && <Spinner />} */}
                             </SelectTrigger>
 
                             <SelectContent>
@@ -128,11 +126,11 @@ const Cart = memo(({ closeCart }: CartProps) => {
                                 render={
                                     <Button
                                         variant={"outline"}
-                                        data-empty={!purchasedAt}
+                                        data-empty={!cart?.purchasedAt}
                                         className="w-full justify-between text-left font-normal data-[empty=true]:text-muted-foreground"
                                     >
-                                        {purchasedAt ? (
-                                            format(purchasedAt, "PPP", {
+                                        {cart?.purchasedAt ? (
+                                            format(cart?.purchasedAt, "PPP", {
                                                 locale: idLocale,
                                             })
                                         ) : (
@@ -148,12 +146,23 @@ const Cart = memo(({ closeCart }: CartProps) => {
                             >
                                 <Calendar
                                     mode="single"
-                                    selected={purchasedAt ?? undefined}
-                                    onSelect={(v) => {
-                                        setPurchasedAt(v)
+                                    selected={cart?.purchasedAt ?? undefined}
+                                    onSelect={(newPurchasedDate) => {
+                                        if (
+                                            cart?.purchasedAt ===
+                                            newPurchasedDate
+                                        )
+                                            return
+
+                                        updateCart({
+                                            purchasedAt: newPurchasedDate,
+                                        })
+
                                         setShowCalender(false)
                                     }}
-                                    defaultMonth={purchasedAt ?? undefined}
+                                    defaultMonth={
+                                        cart?.purchasedAt ?? undefined
+                                    }
                                     locale={idLocale}
                                 />
                             </PopoverContent>
@@ -195,4 +204,4 @@ const Cart = memo(({ closeCart }: CartProps) => {
     )
 })
 
-export default Cart
+export default CartContent

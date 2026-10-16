@@ -1,80 +1,108 @@
 import { createClient } from "@/lib/client"
-import { devError, devLog } from "@/lib/utils"
-import { cartSchema } from "@/schemas/cart.schema"
-import { useCallback, useEffect, useState } from "react"
+import { devError } from "@/lib/utils"
+import { Cart, cartBaseSchema, cartSchema } from "@/schemas/cart.schema"
+import { format } from "date-fns"
+import { useCallback, useEffect, useRef, useState } from "react"
 import { toast } from "sonner"
 
+const supabase = createClient()
+const userId = 1 // Note: nanti ganti dengan session
+type Cartpatch = Partial<Pick<Cart, "storeId" | "purchasedAt">>
+
 export default function useOrderCart() {
-    const [isLoading, setIsLoading] = useState(false)
-    const [storeSelected, setStoreSelected] = useState<string | null>(null)
-    const [purchasedAt, setPurchasedAt] = useState<Date | null | undefined>(
-        null
-    )
-    const [grandTotal, setGrandTotal] = useState<number | null>(null)
+    const [cart, setCart] = useState<Cart | null>(null)
+    const isUpdatingRef = useRef(false)
 
     const fetchCart = useCallback(async () => {
-        if (isLoading) return
+        if (isUpdatingRef.current) return
 
-        setIsLoading(true)
-
-        const supabase = createClient()
-        const { data, error } = await supabase
-            .from("carts")
-            .select(
+        try {
+            const { data, error } = await supabase
+                .from("carts")
+                .select(
+                    `
+                    id,
+                    userId,
+                    purchasedAt,
+                    storeId,
+                    grandTotal,
+                    users (id, code, name, title),
+                    stores (id, code, name)
                 `
-                id,
-                userId,
-                purchasedAt,
-                storeId,
-                grandTotal,
-                users (id, code, name, title),
-                stores (id, code, name)
-            `
-            )
-            .eq("userId", 1)
-            .maybeSingle()
+                )
+                .eq("userId", userId)
+                .maybeSingle()
 
-        if (error) {
-            toast.error("Gagal memuat data keranjang")
-            devError(error)
-            setIsLoading(false)
-            return
+            if (error) throw error
+            if (!data) {
+                setCart(null)
+                return
+            }
+
+            setCart(cartSchema.parse(data))
+        } catch (err) {
+            toast("Gagal memuat data keranjang")
+            devError(err)
+        } finally {
+            isUpdatingRef.current = false
         }
-
-        if (!data) {
-            setIsLoading(false)
-            devLog("Data tidak ada: " + data)
-            return
-        }
-
-        const parsed = cartSchema.safeParse(data ?? [])
-
-        if (parsed.error) {
-            devError(parsed.error)
-            setIsLoading(false)
-            return
-        }
-
-        const result = parsed.data
-
-        setStoreSelected(result.stores?.code ?? null)
-        setPurchasedAt(result.purchasedAt)
-        setGrandTotal(result.grandTotal)
-
-        setIsLoading(false)
     }, [])
 
     useEffect(() => {
         fetchCart()
     }, [fetchCart])
 
+    const updateCart = useCallback(
+        async (patch: Cartpatch) => {
+            if (cart?.id == null || isUpdatingRef.current) return
+            if (Object.keys(patch).length === 0) return
+
+            try {
+                isUpdatingRef.current = true
+
+                const payload = {
+                    ...patch,
+                    ...(patch.purchasedAt instanceof Date && {
+                        purchasedAt: format(patch.purchasedAt, "yyyy-MM-dd"),
+                    }),
+                }
+
+                const { data, error } = await supabase
+                    .from("carts")
+                    .update(payload)
+                    .eq("id", cart.id)
+                    .select()
+                    .single()
+
+                if (error) throw error
+
+                const result = cartBaseSchema.parse(data)
+                setCart((prev) =>
+                    prev
+                        ? {
+                              ...prev,
+                              ...(patch.storeId !== undefined && {
+                                  storeId: result.storeId,
+                              }),
+                              ...(patch.purchasedAt !== undefined && {
+                                  purchasedAt: result.purchasedAt,
+                              }),
+                          }
+                        : prev
+                )
+            } catch (err) {
+                toast("Gagal memperbarui keranjang")
+                devError(err)
+            } finally {
+                isUpdatingRef.current = false
+            }
+        },
+        [cart?.id, cart?.storeId, cart?.purchasedAt]
+    )
+
     return {
+        cart,
         refetch: fetchCart,
-        storeSelected,
-        setStoreSelected,
-        purchasedAt,
-        setPurchasedAt,
-        setGrandTotal,
-        grandTotal,
+        updateCart,
     }
 }

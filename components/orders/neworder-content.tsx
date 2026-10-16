@@ -1,6 +1,6 @@
 "use client"
 
-import Cart from "@/components/orders/cart"
+import CartContent from "@/components/orders/cart"
 import NavbarNewOrder from "@/components/orders/navbar-new-order"
 import ProductGirid from "@/components/orders/product-grid"
 import { Sheet, SheetContent } from "@/components/ui/sheet"
@@ -38,7 +38,7 @@ export default function NewOrderContent({
 
             {/* Cart */}
             <Activity mode={showCart ? "visible" : "hidden"}>
-                <Cart closeCart={setShowCart} />
+                <CartContent closeCart={setShowCart} />
             </Activity>
         </section>
     )

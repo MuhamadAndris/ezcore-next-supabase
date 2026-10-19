@@ -1,23 +1,38 @@
 "use client"
 
-import { Button } from "@/components/ui/button";
-import { Table, TableBody, TableCell, TableFooter, TableHead, TableRow } from "@/components/ui/table";
-import { IconPlus, IconSearch } from "@tabler/icons-react";
-import TableFilter from "./table-filter";
-import TableHeaderProducts from "./table-header-products";
-import TableRowProducts from "./table-row-product";
-import LINK from "@/const/LINK";
-import Link from "next/link";
-import { Product } from "@/schemas/product.schema";
-import { useCallback, useEffect, useRef, useState } from "react";
-import { toast } from "sonner";
-import SearchProduct from "./search-product";
-import Toolbar from "./table-toolbar-product";
-import useProductSelection from "@/hooks/product/use-product-selection";
-import useProducts from "@/hooks/product/use-products";
-import FooterTableProduct from "./table-footer-product";
-import EditProduct from "./edit-product";
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "../ui/alert-dialog";
+import { Button } from "@/components/ui/button"
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableFooter,
+    TableHead,
+    TableRow,
+} from "@/components/ui/table"
+import { IconPlus, IconSearch } from "@tabler/icons-react"
+import TableFilter from "./table-filter"
+import TableHeaderProducts from "./table-header-products"
+import TableRowProducts from "./table-row-product"
+import LINK from "@/const/LINK"
+import Link from "next/link"
+import { Product } from "@/schemas/product.schema"
+import { useCallback, useEffect, useRef, useState } from "react"
+import SearchProduct from "./search-product"
+import Toolbar from "./table-toolbar-product"
+import useProductSelection from "@/hooks/product/use-product-selection"
+import useProducts from "@/hooks/product/use-products"
+import FooterTableProduct from "./table-footer-product"
+import EditProduct from "./edit-product"
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+} from "../ui/alert-dialog"
 
 interface TableProductsProps {
     count: number | null
@@ -34,11 +49,11 @@ const columns = [
     {
         label: "GAMBAR",
         isVisible: false,
-        align: "text-center"
+        align: "text-center",
     },
     {
         label: "DESKRIPSI PRODUK",
-        isVisible: true
+        isVisible: true,
     },
     {
         label: "KATEGORI",
@@ -47,43 +62,51 @@ const columns = [
     {
         label: "STOK",
         isVisible: false,
-        align: "text-center"
+        align: "text-center",
     },
     {
         label: "HARGA",
         isVisible: true,
-        align: "text-right"
+        align: "text-right",
     },
     {
         label: "PROMO",
-        isVisible: false
+        isVisible: false,
     },
 ]
 
-export default function TableProducts({
-    count,
-    data
-}: TableProductsProps) {
+export default function TableProducts({ count, data }: TableProductsProps) {
     console.log("render - product table")
-    const { handleSelectionChange, onHaveSelected, productSelectedIds } = useProductSelection()
-    const { hasMore, isLoading, loadMore, products, replaceProducts} = useProducts(data)
-    const [ onSelectedAll, setOnSelectedAll ] = useState<boolean>(false)
-    const [ columnVisible, setColumnVisible ] = useState<ColumnVisible[]>(columns)
+    const { handleSelectionChange, onHaveSelected, productSelectedIds } =
+        useProductSelection()
+    const {
+        hasMore,
+        isLoading,
+        setIsLoading,
+        loadMore,
+        products,
+        replaceProducts,
+        searchProduct,
+    } = useProducts(data)
+    const [onSelectedAll, setOnSelectedAll] = useState<boolean>(false)
+    const [columnVisible, setColumnVisible] = useState<ColumnVisible[]>(columns)
 
-    const [ isModalOpened, setIsModalOpened ] = useState(false)
-
-    const isDirty = useRef(false)
+    const [isModalOpened, setIsModalOpened] = useState(false)
+    const [isDirty, setIsDirty] = useState(false)
 
     const productId = useRef<number | null>(null)
 
-    const handleEditProduct = useCallback(async (id:number) => {
+    const handleEditProduct = useCallback(async (id: number) => {
         setIsModalOpened(true)
         productId.current = id
     }, [])
 
     return (
         <div className="border md:rounded-md md:mx-4">
-            <Toolbar setProducts={replaceProducts} />
+            <Toolbar
+                searchProduct={searchProduct}
+                setIsLoading={setIsLoading}
+            />
 
             <Table>
                 <TableHeaderProducts
@@ -93,7 +116,7 @@ export default function TableProducts({
                     setColumns={setColumnVisible}
                 />
                 <TableBody>
-                    { products.map((p, index) => 
+                    {products.map((p, index) => (
                         <TableRowProducts
                             key={p.sku}
                             product={p}
@@ -104,7 +127,7 @@ export default function TableProducts({
                             columns={columnVisible}
                             handleEditProduct={handleEditProduct}
                         />
-                    )}
+                    ))}
                 </TableBody>
             </Table>
 
@@ -124,19 +147,20 @@ export default function TableProducts({
                 open={isModalOpened}
                 onOpenChange={(isOpen) => {
                     console.log("is open: " + isOpen)
-                    isDirty.current = !isOpen
+                    setIsDirty(!isOpen)
                 }}
             />
 
             {/* Alert confirmation */}
-            <AlertDialog open={isDirty.current}>
+            <AlertDialog open={isDirty}>
                 <AlertDialogContent>
                     <AlertDialogHeader>
                         <AlertDialogTitle>
                             Perubahan belum disimpan
                         </AlertDialogTitle>
                         <AlertDialogDescription>
-                            Anda memiliki perubahan yang belum disimpan. Yakin ingin membatalkannya?
+                            Anda memiliki perubahan yang belum disimpan. Yakin
+                            ingin membatalkannya?
                         </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>
@@ -144,11 +168,12 @@ export default function TableProducts({
                         <AlertDialogAction
                             onClick={() => {
                                 setIsModalOpened(false)
-                                isDirty.current = false
+                                setIsDirty(false)
                                 // NOTE: NEXT BUAT AGAR PAS ADA PERUBAHAN, DAN PAS MAU DI CLOSE SHEET NYA MUNCUL KAN ALERT KONFIRMASI
-
                             }}
-                        >Buang Perubahan</AlertDialogAction>
+                        >
+                            Buang Perubahan
+                        </AlertDialogAction>
                     </AlertDialogFooter>
                 </AlertDialogContent>
             </AlertDialog>

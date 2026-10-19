@@ -2,8 +2,17 @@ import { IconMinus, IconPencil, IconPlus, IconTrash } from "@tabler/icons-react"
 import { Button } from "../ui/button"
 import { ButtonGroup, ButtonGroupText } from "../ui/button-group"
 import Image from "next/image"
+import { CartReceiptItem } from "@/schemas/cart.schema"
+import { devLog, formatNumber } from "@/lib/utils"
+import { memo } from "react"
 
-export default function CartItem() {
+interface CartItemProps {
+    item: CartReceiptItem
+}
+
+const CartItem = memo(({ item }: CartItemProps) => {
+    const product = item.products
+    devLog("render cart receipt item")
     return (
         <div className="flex gap-2 border rounded-md p-1">
             {/* Image */}
@@ -20,17 +29,22 @@ export default function CartItem() {
             {/* Description */}
             <div className="flex-1 flex justify-between">
                 <div>
-                    <h3 className="font-medium">Cubo refresh</h3>
+                    <h3 className="font-medium">{product.name}</h3>
                     <p className="text-xs text-muted-foreground">
-                        971253123 | M | BLUE
+                        {product.sku}
+                        {product.size && ` | ${product.size}`}
+                        {product.color && ` | ${product.color}`}
                     </p>
-                    <p className="text-sm">Rp. 500.000</p>
+                    <p className="text-sm">
+                        Rp. {formatNumber(product.normalPrice)}
+                    </p>
 
+                    {/* Qty */}
                     <ButtonGroup>
                         <Button variant="outline" size="icon-xs">
                             <IconMinus />
                         </Button>
-                        <ButtonGroupText>1</ButtonGroupText>
+                        <ButtonGroupText>{item.qty}</ButtonGroupText>
                         <Button variant="outline" size="icon-xs">
                             <IconPlus />
                         </Button>
@@ -53,4 +67,6 @@ export default function CartItem() {
             </div>
         </div>
     )
-}
+})
+
+export default CartItem

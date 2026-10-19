@@ -1,13 +1,6 @@
 import { memo, useState } from "react"
 import { Button } from "../ui/button"
-import {
-    Card,
-    CardAction,
-    CardDescription,
-    CardFooter,
-    CardHeader,
-    CardTitle,
-} from "../ui/card"
+import { Card, CardAction, CardFooter, CardHeader, CardTitle } from "../ui/card"
 import { Field, FieldGroup, FieldLabel } from "../ui/field"
 import {
     Select,
@@ -18,60 +11,38 @@ import {
 } from "../ui/select"
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover"
 import { format } from "date-fns"
-import {
-    IconChevronDown,
-    IconCloudUpload,
-    IconPlus,
-    IconUpload,
-    IconX,
-} from "@tabler/icons-react"
+import { IconChevronDown, IconX } from "@tabler/icons-react"
 import { Calendar } from "../ui/calendar"
 import { id as idLocale } from "date-fns/locale"
-import { cn } from "@/lib/utils"
+import { cn, devLog } from "@/lib/utils"
 import CartReceipts from "./cart-receipts"
-import useOrderCart from "@/hooks/order/use-order-cart"
-import { Spinner } from "../ui/spinner"
-
-type Store = {
-    value: number
-    label: string
-}
-
-// NOTE NANTI GANTI DENGAN LIST STORE DARI DB
-const stores: Store[] = [
-    {
-        value: 1,
-        label: "AEON SENTUL",
-    },
-    {
-        value: 2,
-        label: "AEON BSD",
-    },
-]
+import useUserStores from "@/hooks/store/use-store"
+import { OrderCart } from "@/types/order-cart"
 
 interface CartProps {
     closeCart: (v: boolean) => void
+    cart: OrderCart
 }
 
-const CartContent = memo(({ closeCart }: CartProps) => {
-    const { updateCart, cart } = useOrderCart()
+const CartContent = memo(({ closeCart, cart }: CartProps) => {
     const [showCalender, setShowCalender] = useState(false)
-
-    console.log("render cart")
+    const { stores } = useUserStores(cart.data?.userId)
+    const currentStore = stores.find((s) => s.value === cart.data?.storeId)
+    devLog("render cart")
 
     return (
         <Card
             className={cn(
+                "flex h-full min-h-0 flex-col",
                 "lg:relative",
-                "lg:w-80 lg:h-full",
+                "lg:w-full lg:h-full",
                 "lg:grid lg:grid-rows-[1fr_auto]",
                 "fixed top-0 right-0 w-full h-full z-11"
             )}
         >
-            <div className="overflow-y-auto ">
-                <CardHeader className="sticky top-0 bg-background pb-3">
+            <div className="shrink-0 flex-1 overflow-auto">
+                <CardHeader className="sticky top-0 bg-popover pb-3">
                     <CardTitle>Pesanan</CardTitle>
-                    <CardDescription>ID: #ORD-0042</CardDescription>
                     <CardAction>
                         <Button
                             variant="ghost"
@@ -89,16 +60,11 @@ const CartContent = memo(({ closeCart }: CartProps) => {
                         <FieldLabel htmlFor="store">Toko</FieldLabel>
                         <Select
                             items={stores}
-                            value={cart?.storeId ?? null}
-                            onValueChange={(newStoreSelected) => {
-                                if (cart?.storeId === newStoreSelected) return
-                                updateCart({ storeId: newStoreSelected })
-                            }}
+                            value={cart.data?.storeId ?? null}
+                            // onValueChange={(v) => cart.updatePurchasedAt(v)}
                         >
                             <SelectTrigger id="store">
                                 <SelectValue placeholder="Pilih toko" />
-
-                                {/* {isLoading && <Spinner />} */}
                             </SelectTrigger>
 
                             <SelectContent>
@@ -126,13 +92,17 @@ const CartContent = memo(({ closeCart }: CartProps) => {
                                 render={
                                     <Button
                                         variant={"outline"}
-                                        data-empty={!cart?.purchasedAt}
+                                        data-empty={!cart.data?.purchasedAt}
                                         className="w-full justify-between text-left font-normal data-[empty=true]:text-muted-foreground"
                                     >
-                                        {cart?.purchasedAt ? (
-                                            format(cart?.purchasedAt, "PPP", {
-                                                locale: idLocale,
-                                            })
+                                        {cart.data?.purchasedAt ? (
+                                            format(
+                                                cart.data?.purchasedAt,
+                                                "PPP",
+                                                {
+                                                    locale: idLocale,
+                                                }
+                                            )
                                         ) : (
                                             <span>Pilih tanggal</span>
                                         )}
@@ -146,22 +116,15 @@ const CartContent = memo(({ closeCart }: CartProps) => {
                             >
                                 <Calendar
                                     mode="single"
-                                    selected={cart?.purchasedAt ?? undefined}
-                                    onSelect={(newPurchasedDate) => {
-                                        if (
-                                            cart?.purchasedAt ===
-                                            newPurchasedDate
-                                        )
-                                            return
-
-                                        updateCart({
-                                            purchasedAt: newPurchasedDate,
-                                        })
-
+                                    selected={
+                                        cart.data?.purchasedAt ?? undefined
+                                    }
+                                    onSelect={(date) => {
+                                        cart.updatePurchasedAt(date ?? null)
                                         setShowCalender(false)
                                     }}
                                     defaultMonth={
-                                        cart?.purchasedAt ?? undefined
+                                        cart.data?.purchasedAt ?? undefined
                                     }
                                     locale={idLocale}
                                 />
@@ -170,7 +133,10 @@ const CartContent = memo(({ closeCart }: CartProps) => {
                     </Field>
 
                     {/* Receipt */}
-                    <CartReceipts />
+                    <CartReceipts
+                        storeId={cart.data?.storeId ?? null}
+                        receipts={cart.data && cart.data.cartReceipts}
+                    />
 
                     {/* Sub-total */}
                     <Field>
@@ -191,7 +157,7 @@ const CartContent = memo(({ closeCart }: CartProps) => {
                 </FieldGroup>
             </div>
 
-            <CardFooter className="flex justify-between gap-3">
+            <CardFooter className="shrink-0 flex justify-between gap-3">
                 <p className="font-bold text-lg">500.000</p>
                 <div className="space-x-2">
                     <Button variant="ghost" onClick={() => closeCart(false)}>

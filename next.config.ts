@@ -1,24 +1,24 @@
-import type { NextConfig } from "next";
+import type { NextConfig } from "next"
 
 const nextConfig: NextConfig = {
-  allowedDevOrigins: ['192.168.1.9','10.162.0.104'],
+    allowedDevOrigins: ["10.146.192.104"],
 
-  images: {
-    remotePatterns: [
-      {
-        protocol: "https",
-        hostname: "dynamic.zacdn.com",
-      },
-      {
-        protocol: "https",
-        hostname: "https://dynamic.zacdn.com",
-      },
-      {
-        protocol: "https",
-        hostname: "s1.lojelcdn.com",
-      },
-    ],
-  },
-};
+    images: {
+        remotePatterns: [
+            {
+                protocol: "https",
+                hostname: "dynamic.zacdn.com",
+            },
+            {
+                protocol: "https",
+                hostname: "https://dynamic.zacdn.com",
+            },
+            {
+                protocol: "https",
+                hostname: "s1.lojelcdn.com",
+            },
+        ],
+    },
+}
 
-export default nextConfig;
+export default nextConfig

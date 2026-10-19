@@ -1,60 +1,60 @@
-import { IconSearch } from "@tabler/icons-react";
-import { memo, useState } from "react";
-import { createClient } from "@/lib/client";
-import { Product } from "@/schemas/product.schema";
-import { toast } from "sonner";
-import { InputGroup, InputGroupAddon, InputGroupInput } from "../ui/input-group";
+import { IconSearch } from "@tabler/icons-react"
+import { memo, useEffect, useState } from "react"
+import { InputGroup, InputGroupAddon, InputGroupInput } from "../ui/input-group"
+import { devLog } from "@/lib/utils"
 
 interface SearchProductProps {
-    setProducts: (p: Product[]) => void
+    searchProduct: (keyword: string) => Promise<void>
+    setIsLoading: (v: boolean) => void
 }
 
-const SearchProduct = memo(({ setProducts }: SearchProductProps) => {
-    console.log("render - Search product")
+const DEBOUNCE_DELAY = 800
 
-    const [searchValue, setSearchValue] = useState<string>("")
+const SearchProduct = memo(
+    ({ searchProduct, setIsLoading }: SearchProductProps) => {
+        devLog("render - Search product")
 
-    const handleSearch = async (e: React.ChangeEvent<HTMLInputElement>) => {
-        const value = e.target.value;
-        setSearchValue(value);
+        const [searchValue, setSearchValue] = useState("")
 
-        const keywords = value.trim().split(/\s+/).filter(Boolean);
-        
-        const supabase = createClient();
-        
-        let query = supabase
-            .from("products")
-            .select("*")
-            .eq("is_deleted", false);
+        useEffect(() => {
+            const keyword = searchValue.trim()
 
-        for (const keyword of keywords) {
-            query = query.or(`sku.ilike.%${keyword}%,name.ilike.%${keyword}%,brand.ilike.%${keyword}%,category.ilike.%${keyword}%, color.ilike.%${keyword}%,size.ilike.%${keyword}%`);
+            if (!keyword) return
+
+            const timeout = setTimeout(async () => {
+                setIsLoading(true)
+
+                try {
+                    await searchProduct(keyword)
+                } finally {
+                    setIsLoading(false)
+                }
+            }, DEBOUNCE_DELAY)
+
+            return () => clearTimeout(timeout)
+        }, [searchValue, searchProduct, setIsLoading])
+
+        const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+            setSearchValue(e.target.value)
         }
 
-        const { data, error } = await query
-            .order("created_at", { ascending: false })
-            .order("id", { ascending: false })
-            .range(0, 9)
-        ;
+        return (
+            <InputGroup>
+                <InputGroupInput
+                    placeholder="Cari SKU atau nama produk..."
+                    value={searchValue}
+                    onChange={handleSearch}
+                    type="search"
+                />
 
-        if(error) toast.error("Gagal memuat produk")
-
-        setProducts(data ?? []);
+                <InputGroupAddon>
+                    <IconSearch />
+                </InputGroupAddon>
+            </InputGroup>
+        )
     }
+)
 
-    return (
-        <InputGroup>
-            <InputGroupInput
-                placeholder="Cari SKU atau nama produk..."
-                value={searchValue}
-                onChange={handleSearch}
-                type="search"
-            />
-            <InputGroupAddon>
-                <IconSearch />
-            </InputGroupAddon>
-        </InputGroup>
-    )
-})
+SearchProduct.displayName = "SearchProduct"
 
 export default SearchProduct

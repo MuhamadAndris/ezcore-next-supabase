@@ -37,7 +37,7 @@ const ProductCard = memo(({ product }: ProductCardProps) => {
                     {product.size && ` | ${product.size}`}
                     {product.color && ` | ${product.color}`}
                 </CardDescription>
-                <CardTitle>Rp {formatNumber(product.normal_price)}</CardTitle>
+                <CardTitle>Rp {formatNumber(product.normalPrice)}</CardTitle>
             </CardHeader>
             <CardFooter>
                 <Button className="w-full cursor-pointer" variant="default">

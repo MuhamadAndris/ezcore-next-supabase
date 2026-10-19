@@ -1,21 +1,22 @@
-import { Product, productSchema } from "@/schemas/product.schema";
-import { useCallback, useRef, useState } from "react";
-import { toast } from "sonner";
-import { createClient } from "@/lib/client";
+import { Product, productSchema } from "@/schemas/product.schema"
+import { useCallback, useRef, useState } from "react"
+import getProductsQuery, { searchProductQuery } from "@/lib/query/product"
+import { toast } from "@/components/ui/toast"
 
 const PAGE_SIZE = 15
 
-// Ambil semua nama field dari skema (id, name, sku, size, ...)
 const productKeys = Object.keys(productSchema.shape) as (keyof Product)[]
 
-const isSameProduct = (a: Product, b: Product) => 
+const isSameProduct = (a: Product, b: Product) =>
     productKeys.every((key) => a[key] === b[key])
 
 export default function useProducts(initialData: Product[]) {
-    const currentpage = useRef(1);
-    const [ products, setProducts ] = useState<Product[]>(initialData)
-    const [ hasMore, setHasMore ] = useState<boolean>(initialData.length > 0)
-    const [ isLoading, setIsLoading ] = useState<boolean>(false)
+    const currentpage = useRef(1)
+    const [products, setProducts] = useState<Product[]>(initialData)
+    const [hasMore, setHasMore] = useState<boolean>(
+        initialData.length === PAGE_SIZE
+    )
+    const [isLoading, setIsLoading] = useState(false)
 
     const replaceProducts = useCallback((newProduts: Product[]) => {
         setProducts((prev) => {
@@ -27,7 +28,7 @@ export default function useProducts(initialData: Product[]) {
                 return oldItem && isSameProduct(oldItem, newItem)
                     ? oldItem
                     : newItem
-            });
+            })
 
             const identical =
                 merged.length === prev.length &&
@@ -40,36 +41,80 @@ export default function useProducts(initialData: Product[]) {
         setHasMore(false)
     }, [])
 
-    const loadMore = useCallback( async () => {
-        if(isLoading) return;
-        setIsLoading(true);
+    const fetchProduct = useCallback(
+        async (from: number = 0, to: number = PAGE_SIZE) => {
+            try {
+                if (isLoading) return
+                setIsLoading(true)
 
-        const nextPage = currentpage.current + 1;
-        const from = (nextPage -1) * PAGE_SIZE;
-        const to = nextPage * PAGE_SIZE - 1
+                return await getProductsQuery(from, to)
+            } catch (err) {
+                toast.add({
+                    title: "Gagal memuat produk",
+                    type: "error",
+                    description:
+                        "Gagal mencari produk. Periksa koneksi internet kamu.",
+                })
+            } finally {
+                setIsLoading(false)
+            }
+        },
+        [isLoading]
+    )
 
-        const supabse = createClient();
-        const { data, error } = await supabse
-            .from("products")
-            .select("*")
-            .eq("is_deleted", false)
-            .order("created_at", { ascending: false })
-            .order("id", { ascending: false })
-            .range(from, to);
-        
-        if (error) {
-            toast.error("Gagal memuat produk")
-            setIsLoading(false);
-            return;
+    const loadMore = useCallback(async () => {
+        try {
+            if (isLoading) return
+            setIsLoading(true)
+
+            const nextPage = currentpage.current + 1
+            const from = (nextPage - 1) * PAGE_SIZE
+            const to = nextPage * PAGE_SIZE - 1
+
+            const result = await fetchProduct(from, to)
+            if (result) {
+                setProducts((prev) => [...prev, ...result]) // note: cek dulu harusnya agar tidak ada data yang duplikat
+                currentpage.current = nextPage
+                if (result.length < PAGE_SIZE) setHasMore(false)
+            }
+        } catch (err) {
+            toast.add({
+                type: "error",
+                description:
+                    "Gagal mencari produk. Periksa koneksi internet kamu.",
+            })
+        } finally {
+            setIsLoading(false)
         }
-    
-        setProducts((prev) => [...prev, ...data] );
+    }, [isLoading, fetchProduct])
 
-        currentpage.current = nextPage;
-        if(data.length < PAGE_SIZE) setHasMore(false)
-        setIsLoading(false);
-    }, [isLoading])
+    const searchProduct = useCallback(
+        async (keyword: string) => {
+            try {
+                const result = await searchProductQuery(keyword, 0)
+                if (result.length > 0) {
+                    replaceProducts(result)
+                    setHasMore(false)
+                }
+            } catch (err) {
+                toast.add({
+                    type: "error",
+                    description:
+                        "Gagal mencari produk. Periksa koneksi internet kamu.",
+                })
+            }
+        },
+        [replaceProducts]
+    )
 
-
-    return { products, hasMore, isLoading, loadMore, replaceProducts }
+    return {
+        products,
+        hasMore,
+        loadMore,
+        replaceProducts,
+        fetchProduct,
+        searchProduct,
+        isLoading,
+        setIsLoading,
+    }
 }

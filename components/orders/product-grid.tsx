@@ -2,28 +2,38 @@ import { Product } from "@/schemas/product.schema"
 import ProductCard from "./product-card"
 import { cn } from "@/lib/utils"
 import { memo } from "react"
+import SkeletonProductGrid from "../skeleton/product-grid"
 
 interface ProductGridProps {
     products: Product[]
+    isLoading: boolean
 }
 
-const ProductGirid = memo(({ products }: ProductGridProps) => {
-    return (
+const ProductGrid = memo(({ products, isLoading }: ProductGridProps) => {
+    const qty = products.length
+
+    return isLoading ? (
+        <SkeletonProductGrid />
+    ) : (
         <div
             className={cn(
-                "grid p-1",
+                "grid w-full p-1",
                 "gap-2 md:gap-4",
                 "grid-cols-[repeat(auto-fit,minmax(150px,1fr))]",
-                products.length <= 4
+                qty <= 4 && qty !== 0
                     ? "lg:grid-cols-[repeat(auto-fit,minmax(150px,250px))]"
                     : "lg:grid-cols-[repeat(auto-fit,minmax(250px,1fr))]"
             )}
         >
-            {products.map((p) => (
-                <ProductCard key={p.id} product={p} />
-            ))}
+            {qty === 0 ? (
+                <p className="text-muted-foreground text-center">
+                    produk tidak ada
+                </p>
+            ) : (
+                products.map((p) => <ProductCard key={p.id} product={p} />)
+            )}
         </div>
     )
 })
 
-export default ProductGirid
+export default ProductGrid

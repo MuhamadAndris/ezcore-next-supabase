@@ -11,38 +11,65 @@ import {
     SelectTrigger,
     SelectValue,
 } from "../ui/select"
-import { useState } from "react"
+import { memo, useEffect, useState } from "react"
+import { CartReceipt } from "@/schemas/cart.schema"
+import { devLog, formatNumber } from "@/lib/utils"
+import useStoreUsers from "@/hooks/user/use-user"
 
-type User = {
-    value: number
-    label: string
+interface CartReceipsProps {
+    receipts: CartReceipt[] | null
+    storeId: number | null
 }
 
-const users: User[] = [
-    {
-        value: 1,
-        label: "Muhamad Andris",
-    },
-    {
-        value: 2,
-        label: "Muhamad Alfarijal",
-    },
-]
+const CartReceipts = memo(({ receipts, storeId }: CartReceipsProps) => {
+    devLog("render receipts")
 
-export default function CartReceipts() {
-    const [saleByUserId, setSaleByUserId] = useState()
+    const [currentReceipt, setCurrentReceipt] = useState<CartReceipt | null>(
+        receipts?.[0] ?? null
+    )
+
+    const { users } = useStoreUsers(storeId ?? undefined)
+
+    useEffect(() => {
+        if (!receipts?.length) {
+            setCurrentReceipt(null)
+            return
+        }
+
+        setCurrentReceipt((prev) => {
+            if (prev && receipts.some((item) => item.id === prev.id)) {
+                return prev
+            }
+
+            return receipts[0]
+        })
+    }, [receipts])
+
+    if (!receipts || !storeId || !currentReceipt) return null
+
     return (
         <>
-            <Field className="sticky top-0 bg-background z-10 pb-3">
+            <Field className="sticky top-0 bg-popover z-10 pb-3">
                 <FieldLabel>
                     <span>Bon aktif</span>
                 </FieldLabel>
-                <ButtonGroup className="w-full overflow-x-scroll">
-                    <Button>107655</Button>
-                    <Button variant="outline">107656</Button>
-                    <Button variant="outline">107657</Button>
-                    <Button variant="outline">107658</Button>
-                    <Button variant="outline">107659</Button>
+                <ButtonGroup className="w-full overflow-x-auto">
+                    {receipts.map((r) => (
+                        <Button
+                            key={r.id}
+                            variant={
+                                currentReceipt.code === r.code
+                                    ? "default"
+                                    : "outline"
+                            }
+                            onClick={() =>
+                                currentReceipt !== r && setCurrentReceipt(r)
+                            }
+                        >
+                            {r.code}
+                        </Button>
+                    ))}
+
                     <Button variant="outline">
                         <IconPlus />
                     </Button>
@@ -59,7 +86,10 @@ export default function CartReceipts() {
 
                     <SelectContent>
                         {users.map((u) => (
-                            <SelectItem key={u.value} value={u.value}>
+                            <SelectItem
+                                key={u.value}
+                                value={currentReceipt.saleByUserId}
+                            >
                                 {u.label}
                             </SelectItem>
                         ))}
@@ -70,17 +100,24 @@ export default function CartReceipts() {
             {/* Items */}
             <Field>
                 <FieldLabel>Daftar produk</FieldLabel>
-                <CartItem />
-                <CartItem />
-                <CartItem />
-                <CartItem />
-                <CartItem />
-                <CartItem />
+                {currentReceipt.cartReceiptItems &&
+                currentReceipt.cartReceiptItems.length > 0 ? (
+                    currentReceipt.cartReceiptItems.map((i) => (
+                        <CartItem key={i.id} item={i} />
+                    ))
+                ) : (
+                    <p className="text-center text-muted-foreground">
+                        tidak ada item
+                    </p>
+                )}
 
                 {/* Sub total */}
                 <p className="flex justify-between text-muted-foreground">
                     <span>Subtotal</span>
-                    <span>500.000/4 pcs</span>
+                    <span>
+                        {formatNumber(currentReceipt.subTotal)}/
+                        {currentReceipt.totalQty} pcs
+                    </span>
                 </p>
             </Field>
 
@@ -113,4 +150,8 @@ export default function CartReceipts() {
             </Field>
         </>
     )
-}
+})
+
+CartReceipts.displayName = "CartReceipts"
+
+export default CartReceipts

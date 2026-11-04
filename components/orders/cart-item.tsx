@@ -2,16 +2,22 @@ import { IconMinus, IconPencil, IconPlus, IconTrash } from "@tabler/icons-react"
 import { Button } from "../ui/button"
 import { ButtonGroup, ButtonGroupText } from "../ui/button-group"
 import Image from "next/image"
-import { CartReceiptItem } from "@/schemas/cart.schema"
 import { devLog, formatNumber } from "@/lib/utils"
 import { memo } from "react"
+import { Product } from "@/schemas/product.schema"
 
 interface CartItemProps {
-    item: CartReceiptItem
+    item: {
+        product: Product
+        qty: number
+    }
+    onAddQty: (productId: number) => void
+    onReduceQty: (productId: number) => void
 }
 
-const CartItem = memo(({ item }: CartItemProps) => {
-    const product = item.products
+const CartItem = memo(({ item, onAddQty, onReduceQty }: CartItemProps) => {
+    const product = item.product
+
     devLog("render cart receipt item")
     return (
         <div className="flex gap-2 border rounded-md p-1">
@@ -41,11 +47,19 @@ const CartItem = memo(({ item }: CartItemProps) => {
 
                     {/* Qty */}
                     <ButtonGroup>
-                        <Button variant="outline" size="icon-xs">
+                        <Button
+                            variant="outline"
+                            size="icon-xs"
+                            onClick={() => onReduceQty(product.id)}
+                        >
                             <IconMinus />
                         </Button>
                         <ButtonGroupText>{item.qty}</ButtonGroupText>
-                        <Button variant="outline" size="icon-xs">
+                        <Button
+                            variant="outline"
+                            size="icon-xs"
+                            onClick={() => onAddQty(product.id)}
+                        >
                             <IconPlus />
                         </Button>
                     </ButtonGroup>

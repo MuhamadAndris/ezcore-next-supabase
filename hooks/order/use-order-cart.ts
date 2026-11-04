@@ -1,150 +1,208 @@
-import { createClient } from "@/lib/client"
-import { devError, devLog } from "@/lib/utils"
-import { Cart, cartBaseSchema, cartSchema } from "@/schemas/cart.schema"
-import { format, isSameDay } from "date-fns"
-import { useCallback, useEffect, useRef, useState } from "react"
-import { toast } from "@/components/ui/toast"
-import { OrderCart } from "@/types/order-cart"
+import CartItem from "@/components/orders/cart-item"
+import { Product } from "@/schemas/product.schema"
+import { CartData, CartReceipts } from "@/types/order-cart"
+import { useCallback, useEffect, useState } from "react"
 
-const supabase = createClient()
-const userId = 1 // Note: nanti ganti dengan session
-type Cartpatch = Partial<Pick<Cart, "storeId" | "purchasedAt">>
+const useOrderCart = () => {
+    const [data, setData] = useState<CartData>({
+        userId: 1,
+        storeSelected: {
+            value: 1,
+            label: "Aeon Sentul City",
+        }, // note: nanti ganti dengan store yang dipilih user
+        purchasedAt: new Date(),
+    })
 
-export default function useOrderCart() {
-    const [cart, setCart] = useState<Cart | null>(null)
-    const isUpdatingRef = useRef(false)
-    const hasFetchedInitialCartRef = useRef(false)
-
-    const fetchCart = useCallback(async () => {
-        if (isUpdatingRef.current) return
-
-        try {
-            const { data, error } = await supabase
-                .from("carts")
-                .select(
-                    `
-                    id, userId, purchasedAt, storeId, grandTotal,
-                    stores (code, name),
-                    cartReceipts (
-                        id, saleByUserId, totalQty, subTotal, code, 
-                        cartReceiptItems(
-                            id, qty,
-                            products (id, brand, color, size, sku, name, category, subCategory, normalPrice)
-                        )
-                    )
-                `
-                )
-                .eq("userId", userId)
-                .maybeSingle()
-
-            devLog(data)
-
-            if (error) throw error
-            if (!data) {
-                setCart(null)
-                return
-            }
-
-            setCart(cartSchema.parse(data))
-        } catch (err) {
-            toast.add({
-                title: "Gagal memuat data keranjang",
-                type: "error",
-            })
-            devError(err)
-        } finally {
-            isUpdatingRef.current = false
-        }
-    }, [isUpdatingRef])
-
-    // useEffect(() => {
-    //     if (hasFetchedInitialCartRef.current) return
-    //     fetchCart()
-    //     hasFetchedInitialCartRef.current = true
-    // }, [fetchCart])
-
-    const updateCart = useCallback(
-        async (patch: Cartpatch) => {
-            if (cart?.id == null || isUpdatingRef.current) return
-            if (Object.keys(patch).length === 0) return
-
-            try {
-                isUpdatingRef.current = true
-
-                const payload = {
-                    ...patch,
-                    ...(patch.purchasedAt instanceof Date && {
-                        purchasedAt: format(patch.purchasedAt, "yyyy-MM-dd"),
-                    }),
-                    updatedAt: new Date().toISOString(),
-                }
-
-                const { data, error } = await supabase
-                    .from("carts")
-                    .update(payload)
-                    .eq("id", cart.id)
-                    .select()
-                    .single()
-
-                if (error) throw error
-
-                const result = cartBaseSchema.parse(data)
-                setCart((prev) =>
-                    prev
-                        ? {
-                              ...prev,
-                              ...(patch.storeId !== undefined && {
-                                  storeId: result.storeId,
-                              }),
-                              ...(patch.purchasedAt !== undefined && {
-                                  purchasedAt: result.purchasedAt,
-                              }),
-                          }
-                        : prev
-                )
-            } catch (err) {
-                toast.add({
-                    title: "Gagal memperbarui keranjang",
-                    type: "error",
-                })
-                devError(err)
-            } finally {
-                isUpdatingRef.current = false
-            }
+    const [receipts, setReceipts] = useState<CartReceipts[]>([
+        {
+            no: 1,
+            saleByUser: {
+                value: 1,
+                label: "Muhamad Andris",
+            },
+            CartItems: [],
+            totalQty: 0,
+            subTotal: 0,
         },
-        [cart?.id, cart?.storeId, cart?.purchasedAt]
+    ])
+
+    const calculateReceipt = (items: CartReceipts["CartItems"]) => ({
+        totalQty: items.reduce((total, item) => total + item.qty, 0),
+
+        subTotal: items.reduce(
+            (total, item) => total + item.product.normalPrice * item.qty,
+            0
+        ),
+    })
+
+    const [currentReceiptNo, setCurrentReceiptNo] = useState<number>(
+        receipts[0].no
+    )
+
+    const currentReceipt =
+        receipts.find((r) => r.no === currentReceiptNo) || receipts[0]
+
+    const updateStoreSelected = useCallback(
+        (newStoreSelected: CartData["storeSelected"]) => {
+            console.log("update store selected")
+            setData((prevData) => ({
+                ...prevData,
+                storeSelected: newStoreSelected,
+            }))
+        },
+        []
+    )
+
+    const updateSaleByUser = useCallback(
+        (
+            receiptNo: number,
+            newSaleByUser: { value: number; label: string }
+        ) => {
+            setReceipts((prev) =>
+                prev.map((receipt) =>
+                    receipt.no === receiptNo
+                        ? {
+                              ...receipt,
+                              saleByUser: newSaleByUser,
+                          }
+                        : receipt
+                )
+            )
+        },
+        []
     )
 
     const updatePurchasedAt = useCallback(
-        (date: Date | null) => {
-            const current = cart?.purchasedAt ?? null
-
-            if (current === null && date === null) return
-            if (current !== null && date !== null && isSameDay(current, date))
-                return
-
-            return updateCart({ purchasedAt: date })
+        (newPurchasedAt: CartData["purchasedAt"]) => {
+            console.log("update purchased at")
+            setData((prevData) => ({
+                ...prevData,
+                purchasedAt: newPurchasedAt,
+            }))
         },
-        [updateCart, cart?.purchasedAt]
+        []
     )
 
-    const updateStoreSelected = useCallback(
-        (storeSelected: number | null) => {
-            const current = cart?.storeId
-            if (current === storeSelected) return
+    const addCartReceipt = useCallback(() => {
+        const newReceiptNo = Math.max(0, ...receipts.map((r) => r.no)) + 1
 
-            updateCart({ storeId: storeSelected })
+        setReceipts((prev) => [
+            ...prev,
+            {
+                no: newReceiptNo,
+                saleByUser: {
+                    label: "Muhamad Andris",
+                    value: 1,
+                },
+                CartItems: [],
+                totalQty: 0,
+                subTotal: 0,
+            },
+        ])
+
+        setCurrentReceiptNo(newReceiptNo)
+    }, [receipts])
+
+    const addCartItem = useCallback(
+        (newItem: Product) => {
+            setReceipts((prev) =>
+                prev.map((receipt) => {
+                    if (receipt.no !== currentReceiptNo) return receipt
+
+                    const existsItem = receipt.CartItems.find(
+                        (item) => item.product.id === newItem.id
+                    )
+
+                    const updatedCartItems = existsItem
+                        ? receipt.CartItems.map((item) =>
+                              item.product.id === newItem.id
+                                  ? {
+                                        ...item,
+                                        qty: item.qty + 1,
+                                    }
+                                  : item
+                          )
+                        : [
+                              ...receipt.CartItems,
+                              {
+                                  qty: 1,
+                                  product: newItem,
+                              },
+                          ]
+                    return {
+                        ...receipt,
+                        CartItems: updatedCartItems,
+                        ...calculateReceipt(updatedCartItems),
+                    }
+                })
+            )
         },
-        [updateCart, cart?.storeId]
+        [currentReceiptNo]
     )
 
-    const orderCart: OrderCart = {
-        data: cart,
-        refetch: fetchCart,
-        update: updateCart,
-        updateStoreSelected,
-        updatePurchasedAt,
+    const addQty = useCallback(
+        (itemId: number) => {
+            setReceipts((prev) =>
+                prev.map((receipt) => {
+                    if (receipt.no !== currentReceiptNo) return receipt
+
+                    const updatedCartItem = receipt.CartItems.map((item) =>
+                        item.product.id === itemId
+                            ? { ...item, qty: item.qty + 1 }
+                            : item
+                    )
+
+                    return {
+                        ...receipt,
+                        CartItems: updatedCartItem,
+                        ...calculateReceipt(updatedCartItem),
+                    }
+                })
+            )
+        },
+        [currentReceiptNo]
+    )
+
+    const reduceQty = useCallback(
+        (itemId: number) => {
+            setReceipts((prev) =>
+                prev.map((receipt) => {
+                    if (receipt.no !== currentReceiptNo) return receipt
+
+                    const updatedCartItem = receipt.CartItems.map((item) =>
+                        item.product.id === itemId
+                            ? { ...item, qty: item.qty - 1 }
+                            : item
+                    ).filter((item) => item.qty > 0)
+
+                    return {
+                        ...receipt,
+                        CartItems: updatedCartItem,
+                        ...calculateReceipt(updatedCartItem),
+                    }
+                })
+            )
+        },
+        [currentReceiptNo]
+    )
+
+    return {
+        cart: {
+            data,
+            updateStoreSelected,
+            updatePurchasedAt,
+            updateSaleByUser,
+            addCartReceipt,
+            addCartItem,
+            currentReceipt,
+            setCurrentReceiptNo,
+            addQty,
+            reduceQty,
+            receipts,
+        },
     }
-
-    return { cart: orderCart }
 }
+
+export default useOrderCart
+
+export type UseOrderCartReturn = ReturnType<typeof useOrderCart>

@@ -1,11 +1,25 @@
-import { Cart } from "@/schemas/cart.schema"
+import { Product } from "@/schemas/product.schema"
 
-export interface OrderCart {
-    data: Cart | null
-    refetch: () => Promise<void>
-    update: (
-        patch: Partial<Pick<Cart, "storeId" | "purchasedAt">>
-    ) => Promise<void> | undefined
-    updateStoreSelected: (storeSelected: number | null) => void
-    updatePurchasedAt: (date: Date | null) => Promise<void> | undefined
+type items = {
+    value: number
+    label: string
+}
+
+export type CartItem = {
+    product: Product
+    qty: number
+}
+
+export type CartReceipts = {
+    no: number
+    saleByUser: items
+    CartItems: CartItem[]
+    totalQty: number
+    subTotal: number
+}
+
+export type CartData = {
+    userId: number
+    storeSelected: items
+    purchasedAt: Date
 }

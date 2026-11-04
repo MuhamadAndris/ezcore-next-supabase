@@ -1,51 +1,20 @@
 import { IconPlus, IconCloudUpload } from "@tabler/icons-react"
 import { ButtonGroup } from "../ui/button-group"
 import { Field, FieldLabel } from "../ui/field"
-import CartItem from "./cart-item"
 import { Button } from "../ui/button"
 import Image from "next/image"
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "../ui/select"
-import { memo, useEffect, useState } from "react"
-import { CartReceipt } from "@/schemas/cart.schema"
+import { memo } from "react"
 import { devLog, formatNumber } from "@/lib/utils"
-import useStoreUsers from "@/hooks/user/use-user"
+import SelectUser from "./select-user"
+import CartItem from "./cart-item"
+import { UseOrderCartReturn } from "@/hooks/order/use-order-cart"
 
 interface CartReceipsProps {
-    receipts: CartReceipt[] | null
-    storeId: number | null
+    cart: UseOrderCartReturn["cart"]
 }
 
-const CartReceipts = memo(({ receipts, storeId }: CartReceipsProps) => {
+const CartReceipts = memo(({ cart }: CartReceipsProps) => {
     devLog("render receipts")
-
-    const [currentReceipt, setCurrentReceipt] = useState<CartReceipt | null>(
-        receipts?.[0] ?? null
-    )
-
-    const { users } = useStoreUsers(storeId ?? undefined)
-
-    useEffect(() => {
-        if (!receipts?.length) {
-            setCurrentReceipt(null)
-            return
-        }
-
-        setCurrentReceipt((prev) => {
-            if (prev && receipts.some((item) => item.id === prev.id)) {
-                return prev
-            }
-
-            return receipts[0]
-        })
-    }, [receipts])
-
-    if (!receipts || !storeId || !currentReceipt) return null
 
     return (
         <>
@@ -54,56 +23,47 @@ const CartReceipts = memo(({ receipts, storeId }: CartReceipsProps) => {
                     <span>Bon aktif</span>
                 </FieldLabel>
                 <ButtonGroup className="w-full overflow-x-auto">
-                    {receipts.map((r) => (
+                    {cart.receipts.map((r) => (
                         <Button
-                            key={r.id}
+                            key={r.no}
                             variant={
-                                currentReceipt.code === r.code
+                                cart.currentReceipt.no === r.no
                                     ? "default"
                                     : "outline"
                             }
                             onClick={() =>
-                                currentReceipt !== r && setCurrentReceipt(r)
+                                cart.currentReceipt.no !== r.no &&
+                                cart.setCurrentReceiptNo(r.no)
                             }
                         >
-                            {r.code}
+                            {r.no}
                         </Button>
                     ))}
 
-                    <Button variant="outline">
+                    <Button variant="outline" onClick={cart.addCartReceipt}>
                         <IconPlus />
                     </Button>
                 </ButtonGroup>
             </Field>
 
             {/* Sale by user */}
-            <Field>
-                <FieldLabel>Penjual</FieldLabel>
-                <Select items={users}>
-                    <SelectTrigger>
-                        <SelectValue placeholder="Pilih penjual" />
-                    </SelectTrigger>
-
-                    <SelectContent>
-                        {users.map((u) => (
-                            <SelectItem
-                                key={u.value}
-                                value={currentReceipt.saleByUserId}
-                            >
-                                {u.label}
-                            </SelectItem>
-                        ))}
-                    </SelectContent>
-                </Select>
-            </Field>
+            <SelectUser
+                updateUserSelected={cart.updateSaleByUser}
+                userSelected={cart.currentReceipt.saleByUser}
+                receiptNo={cart.currentReceipt.no}
+            />
 
             {/* Items */}
             <Field>
                 <FieldLabel>Daftar produk</FieldLabel>
-                {currentReceipt.cartReceiptItems &&
-                currentReceipt.cartReceiptItems.length > 0 ? (
-                    currentReceipt.cartReceiptItems.map((i) => (
-                        <CartItem key={i.id} item={i} />
+                {cart.currentReceipt.CartItems.length > 0 ? (
+                    cart.currentReceipt.CartItems.map((i) => (
+                        <CartItem
+                            onAddQty={cart.addQty}
+                            onReduceQty={cart.reduceQty}
+                            key={i.product.id}
+                            item={i}
+                        />
                     ))
                 ) : (
                     <p className="text-center text-muted-foreground">
@@ -115,8 +75,8 @@ const CartReceipts = memo(({ receipts, storeId }: CartReceipsProps) => {
                 <p className="flex justify-between text-muted-foreground">
                     <span>Subtotal</span>
                     <span>
-                        {formatNumber(currentReceipt.subTotal)}/
-                        {currentReceipt.totalQty} pcs
+                        {formatNumber(cart.currentReceipt.subTotal)}/
+                        {cart.currentReceipt.totalQty} pcs
                     </span>
                 </p>
             </Field>

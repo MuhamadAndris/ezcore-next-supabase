@@ -4,7 +4,7 @@ import CartContent from "@/components/orders/cart"
 import NavbarNewOrder from "@/components/orders/navbar-new-order"
 import ProductGrid from "@/components/orders/product-grid"
 import useProducts from "@/hooks/product/use-products"
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useState } from "react"
 import {
     ResizableHandle,
     ResizablePanel,
@@ -34,19 +34,11 @@ export default function NewOrderPage() {
         return () => {
             replaceProducts([])
         }
-    }, [replaceProducts])
+    }, [])
 
     // State Cart
     const [showCart, setShowCart] = useState(false)
     const { cart } = useOrderCart()
-
-    const hasFetched = useRef(false)
-
-    useEffect(() => {
-        if (hasFetched.current) return
-        hasFetched.current = true
-        cart.refetch()
-    }, [cart.refetch])
 
     return (
         <ResizablePanelGroup className="flex w-full h-full min-h-0 bg-popover">
@@ -64,6 +56,9 @@ export default function NewOrderPage() {
                         <ProductGrid
                             isLoading={isLoading}
                             products={products}
+                            onAddToCart={(product) => {
+                                cart.addCartItem(product)
+                            }}
                         />
                     </div>
                 </div>
@@ -79,7 +74,7 @@ export default function NewOrderPage() {
                         minSize="320px"
                         defaultSize="320px"
                     >
-                        <CartContent cart={cart} closeCart={setShowCart} />
+                        <CartContent closeCart={setShowCart} cart={cart} />
                     </ResizablePanel>
                 </>
             )}

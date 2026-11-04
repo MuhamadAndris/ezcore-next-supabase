@@ -16,9 +16,10 @@ import { IconShoppingCartPlus } from "@tabler/icons-react"
 
 interface ProductCardProps {
     product: Product
+    onAddToCart: (product: Product) => void
 }
 
-const ProductCard = memo(({ product }: ProductCardProps) => {
+const ProductCard = memo(({ product, onAddToCart }: ProductCardProps) => {
     return (
         <Card>
             <div className="relative w-full">
@@ -40,7 +41,11 @@ const ProductCard = memo(({ product }: ProductCardProps) => {
                 <CardTitle>Rp {formatNumber(product.normalPrice)}</CardTitle>
             </CardHeader>
             <CardFooter>
-                <Button className="w-full cursor-pointer" variant="default">
+                <Button
+                    className="w-full cursor-pointer"
+                    variant="default"
+                    onClick={() => onAddToCart(product)}
+                >
                     <IconShoppingCartPlus />
                     Pilih
                 </Button>

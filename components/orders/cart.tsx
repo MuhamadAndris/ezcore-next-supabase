@@ -2,32 +2,21 @@ import { memo, useState } from "react"
 import { Button } from "../ui/button"
 import { Card, CardAction, CardFooter, CardHeader, CardTitle } from "../ui/card"
 import { Field, FieldGroup, FieldLabel } from "../ui/field"
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "../ui/select"
-import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover"
-import { format } from "date-fns"
-import { IconChevronDown, IconX } from "@tabler/icons-react"
-import { Calendar } from "../ui/calendar"
-import { id as idLocale } from "date-fns/locale"
+import { IconX } from "@tabler/icons-react"
 import { cn, devLog } from "@/lib/utils"
+import SelectStore from "./select-store"
+import SelectDate from "./select-date"
 import CartReceipts from "./cart-receipts"
-import useUserStores from "@/hooks/store/use-store"
-import { OrderCart } from "@/types/order-cart"
+import { UseOrderCartReturn } from "@/hooks/order/use-order-cart"
 
 interface CartProps {
     closeCart: (v: boolean) => void
-    cart: OrderCart
+    cart: UseOrderCartReturn["cart"]
 }
 
 const CartContent = memo(({ closeCart, cart }: CartProps) => {
     const [showCalender, setShowCalender] = useState(false)
-    const { stores } = useUserStores(cart.data?.userId)
-    const currentStore = stores.find((s) => s.value === cart.data?.storeId)
+
     devLog("render cart")
 
     return (
@@ -56,87 +45,21 @@ const CartContent = memo(({ closeCart, cart }: CartProps) => {
 
                 <FieldGroup className="px-3">
                     {/* Select Store */}
-                    <Field>
-                        <FieldLabel htmlFor="store">Toko</FieldLabel>
-                        <Select
-                            items={stores}
-                            value={cart.data?.storeId ?? null}
-                            // onValueChange={(v) => cart.updatePurchasedAt(v)}
-                        >
-                            <SelectTrigger id="store">
-                                <SelectValue placeholder="Pilih toko" />
-                            </SelectTrigger>
-
-                            <SelectContent>
-                                {stores.map((store) => (
-                                    <SelectItem
-                                        key={store.value}
-                                        value={store.value}
-                                    >
-                                        {store.label}
-                                    </SelectItem>
-                                ))}
-                            </SelectContent>
-                        </Select>
-                    </Field>
+                    <SelectStore
+                        storeSelected={cart.data.storeSelected}
+                        updateStoreSelected={cart.updateStoreSelected}
+                    />
 
                     {/* Select Date */}
-                    <Field>
-                        <FieldLabel htmlFor="date">Tanggal</FieldLabel>
-                        <Popover
-                            open={showCalender}
-                            onOpenChange={setShowCalender}
-                        >
-                            <PopoverTrigger
-                                id="date"
-                                render={
-                                    <Button
-                                        variant={"outline"}
-                                        data-empty={!cart.data?.purchasedAt}
-                                        className="w-full justify-between text-left font-normal data-[empty=true]:text-muted-foreground"
-                                    >
-                                        {cart.data?.purchasedAt ? (
-                                            format(
-                                                cart.data?.purchasedAt,
-                                                "PPP",
-                                                {
-                                                    locale: idLocale,
-                                                }
-                                            )
-                                        ) : (
-                                            <span>Pilih tanggal</span>
-                                        )}
-                                        <IconChevronDown data-icon="inline-end" />
-                                    </Button>
-                                }
-                            />
-                            <PopoverContent
-                                className="w-auto p-0"
-                                align="start"
-                            >
-                                <Calendar
-                                    mode="single"
-                                    selected={
-                                        cart.data?.purchasedAt ?? undefined
-                                    }
-                                    onSelect={(date) => {
-                                        cart.updatePurchasedAt(date ?? null)
-                                        setShowCalender(false)
-                                    }}
-                                    defaultMonth={
-                                        cart.data?.purchasedAt ?? undefined
-                                    }
-                                    locale={idLocale}
-                                />
-                            </PopoverContent>
-                        </Popover>
-                    </Field>
+                    <SelectDate
+                        setShowCalender={setShowCalender}
+                        showCalender={showCalender}
+                        purchasedAt={cart.data.purchasedAt}
+                        updatePurchasedAt={cart.updatePurchasedAt}
+                    />
 
                     {/* Receipt */}
-                    <CartReceipts
-                        storeId={cart.data?.storeId ?? null}
-                        receipts={cart.data && cart.data.cartReceipts}
-                    />
+                    <CartReceipts cart={cart} />
 
                     {/* Sub-total */}
                     <Field>
@@ -169,5 +92,7 @@ const CartContent = memo(({ closeCart, cart }: CartProps) => {
         </Card>
     )
 })
+
+CartContent.displayName = "CartContent"
 
 export default CartContent

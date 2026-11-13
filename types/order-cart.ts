@@ -16,10 +16,13 @@ export type CartReceipts = {
     CartItems: CartItem[]
     totalQty: number
     subTotal: number
+    paymentProof: File | null
 }
 
 export type CartData = {
     userId: number
     storeSelected: items
     purchasedAt: Date
+    grandTotal: number
+    totalQty: number
 }

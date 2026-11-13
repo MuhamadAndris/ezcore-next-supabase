@@ -1,8 +1,9 @@
+import imageCompression from "browser-image-compression"
 import { clsx, type ClassValue } from "clsx"
 import { format } from "date-fns"
 import { id } from "date-fns/locale"
 import { twMerge } from "tailwind-merge"
-import z from "zod"
+import z, { maxSize } from "zod"
 
 export function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs))
@@ -43,4 +44,16 @@ export function devError(...args: unknown[]) {
             console.error(arg)
         }
     }
+}
+
+export async function compressImage(file: File) {
+    const options = {
+        maxSizeMB: 0.5,
+        maxWidthOrHeight: 1600,
+        useWebWorker: true,
+    }
+
+    const compressedFile = await imageCompression(file, options)
+
+    return compressedFile
 }

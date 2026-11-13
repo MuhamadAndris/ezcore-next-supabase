@@ -72,7 +72,7 @@ export default function NewOrderPage() {
                     <ResizablePanel
                         className="h-full min-h-0 overflow-auto"
                         minSize="320px"
-                        defaultSize="320px"
+                        defaultSize="400px"
                     >
                         <CartContent closeCart={setShowCart} cart={cart} />
                     </ResizablePanel>

@@ -1,13 +1,24 @@
-import { memo, useState } from "react"
+import { ChangeEvent, memo, useRef, useState } from "react"
 import { Button } from "../ui/button"
 import { Card, CardAction, CardFooter, CardHeader, CardTitle } from "../ui/card"
 import { Field, FieldGroup, FieldLabel } from "../ui/field"
-import { IconX } from "@tabler/icons-react"
-import { cn, devLog } from "@/lib/utils"
+import { IconCameraRotate, IconTrash, IconX } from "@tabler/icons-react"
+import { cn, compressImage, devLog, formatNumber } from "@/lib/utils"
 import SelectStore from "./select-store"
 import SelectDate from "./select-date"
 import CartReceipts from "./cart-receipts"
 import { UseOrderCartReturn } from "@/hooks/order/use-order-cart"
+import Image from "next/image"
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+} from "../ui/dialog"
+import { toast } from "../ui/toast"
+import { Input } from "../ui/input"
 
 interface CartProps {
     closeCart: (v: boolean) => void
@@ -15,9 +26,38 @@ interface CartProps {
 }
 
 const CartContent = memo(({ closeCart, cart }: CartProps) => {
-    const [showCalender, setShowCalender] = useState(false)
-
     devLog("render cart")
+
+    const [showCalender, setShowCalender] = useState(false)
+    const [openDialog, setOpenDialog] = useState(false)
+
+    const proof = cart.currentReceipt.paymentProof
+    const imageUrl = proof ? URL.createObjectURL(proof) : ""
+    const inputRef = useRef<HTMLInputElement>(null)
+
+    const handleAddPaymentProof = async (e: ChangeEvent<HTMLInputElement>) => {
+        const selectedFile = e.target.files?.[0]
+
+        if (!selectedFile) return
+
+        const compressed = await compressImage(selectedFile)
+
+        // max 2 mb
+        if (compressed.size > 2 * 1024 * 1024) {
+            toast.add({
+                type: "error",
+                title: "Ukuran gambar maximal 2 MB",
+            })
+            return
+        }
+
+        cart.addPaymentProof(compressed)
+    }
+
+    const handleDeletePaymentProof = () => {
+        cart.addPaymentProof(null)
+        setOpenDialog(false)
+    }
 
     return (
         <Card
@@ -59,36 +99,96 @@ const CartContent = memo(({ closeCart, cart }: CartProps) => {
                     />
 
                     {/* Receipt */}
-                    <CartReceipts cart={cart} />
+                    <CartReceipts
+                        cart={cart}
+                        onPreview={setOpenDialog}
+                        onAddPaymentProof={handleAddPaymentProof}
+                        proof={proof}
+                        proofUrl={imageUrl}
+                    />
 
                     {/* Sub-total */}
                     <Field>
                         <FieldLabel>Detail</FieldLabel>
-                        <p className="text-muted-foreground flex justify-between">
-                            <span>107655</span>
-                            <span>100.000</span>
-                        </p>
-                        <p className="text-muted-foreground flex justify-between">
-                            <span>107655</span>
-                            <span>100.000</span>
-                        </p>
-                        <p className="text-muted-foreground flex justify-between">
-                            <span>107655</span>
-                            <span>100.000</span>
-                        </p>
+                        {cart.receipts.map((receipt) => (
+                            <p
+                                key={receipt.no}
+                                className="text-muted-foreground flex justify-between"
+                            >
+                                <span>{receipt.no}</span>
+                                <span>
+                                    {formatNumber(receipt.subTotal)}/
+                                    {receipt.totalQty}
+                                </span>
+                            </p>
+                        ))}
                     </Field>
                 </FieldGroup>
             </div>
 
             <CardFooter className="shrink-0 flex justify-between gap-3">
-                <p className="font-bold text-lg">500.000</p>
+                <p className="font-bold text-lg">
+                    {formatNumber(cart.data.grandTotal)}/
+                    {formatNumber(cart.data.totalQty)}
+                </p>
                 <div className="space-x-2">
                     <Button variant="ghost" onClick={() => closeCart(false)}>
                         Batal
                     </Button>
-                    <Button>Simpan</Button>
+                    <Button
+                        onClick={cart.saveOrder}
+                        disabled={!cart.isHaveItems}
+                    >
+                        Simpan
+                    </Button>
                 </div>
             </CardFooter>
+
+            <Dialog open={openDialog} onOpenChange={setOpenDialog}>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>Bukti Pembayaran</DialogTitle>
+                        <DialogDescription>
+                            Bon: {cart.currentReceipt.no}
+                        </DialogDescription>
+                    </DialogHeader>
+                    {proof && (
+                        <div className="relative aspect-square w-full m-auto">
+                            <Image
+                                src={imageUrl}
+                                alt="dummy Image"
+                                className="object-contain"
+                                fill
+                                sizes="352px"
+                            />
+                        </div>
+                    )}
+                    <DialogFooter>
+                        <Button
+                            variant="secondary"
+                            onClick={handleDeletePaymentProof}
+                        >
+                            <IconTrash />
+                            hapus
+                        </Button>
+                        <Button
+                            variant="default"
+                            onClick={() => inputRef.current?.click()}
+                        >
+                            <Input
+                                ref={inputRef}
+                                onChange={(e) => handleAddPaymentProof(e)}
+                                accept="image/png, image/jpg, image/webp"
+                                type="file"
+                                className="hidden"
+                                capture="environment"
+                            />
+                            <IconCameraRotate />
+                            Upload Ulang
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
         </Card>
     )
 })

@@ -39,7 +39,15 @@ import {
     ChartTooltipContent,
     type ChartConfig,
 } from "@/components/ui/chart"
-import { BarChart, Bar, CartesianGrid, XAxis } from "recharts"
+import {
+    BarChart,
+    Bar,
+    CartesianGrid,
+    XAxis,
+    PieChart,
+    Pie,
+    Label,
+} from "recharts"
 import {
     Table,
     TableBody,
@@ -60,7 +68,40 @@ const items = [
     },
 ]
 
+const chartData = [
+    { brand: "LOJEL", sales: 45000000, fill: "var(--color-lojel)" },
+    { brand: "American Tourister", sales: 30000000, fill: "var(--color-at)" },
+    { brand: "Others", sales: 15000000, fill: "var(--color-others)" },
+]
+
 const chartConfig = {
+    sales: {
+        label: "Penjualan",
+    },
+    lojel: {
+        label: "LOJEL",
+        color: "var(--chart-1)",
+    },
+    at: {
+        label: "American Tourister",
+        color: "var(--chart-2)",
+    },
+    others: {
+        label: "Others",
+        color: "var(--chart-3)",
+    },
+} satisfies ChartConfig
+
+const salesYearly = [
+    { month: "January", 2026: 186, 2025: 80 },
+    { month: "February", 2026: 305, 2025: 200 },
+    { month: "March", 2026: 237, 2025: 120 },
+    { month: "April", 2026: 73, 2025: 190 },
+    { month: "May", 2026: 209, 2025: 130 },
+    { month: "June", 2026: 214, 2025: 140 },
+]
+
+const salesLastYearConfig = {
     2026: {
         label: "2026",
         color: "#2563eb",
@@ -71,18 +112,9 @@ const chartConfig = {
     },
 } satisfies ChartConfig
 
-const chartData = [
-    { month: "January", 2026: 186, 2025: 80 },
-    { month: "February", 2026: 305, 2025: 200 },
-    { month: "March", 2026: 237, 2025: 120 },
-    { month: "April", 2026: 73, 2025: 190 },
-    { month: "May", 2026: 209, 2025: 130 },
-    { month: "June", 2026: 214, 2025: 140 },
-]
-
 export default function OrderPage() {
     return (
-        <div className="w-full lg:container mx-auto p-2 md:p-4 space-y-5">
+        <div className="w-full lg:container mx-auto p-2 md:p-4 space-y-4">
             <div className="flex gap-6 justify-between items-center p-2 ">
                 <div>
                     <h1
@@ -103,129 +135,214 @@ export default function OrderPage() {
                 </Button>
             </div>
 
-            <Card className="w-full">
-                <CardHeader>
-                    <CardTitle>TOTAL OMSET (MTD)</CardTitle>
-                    <CardAction className="bg-primary/10 text-primary p-2 rounded-xl">
-                        <IconWallet />
-                    </CardAction>
-                </CardHeader>
-                <CardContent className="flex-1">
-                    <Progress value={80}>
-                        <ProgressLabel>
-                            <h3 className="font-semibold text-2xl">
-                                Rp. 900.000
-                            </h3>
-                        </ProgressLabel>
-                        <ProgressValue />
-                    </Progress>
-                    <CardDescription className="text-green-700 flex gap-1 mt-2">
-                        <IconTrendingUp size={18} />
-                        <p>+12.5% vs bulan lalu</p>
-                    </CardDescription>
-                </CardContent>
-                <CardFooter className="grid grid-cols-4">
-                    <span>
-                        <p className="text-muted-foreground">ATV</p>
-                        <p className="text-md font-semibold">18.5 jt</p>
-                    </span>
-                    <span>
-                        <p className="text-muted-foreground">UPT</p>
-                        <p className="text-md font-semibold">2.4 unit</p>
-                    </span>
-                    <span>
-                        <p className="text-muted-foreground">CR</p>
-                        <p className="text-md font-semibold">20%</p>
-                    </span>
-                    <span>
-                        <p className="text-muted-foreground">ESTIMASI</p>
-                        <p className="text-md font-semibold">130 jt</p>
-                    </span>
-                </CardFooter>
-            </Card>
-
-            <Card className="w-full">
-                <CardHeader>
-                    <CardTitle>Performa Penjual</CardTitle>
-                </CardHeader>
-                <CardContent className="grid grid-cols-2 gap-5">
-                    <div className="flex gap-2">
-                        <div className="border relative aspect-square w-10 rounded-sm">
-                            <IconUser className="w-full h-full" />
-                        </div>
-                        <Progress value={20} className="flex-1">
-                            <ProgressLabel>Andris</ProgressLabel>
-                            <span className="ml-auto text-xs text-muted-foreground tabular-nums">
-                                Rp 410jt / 500jt
-                            </span>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {/* MTD */}
+                <Card className="w-full">
+                    <CardHeader>
+                        <CardTitle>TOTAL OMSET (MTD)</CardTitle>
+                        <CardAction className="bg-primary/10 text-primary p-2 rounded-xl">
+                            <IconWallet />
+                        </CardAction>
+                    </CardHeader>
+                    <CardContent className="flex-1">
+                        <Progress value={80}>
+                            <ProgressLabel>
+                                <h3 className="font-semibold text-2xl">
+                                    Rp. 900.000
+                                </h3>
+                            </ProgressLabel>
+                            <ProgressValue />
                         </Progress>
-                    </div>
-                    <div className="flex gap-2">
-                        <div className="border relative aspect-square w-10 rounded-sm">
-                            <IconUser className="w-full h-full" />
-                        </div>
-                        <Progress value={20} className="flex-1">
-                            <ProgressLabel>Andris</ProgressLabel>
-                            <span className="ml-auto text-xs text-muted-foreground tabular-nums">
-                                Rp 410jt / 500jt
-                            </span>
-                        </Progress>
-                    </div>
-                </CardContent>
-            </Card>
+                        <CardDescription className="text-green-700 flex gap-1 mt-2">
+                            <IconTrendingUp size={18} />
+                            <p>+12.5% vs bulan lalu</p>
+                        </CardDescription>
+                    </CardContent>
+                    <CardFooter className="grid grid-cols-4">
+                        <span>
+                            <p className="text-muted-foreground">ATV</p>
+                            <p className="text-md font-semibold">18.5 jt</p>
+                        </span>
+                        <span>
+                            <p className="text-muted-foreground">UPT</p>
+                            <p className="text-md font-semibold">2.4 unit</p>
+                        </span>
+                        <span>
+                            <p className="text-muted-foreground">CR</p>
+                            <p className="text-md font-semibold">20%</p>
+                        </span>
+                        <span>
+                            <p className="text-muted-foreground">ESTIMASI</p>
+                            <p className="text-md font-semibold">130 jt</p>
+                        </span>
+                    </CardFooter>
+                </Card>
 
-            <Card>
-                <CardHeader>
-                    <CardTitle>Ringkasan Penjualan Bulanan</CardTitle>
-                    <CardAction>
-                        <Select items={items} defaultValue={2026}>
-                            <SelectTrigger>
-                                <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectGroup>
-                                    {items.map((item) => (
-                                        <SelectItem
-                                            key={item.value}
-                                            value={item.value}
-                                        >
-                                            {item.label}
-                                        </SelectItem>
-                                    ))}
-                                </SelectGroup>
-                            </SelectContent>
-                        </Select>
-                    </CardAction>
-                </CardHeader>
-                <CardContent>
-                    <ChartContainer
-                        config={chartConfig}
-                        className="min-h-50 w-full"
-                    >
-                        <BarChart accessibilityLayer data={chartData}>
-                            <CartesianGrid vertical={false} />
-                            <XAxis
-                                dataKey="month"
-                                tickLine={false}
-                                tickMargin={10}
-                                axisLine={false}
-                                tickFormatter={(value) => value.slice(0, 3)}
-                            />
-                            <Bar
-                                dataKey="2026"
-                                fill="var(--color-2025)"
-                                radius={4}
-                            />
-                            <Bar
-                                dataKey="2025"
-                                fill="var(--color-2026)"
-                                radius={4}
-                            />
-                            <ChartTooltip content={<ChartTooltipContent />} />
-                        </BarChart>
-                    </ChartContainer>
-                </CardContent>
-            </Card>
+                {/* Sales per SA */}
+                <Card className="w-full">
+                    <CardHeader>
+                        <CardTitle>Performa Penjual</CardTitle>
+                    </CardHeader>
+                    <CardContent className="grid grid-cols-2 md:grid-cols-1 gap-4">
+                        <div className="flex gap-2">
+                            <div className="border relative aspect-square w-10 rounded-sm">
+                                <IconUser className="w-full h-full" />
+                            </div>
+                            <Progress value={20} className="flex-1">
+                                <ProgressLabel>Andris</ProgressLabel>
+                                <span className="ml-auto text-xs text-muted-foreground tabular-nums">
+                                    Rp 410jt / 500jt
+                                </span>
+                            </Progress>
+                        </div>
+                        <div className="flex gap-2">
+                            <div className="border relative aspect-square w-10 rounded-sm">
+                                <IconUser className="w-full h-full" />
+                            </div>
+                            <Progress value={20} className="flex-1">
+                                <ProgressLabel>Andris</ProgressLabel>
+                                <span className="ml-auto text-xs text-muted-foreground tabular-nums">
+                                    Rp 410jt / 500jt
+                                </span>
+                            </Progress>
+                        </div>
+                    </CardContent>
+                </Card>
+            </div>
+
+            {/* Chart */}
+            <div className="grid grid-cols-1 md:grid-cols-[2fr_1fr] gap-4">
+                {/* Sales Yearly */}
+                <Card>
+                    <CardHeader>
+                        <CardTitle>Ringkasan Penjualan Bulanan</CardTitle>
+                        <CardAction>
+                            <Select items={items} defaultValue={2026}>
+                                <SelectTrigger>
+                                    <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectGroup>
+                                        {items.map((item) => (
+                                            <SelectItem
+                                                key={item.value}
+                                                value={item.value}
+                                            >
+                                                {item.label}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectGroup>
+                                </SelectContent>
+                            </Select>
+                        </CardAction>
+                    </CardHeader>
+                    <CardContent>
+                        <ChartContainer
+                            config={salesLastYearConfig}
+                            className="md:h-80 w-full"
+                        >
+                            <BarChart accessibilityLayer data={salesYearly}>
+                                <CartesianGrid vertical={false} />
+                                <XAxis
+                                    dataKey="month"
+                                    tickLine={false}
+                                    tickMargin={10}
+                                    axisLine={false}
+                                    tickFormatter={(value) => value.slice(0, 3)}
+                                />
+                                <Bar
+                                    dataKey="2026"
+                                    fill="var(--color-2025)"
+                                    radius={4}
+                                />
+                                <Bar
+                                    dataKey="2025"
+                                    fill="var(--color-2026)"
+                                    radius={4}
+                                />
+                                <ChartTooltip
+                                    content={<ChartTooltipContent />}
+                                />
+                            </BarChart>
+                        </ChartContainer>
+                    </CardContent>
+                </Card>
+
+                {/* Sales per category */}
+                <Card className="">
+                    <CardHeader>
+                        <CardTitle>Sales Per-Category</CardTitle>
+                    </CardHeader>
+                    <CardContent className="flex-1">
+                        <ChartContainer config={chartConfig}>
+                            <PieChart>
+                                <ChartTooltip
+                                    content={<ChartTooltipContent />}
+                                />
+                                <Pie
+                                    data={chartData}
+                                    dataKey="sales"
+                                    nameKey="brand"
+                                    innerRadius={45}
+                                    paddingAngle={1}
+                                    label={({ percent }) =>
+                                        `${((percent ?? 0) * 100).toFixed(1)}%`
+                                    }
+                                >
+                                    <Label
+                                        content={({ viewBox }) => {
+                                            if (
+                                                viewBox &&
+                                                "cx" in viewBox &&
+                                                "cy" in viewBox
+                                            ) {
+                                                return (
+                                                    <text
+                                                        x={viewBox.cx}
+                                                        y={viewBox.cy}
+                                                        textAnchor="middle"
+                                                        dominantBaseline="middle"
+                                                    >
+                                                        <tspan
+                                                            x={viewBox.cx}
+                                                            y={viewBox.cy}
+                                                            className="fill-foreground text-xl font-bold"
+                                                        >
+                                                            Rp90 Jt
+                                                        </tspan>
+                                                    </text>
+                                                )
+                                            }
+                                        }}
+                                    />
+                                </Pie>
+                            </PieChart>
+                        </ChartContainer>
+                    </CardContent>
+                    <CardFooter>
+                        <div className="w-full">
+                            <p className="flex justify-between">
+                                <span className="text-muted-foreground">
+                                    Travel
+                                </span>
+                                <span>Rp. 180jt</span>
+                            </p>
+                            <p className="flex justify-between">
+                                <span className="text-muted-foreground">
+                                    Travel
+                                </span>
+                                <span>Rp. 180jt</span>
+                            </p>
+                            <p className="flex justify-between">
+                                <span className="text-muted-foreground">
+                                    Travel
+                                </span>
+                                <span>Rp. 180jt</span>
+                            </p>
+                        </div>
+                    </CardFooter>
+                </Card>
+            </div>
 
             <Card>
                 <CardHeader>
@@ -233,11 +350,13 @@ export default function OrderPage() {
                 </CardHeader>
                 <CardContent>
                     <Table>
-                        <TableHeader className="border-b-3">
-                            <TableHead>#</TableHead>
-                            <TableHead>PRODUK</TableHead>
-                            <TableHead>TERJUAL</TableHead>
-                            <TableHead>OMSET</TableHead>
+                        <TableHeader>
+                            <TableRow className="border-b-3">
+                                <TableHead>#</TableHead>
+                                <TableHead>PRODUK</TableHead>
+                                <TableHead>TERJUAL</TableHead>
+                                <TableHead>OMSET</TableHead>
+                            </TableRow>
                         </TableHeader>
                         <TableBody>
                             <TableRow>

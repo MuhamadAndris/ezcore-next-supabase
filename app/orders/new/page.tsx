@@ -11,6 +11,7 @@ import {
     ResizablePanelGroup,
 } from "@/components/ui/resizable"
 import useOrderCart from "@/hooks/order/use-order-cart"
+import { useSidebar } from "@/components/ui/sidebar"
 
 export default function NewOrderPage() {
     const [isLoading, setIsLoading] = useState(true)

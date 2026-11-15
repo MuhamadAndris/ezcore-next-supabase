@@ -4,6 +4,9 @@ import "./globals.css"
 import { cn } from "@/lib/utils"
 import { ThemeProvider } from "next-themes"
 import { Toaster } from "@/components/ui/toast"
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
+import { TooltipProvider } from "@/components/ui/tooltip"
+import { AppSidebar } from "@/components/ui/app-sidebar"
 
 const hankenGrotesk = Hanken_Grotesk({
     subsets: ["latin"],
@@ -40,8 +43,14 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
                     enableSystem
                     disableTransitionOnChange
                 >
-                    {children}
-                    <Toaster />
+                    <SidebarProvider>
+                        <AppSidebar />
+                        {/* <main> */}
+                        <TooltipProvider>{children}</TooltipProvider>
+
+                        <Toaster />
+                        {/* </main> */}
+                    </SidebarProvider>
                 </ThemeProvider>
             </body>
         </html>

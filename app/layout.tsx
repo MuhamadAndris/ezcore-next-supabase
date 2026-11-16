@@ -7,6 +7,7 @@ import { Toaster } from "@/components/ui/toast"
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
 import { TooltipProvider } from "@/components/ui/tooltip"
 import { AppSidebar } from "@/components/ui/app-sidebar"
+import AppMobileSidebar from "@/components/ui/app-mobile-sidebar"
 
 const hankenGrotesk = Hanken_Grotesk({
     subsets: ["latin"],
@@ -45,6 +46,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
                 >
                     <SidebarProvider>
                         <AppSidebar />
+                        <AppMobileSidebar />
                         {/* <main> */}
                         <TooltipProvider>{children}</TooltipProvider>
 

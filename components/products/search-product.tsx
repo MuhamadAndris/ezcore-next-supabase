@@ -1,13 +1,13 @@
-import { IconSearch } from "@tabler/icons-react"
 import { memo, useEffect, useState } from "react"
 import { InputGroup, InputGroupAddon, InputGroupInput } from "../ui/input-group"
 import { devLog } from "@/lib/utils"
+import { IconSearch } from "@tabler/icons-react"
 
 interface SearchProductProps {
     searchProduct: (keyword: string) => Promise<void>
     setIsLoading: (v: boolean) => void
-    setShow: (v: boolean) => void
-    show: boolean
+    setShow?: (v: boolean) => void
+    show?: boolean
 }
 
 const DEBOUNCE_DELAY = 800
@@ -40,25 +40,33 @@ const SearchProduct = memo(
             setSearchValue(e.target.value)
         }
 
-        return (
-            <>
-                {show && (
-                    <InputGroup>
-                        <InputGroupInput
-                            placeholder="Cari SKU atau nama produk..."
-                            value={searchValue}
-                            onChange={handleSearch}
-                            type="search"
-                            autoFocus={true}
-                            onBlur={() => setShow(false)}
-                        />
+        const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+            const nextTarget = e.relatedTarget as HTMLElement | null
 
-                        <InputGroupAddon>
-                            <IconSearch />
-                        </InputGroupAddon>
-                    </InputGroup>
-                )}
-            </>
+            if (nextTarget?.closest("[data-search-trigger]")) {
+                return
+            }
+
+            setShow?.(false)
+        }
+
+        if (!show) return null
+
+        return (
+            <InputGroup>
+                <InputGroupInput
+                    placeholder="Cari SKU atau nama produk..."
+                    value={searchValue}
+                    onChange={handleSearch}
+                    type="search"
+                    autoFocus
+                    onBlur={handleBlur}
+                />
+
+                <InputGroupAddon>
+                    <IconSearch />
+                </InputGroupAddon>
+            </InputGroup>
         )
     }
 )

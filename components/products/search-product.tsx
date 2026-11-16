@@ -6,12 +6,14 @@ import { devLog } from "@/lib/utils"
 interface SearchProductProps {
     searchProduct: (keyword: string) => Promise<void>
     setIsLoading: (v: boolean) => void
+    setShow: (v: boolean) => void
+    show: boolean
 }
 
 const DEBOUNCE_DELAY = 800
 
 const SearchProduct = memo(
-    ({ searchProduct, setIsLoading }: SearchProductProps) => {
+    ({ searchProduct, setIsLoading, setShow, show }: SearchProductProps) => {
         devLog("render - Search product")
 
         const [searchValue, setSearchValue] = useState("")
@@ -39,18 +41,24 @@ const SearchProduct = memo(
         }
 
         return (
-            <InputGroup>
-                <InputGroupInput
-                    placeholder="Cari SKU atau nama produk..."
-                    value={searchValue}
-                    onChange={handleSearch}
-                    type="search"
-                />
+            <>
+                {show && (
+                    <InputGroup>
+                        <InputGroupInput
+                            placeholder="Cari SKU atau nama produk..."
+                            value={searchValue}
+                            onChange={handleSearch}
+                            type="search"
+                            autoFocus={true}
+                            onBlur={() => setShow(false)}
+                        />
 
-                <InputGroupAddon>
-                    <IconSearch />
-                </InputGroupAddon>
-            </InputGroup>
+                        <InputGroupAddon>
+                            <IconSearch />
+                        </InputGroupAddon>
+                    </InputGroup>
+                )}
+            </>
         )
     }
 )

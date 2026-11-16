@@ -21,7 +21,7 @@ interface ProductCardProps {
 
 const ProductCard = memo(({ product, onAddToCart }: ProductCardProps) => {
     return (
-        <Card>
+        <Card className="pt-0">
             <div className="relative w-full">
                 <Image
                     src="https://s1.lojelcdn.com/wp-content/uploads/2017/11/Lojel-Voja-WarmGray-Front-Small.jpg"

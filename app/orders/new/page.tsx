@@ -53,7 +53,7 @@ export default function NewOrderPage() {
                     />
 
                     {/* Porodct */}
-                    <div className="min-h-0 flex-1 overflow-auto">
+                    <div className="min-h-0 flex-1 overflow-auto pt-3">
                         <ProductGrid
                             isLoading={isLoading}
                             products={products}

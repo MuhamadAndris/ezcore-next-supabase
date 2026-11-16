@@ -30,11 +30,14 @@ import {
     IconTarget,
     IconTrendingUp,
     IconUser,
+    IconUserSquareRounded,
     IconWallet,
 } from "@tabler/icons-react"
 import Link from "next/link"
 import {
     ChartContainer,
+    ChartLegend,
+    ChartLegendContent,
     ChartTooltip,
     ChartTooltipContent,
     type ChartConfig,
@@ -47,6 +50,7 @@ import {
     PieChart,
     Pie,
     Label,
+    YAxis,
 } from "recharts"
 import {
     Table,
@@ -56,6 +60,15 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table"
+import { Separator } from "@/components/ui/separator"
+import {
+    Item,
+    ItemActions,
+    ItemContent,
+    ItemDescription,
+    ItemMedia,
+    ItemTitle,
+} from "@/components/ui/item"
 
 const items = [
     {
@@ -69,26 +82,18 @@ const items = [
 ]
 
 const chartData = [
-    { brand: "LOJEL", sales: 45000000, fill: "var(--color-lojel)" },
-    { brand: "American Tourister", sales: 30000000, fill: "var(--color-at)" },
-    { brand: "Others", sales: 15000000, fill: "var(--color-others)" },
+    { brand: "LOJEL", sales: 50000000, fill: "var(--color-LOJEL)" },
+    { brand: "AT", sales: 40000000, fill: "var(--color-AT)" },
 ]
 
 const chartConfig = {
-    sales: {
-        label: "Penjualan",
-    },
-    lojel: {
+    LOJEL: {
         label: "LOJEL",
         color: "var(--chart-1)",
     },
-    at: {
+    AT: {
         label: "American Tourister",
         color: "var(--chart-2)",
-    },
-    others: {
-        label: "Others",
-        color: "var(--chart-3)",
     },
 } satisfies ChartConfig
 
@@ -114,7 +119,7 @@ const salesLastYearConfig = {
 
 export default function OrderPage() {
     return (
-        <div className="w-full lg:container mx-auto p-2 md:p-4 space-y-4">
+        <div className="w-full lg:container mx-auto p-2 md:p-4 space-y-4 overflow-auto">
             <div className="flex gap-6 justify-between items-center p-2 ">
                 <div>
                     <h1
@@ -135,9 +140,9 @@ export default function OrderPage() {
                 </Button>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 lg:grid-cols-[minmax(400px,1fr)_1fr] gap-4">
                 {/* MTD */}
-                <Card className="w-full">
+                <Card>
                     <CardHeader>
                         <CardTitle>TOTAL OMSET (MTD)</CardTitle>
                         <CardAction className="bg-primary/10 text-primary p-2 rounded-xl">
@@ -178,40 +183,64 @@ export default function OrderPage() {
                     </CardFooter>
                 </Card>
 
-                {/* Sales per SA */}
-                <Card className="w-full">
-                    <CardHeader>
-                        <CardTitle>Performa Penjual</CardTitle>
-                    </CardHeader>
-                    <CardContent className="grid grid-cols-2 md:grid-cols-1 gap-4">
-                        <div className="flex gap-2">
-                            <div className="border relative aspect-square w-10 rounded-sm">
-                                <IconUser className="w-full h-full" />
-                            </div>
-                            <Progress value={20} className="flex-1">
-                                <ProgressLabel>Andris</ProgressLabel>
-                                <span className="ml-auto text-xs text-muted-foreground tabular-nums">
-                                    Rp 410jt / 500jt
-                                </span>
-                            </Progress>
-                        </div>
-                        <div className="flex gap-2">
-                            <div className="border relative aspect-square w-10 rounded-sm">
-                                <IconUser className="w-full h-full" />
-                            </div>
-                            <Progress value={20} className="flex-1">
-                                <ProgressLabel>Andris</ProgressLabel>
-                                <span className="ml-auto text-xs text-muted-foreground tabular-nums">
-                                    Rp 410jt / 500jt
-                                </span>
-                            </Progress>
-                        </div>
-                    </CardContent>
-                </Card>
+                <div className="grid gap-4 md:grid-cols-2">
+                    <Card>
+                        <CardHeader>
+                            <CardTitle>Performa Brand</CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <Item>
+                                <ItemContent>
+                                    <ItemTitle>LOJEL</ItemTitle>
+                                    <ItemDescription>25 unit</ItemDescription>
+                                </ItemContent>
+                                <ItemActions>Rp. 125.000</ItemActions>
+                            </Item>
+                            <Separator />
+                            <Item>
+                                <ItemContent>
+                                    <ItemTitle>BAGASI</ItemTitle>
+                                    <ItemDescription>25 unit</ItemDescription>
+                                </ItemContent>
+                                <ItemActions>Rp. 125.000</ItemActions>
+                            </Item>
+                        </CardContent>
+                    </Card>
+
+                    {/* Sales per SA */}
+                    <Card>
+                        <CardHeader>
+                            <CardTitle>Performa SA</CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <Item>
+                                <ItemMedia>
+                                    <IconUserSquareRounded className="w-full h-full" />
+                                </ItemMedia>
+                                <ItemContent>
+                                    <ItemTitle>ANDRIS</ItemTitle>
+                                    <ItemDescription>25 unit</ItemDescription>
+                                </ItemContent>
+                                <ItemActions>Rp. 125.000</ItemActions>
+                            </Item>
+                            <Separator />
+                            <Item>
+                                <ItemMedia>
+                                    <IconUserSquareRounded className="w-full h-full" />
+                                </ItemMedia>
+                                <ItemContent>
+                                    <ItemTitle>RIJAL</ItemTitle>
+                                    <ItemDescription>25 unit</ItemDescription>
+                                </ItemContent>
+                                <ItemActions>Rp. 125.000</ItemActions>
+                            </Item>
+                        </CardContent>
+                    </Card>
+                </div>
             </div>
 
             {/* Chart */}
-            <div className="grid grid-cols-1 md:grid-cols-[2fr_1fr] gap-4">
+            <div className="grid grid-cols-1 lg:grid-cols-[minmax(400px,1fr)_1fr] gap-4">
                 {/* Sales Yearly */}
                 <Card>
                     <CardHeader>
@@ -236,13 +265,14 @@ export default function OrderPage() {
                             </Select>
                         </CardAction>
                     </CardHeader>
-                    <CardContent>
+                    <CardContent className="flex-1  p-0">
                         <ChartContainer
                             config={salesLastYearConfig}
-                            className="md:h-80 w-full"
+                            className="md:min-h-80 w-full h-full"
                         >
                             <BarChart accessibilityLayer data={salesYearly}>
                                 <CartesianGrid vertical={false} />
+                                {/* <YAxis /> */}
                                 <XAxis
                                     dataKey="month"
                                     tickLine={false}
@@ -268,119 +298,131 @@ export default function OrderPage() {
                     </CardContent>
                 </Card>
 
-                {/* Sales per category */}
-                <Card className="">
-                    <CardHeader>
-                        <CardTitle>Sales Per-Category</CardTitle>
-                    </CardHeader>
-                    <CardContent className="flex-1">
-                        <ChartContainer config={chartConfig}>
-                            <PieChart>
-                                <ChartTooltip
-                                    content={<ChartTooltipContent />}
-                                />
-                                <Pie
-                                    data={chartData}
-                                    dataKey="sales"
-                                    nameKey="brand"
-                                    innerRadius={45}
-                                    paddingAngle={1}
-                                    label={({ percent }) =>
-                                        `${((percent ?? 0) * 100).toFixed(1)}%`
-                                    }
-                                >
-                                    <Label
-                                        content={({ viewBox }) => {
-                                            if (
-                                                viewBox &&
-                                                "cx" in viewBox &&
-                                                "cy" in viewBox
-                                            ) {
-                                                return (
-                                                    <text
-                                                        x={viewBox.cx}
-                                                        y={viewBox.cy}
-                                                        textAnchor="middle"
-                                                        dominantBaseline="middle"
-                                                    >
-                                                        <tspan
+                <div className="grid gap-4 md:grid-cols-2">
+                    {/* Sales per category */}
+                    <Card>
+                        <CardHeader>
+                            <CardTitle>Sales Per-Category</CardTitle>
+                        </CardHeader>
+                        <CardContent className="flex justify-center p-0">
+                            <ChartContainer
+                                config={chartConfig}
+                                className="mx-auto aspect-square max-h-62.5 w-full"
+                            >
+                                <PieChart>
+                                    <Pie
+                                        data={chartData}
+                                        dataKey="sales"
+                                        nameKey="brand"
+                                        innerRadius={65}
+                                        outerRadius={100}
+                                        paddingAngle={1}
+                                    >
+                                        <Label
+                                            content={({ viewBox }) => {
+                                                if (
+                                                    viewBox &&
+                                                    "cx" in viewBox &&
+                                                    "cy" in viewBox
+                                                ) {
+                                                    return (
+                                                        <text
                                                             x={viewBox.cx}
                                                             y={viewBox.cy}
-                                                            className="fill-foreground text-xl font-bold"
+                                                            textAnchor="middle"
+                                                            dominantBaseline="middle"
                                                         >
-                                                            Rp90 Jt
-                                                        </tspan>
-                                                    </text>
-                                                )
-                                            }
-                                        }}
+                                                            <tspan
+                                                                x={viewBox.cx}
+                                                                y={
+                                                                    viewBox.cy -
+                                                                    8
+                                                                }
+                                                                className="fill-foreground text-xl font-bold"
+                                                            >
+                                                                Rp90 Jt
+                                                            </tspan>
+                                                            <tspan
+                                                                x={viewBox.cx}
+                                                                y={
+                                                                    viewBox.cy +
+                                                                    16
+                                                                }
+                                                                className="fill-muted-foreground text-xs"
+                                                            >
+                                                                Total Penjualan
+                                                            </tspan>
+                                                        </text>
+                                                    )
+                                                }
+                                            }}
+                                        />
+                                    </Pie>
+                                    <ChartTooltip
+                                        content={<ChartTooltipContent />}
                                     />
-                                </Pie>
-                            </PieChart>
-                        </ChartContainer>
-                    </CardContent>
-                    <CardFooter>
-                        <div className="w-full">
-                            <p className="flex justify-between">
-                                <span className="text-muted-foreground">
-                                    Travel
-                                </span>
-                                <span>Rp. 180jt</span>
-                            </p>
-                            <p className="flex justify-between">
-                                <span className="text-muted-foreground">
-                                    Travel
-                                </span>
-                                <span>Rp. 180jt</span>
-                            </p>
-                            <p className="flex justify-between">
-                                <span className="text-muted-foreground">
-                                    Travel
-                                </span>
-                                <span>Rp. 180jt</span>
-                            </p>
-                        </div>
-                    </CardFooter>
-                </Card>
-            </div>
+                                </PieChart>
+                            </ChartContainer>
+                        </CardContent>
 
-            <Card>
-                <CardHeader>
-                    <CardTitle>Top 5 Produk Terlaris</CardTitle>
-                </CardHeader>
-                <CardContent>
-                    <Table>
-                        <TableHeader>
-                            <TableRow className="border-b-3">
-                                <TableHead>#</TableHead>
-                                <TableHead>PRODUK</TableHead>
-                                <TableHead>TERJUAL</TableHead>
-                                <TableHead>OMSET</TableHead>
-                            </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                            <TableRow>
-                                <TableCell>1</TableCell>
-                                <TableCell>Voja</TableCell>
-                                <TableCell>2</TableCell>
-                                <TableCell>200.000</TableCell>
-                            </TableRow>
-                            <TableRow>
-                                <TableCell>2</TableCell>
-                                <TableCell>Voja</TableCell>
-                                <TableCell>2</TableCell>
-                                <TableCell>200.000</TableCell>
-                            </TableRow>
-                            <TableRow>
-                                <TableCell>3</TableCell>
-                                <TableCell>Voja</TableCell>
-                                <TableCell>2</TableCell>
-                                <TableCell>200.000</TableCell>
-                            </TableRow>
-                        </TableBody>
-                    </Table>
-                </CardContent>
-            </Card>
+                        <Separator />
+
+                        {/* Informasi tambahan */}
+                        <CardContent className="space-y-4 p-5">
+                            <div className="flex items-center justify-between">
+                                <span className="text-muted-foreground">
+                                    Total Transaksi
+                                </span>
+                                <span className="font-semibold">125</span>
+                            </div>
+
+                            <Separator />
+
+                            <div className="flex items-center justify-between">
+                                <span className="text-muted-foreground">
+                                    Rata-rata Penjualan
+                                </span>
+                                <span className="font-semibold">Rp720 Rb</span>
+                            </div>
+
+                            <Separator />
+
+                            <div className="flex items-center justify-between">
+                                <span className="text-muted-foreground">
+                                    Brand Terlaris
+                                </span>
+                                <span className="font-semibold">LOJEL</span>
+                            </div>
+                        </CardContent>
+                    </Card>
+
+                    {/* Top 5 Sales */}
+                    <Card>
+                        <CardHeader>
+                            <CardTitle>Top 5 Produk Terlaris</CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <Item>
+                                <ItemMedia>1</ItemMedia>
+                                <ItemContent>
+                                    <ItemTitle>VOJA</ItemTitle>
+                                    <ItemDescription>25 unit</ItemDescription>
+                                </ItemContent>
+                                <ItemActions>Rp. 125.000</ItemActions>
+                            </Item>
+                            <Separator />
+                            <Item>
+                                <ItemMedia>2</ItemMedia>
+                                <ItemContent>
+                                    <ItemTitle>VOJA</ItemTitle>
+                                    <ItemDescription>25 unit</ItemDescription>
+                                </ItemContent>
+                                <ItemActions>Rp. 125.000</ItemActions>
+                            </Item>
+                        </CardContent>
+                    </Card>
+                </div>
+            </div>
         </div>
     )
 }

@@ -12,14 +12,28 @@ import Image from "next/image"
 import { Badge } from "../ui/badge"
 import { formatNumber } from "@/lib/utils"
 import { memo } from "react"
-import { IconShoppingCartPlus } from "@tabler/icons-react"
+import { IconInfoCircle, IconShoppingCartPlus } from "@tabler/icons-react"
+import { Alert, AlertAction, AlertDescription, AlertTitle } from "../ui/alert"
+import { toast } from "../ui/toast"
 
 interface ProductCardProps {
     product: Product
     onAddToCart: (product: Product) => void
 }
+const TOAST_ID = "add-to-cart-toast"
 
 const ProductCard = memo(({ product, onAddToCart }: ProductCardProps) => {
+    const handleClick = () => {
+        const productInfo = onAddToCart(product)
+        toast.add({
+            id: TOAST_ID,
+            title: "Dimasukan ke keranjang",
+            description: [product.name, product.size, product.color]
+                .filter(Boolean)
+                .join(" | "),
+            timeout: 2000,
+        })
+    }
     return (
         <Card className="pt-0">
             <div className="relative w-full">
@@ -44,7 +58,7 @@ const ProductCard = memo(({ product, onAddToCart }: ProductCardProps) => {
                 <Button
                     className="w-full cursor-pointer"
                     variant="default"
-                    onClick={() => onAddToCart(product)}
+                    onClick={handleClick}
                 >
                     <IconShoppingCartPlus />
                     Pilih

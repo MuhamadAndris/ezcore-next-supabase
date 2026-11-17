@@ -58,8 +58,13 @@ const NavbarNewOrder = memo(
                                 <IconSearch />
                             </Button>
                         )}
-                        <Button onClick={handleShowCart}>
+                        <Button onClick={handleShowCart} className="relative">
+                            {/* <div className="relative"> */}
                             <IconShoppingCart />
+                            <span className="absolute -top-2 -right-1 bg-secondary rounded-full text-xs aspect-square w-5 flex justify-center items-center">
+                                2
+                            </span>
+                            {/* </div> */}
                         </Button>
                     </div>
                 </div>

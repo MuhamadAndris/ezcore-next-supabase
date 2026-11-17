@@ -26,7 +26,9 @@ import {
     SelectValue,
 } from "@/components/ui/select"
 import {
+    IconChevronDown,
     IconClock,
+    IconReceipt,
     IconTarget,
     IconTrendingUp,
     IconUser,
@@ -69,6 +71,7 @@ import {
     ItemMedia,
     ItemTitle,
 } from "@/components/ui/item"
+import OrderReceipt from "@/components/orders/order-receipt"
 
 const items = [
     {
@@ -423,6 +426,30 @@ export default function OrderPage() {
                     </Card>
                 </div>
             </div>
+
+            <Card className="gap-0">
+                <CardHeader>
+                    <Item>
+                        <ItemMedia>
+                            <IconReceipt />
+                        </ItemMedia>
+                        <ItemContent>
+                            <ItemTitle>Daftar Transaksi</ItemTitle>
+                            <ItemDescription>24 Oktober 2026</ItemDescription>
+                        </ItemContent>
+                    </Item>
+                </CardHeader>
+                <Separator />
+                <CardContent className="p-4">
+                    <div className="border rounded-lg ">
+                        <OrderReceipt />
+                        <Separator />
+                        <OrderReceipt />
+                        <Separator />
+                        <OrderReceipt />
+                    </div>
+                </CardContent>
+            </Card>
         </div>
     )
 }

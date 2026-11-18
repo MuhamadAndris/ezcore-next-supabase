@@ -25,9 +25,9 @@ export default async function ProductsPage() {
     const products = parsed.success ? parsed.data : []
 
     return (
-        <>
+        <div className="space-y-4 md:p-4">
             {/* header */}
-            <div className="flex gap-6 justify-between items-center p-2 m-2 md:m-4 md:p-0">
+            <div className="flex gap-6 justify-between items-center p-2 md:p-0">
                 <div>
                     <h1
                         className="
@@ -49,6 +49,6 @@ export default async function ProductsPage() {
 
             {/* table */}
             <TableProducts count={count} data={products} />
-        </>
+        </div>
     )
 }

@@ -1,47 +1,48 @@
-import { IconBackpack, IconDashboard, IconDiscount, IconLuggage } from "@tabler/icons-react";
-import DashboardCard, { DashboardCardProps } from "./dashboard-card";
+import {
+    IconBackpack,
+    IconDashboard,
+    IconDiscount,
+    IconLuggage,
+} from "@tabler/icons-react"
+import DashboardCard, { DashboardCardProps } from "./dashboard-card"
 
-const CARDS:DashboardCardProps[] = [
+const CARDS: DashboardCardProps[] = [
     {
         label: "SKU",
-        value: 0,
+        value: 2,
         description: "+25% form last month",
-        icon: IconDashboard
+        icon: IconDashboard,
+        unit: "produk",
     },
     {
         label: "KOLEKSI",
-        value: 0,
+        value: 10,
         description: "+25% form last month",
-        icon: IconLuggage
+        icon: IconLuggage,
+        unit: "koleksi",
     },
     {
         label: "PROMO",
         value: 0,
         description: "+25% form last month",
-        icon: IconDiscount
+        icon: IconDiscount,
+        unit: "aktif",
     },
     {
         label: "STOCK",
-        value: 0,
+        value: 35,
         description: "+25% form last month",
-        icon: IconBackpack
+        icon: IconBackpack,
+        unit: "pcs",
     },
-
 ]
 
 export default function DashboardProduct() {
     return (
-        <div className="
-            mx-4
-            mb-6
-            md:my-6
-            grid gap-1 grid-cols-4 md:grid-cols-4
-        ">
-
-            { CARDS.map((card) => 
+        <div className="grid gap-3 grid-cols-4 md:grid-cols-4 p-2 md:p-0">
+            {CARDS.map((card) => (
                 <DashboardCard key={card.label} card={card} />
-            )}
-            
+            ))}
         </div>
     )
 }

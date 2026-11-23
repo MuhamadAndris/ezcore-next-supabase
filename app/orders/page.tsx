@@ -10,11 +10,9 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card"
-import { Field, FieldLabel } from "@/components/ui/field"
 import {
     Progress,
     ProgressLabel,
-    ProgressTrack,
     ProgressValue,
 } from "@/components/ui/progress"
 import {
@@ -26,20 +24,14 @@ import {
     SelectValue,
 } from "@/components/ui/select"
 import {
-    IconChevronDown,
-    IconClock,
     IconReceipt,
-    IconTarget,
     IconTrendingUp,
-    IconUser,
     IconUserSquareRounded,
     IconWallet,
 } from "@tabler/icons-react"
 import Link from "next/link"
 import {
     ChartContainer,
-    ChartLegend,
-    ChartLegendContent,
     ChartTooltip,
     ChartTooltipContent,
     type ChartConfig,
@@ -52,16 +44,7 @@ import {
     PieChart,
     Pie,
     Label,
-    YAxis,
 } from "recharts"
-import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
-} from "@/components/ui/table"
 import { Separator } from "@/components/ui/separator"
 import {
     Item,

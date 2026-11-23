@@ -3,9 +3,6 @@
 import {
     Sidebar,
     SidebarContent,
-    SidebarGroup,
-    SidebarGroupContent,
-    SidebarGroupLabel,
     SidebarHeader,
     SidebarMenu,
     SidebarMenuButton,
@@ -18,10 +15,6 @@ import {
     IconBriefcaseFilled,
     IconCategory,
     IconCategoryFilled,
-    IconH1,
-    IconHome,
-    IconHomeFilled,
-    IconPackage,
     IconShoppingCart,
     IconShoppingCartFilled,
 } from "@tabler/icons-react"

@@ -1,17 +1,15 @@
 import { createClient } from "@/lib/client"
-import { Field, FieldLabel, FieldSeparator } from "../ui/field"
+import { Field, FieldLabel } from "../ui/field"
 import {
     Select,
     SelectContent,
     SelectItem,
-    SelectLabel,
     SelectTrigger,
     SelectValue,
 } from "../ui/select"
 import { memo, useRef, useState } from "react"
-import { devError } from "@/lib/utils"
+import { devError, devLog } from "@/lib/utils"
 import { toast } from "../ui/toast"
-import { IconTruckLoading } from "@tabler/icons-react"
 
 type Items = {
     value: number
@@ -25,7 +23,7 @@ interface SelectStoreProps {
 
 const SelectStore = memo(
     ({ storeSelected, updateStoreSelected }: SelectStoreProps) => {
-        console.log("render select store")
+        devLog("render select store")
         const [items, setItems] = useState<Items[]>([storeSelected])
         const isFetching = useRef(false)
 
@@ -102,5 +100,7 @@ const SelectStore = memo(
         )
     }
 )
+
+SelectStore.displayName = "SelectStore"
 
 export default SelectStore

@@ -1,19 +1,19 @@
 import { Dispatch, memo, SetStateAction, useEffect, useState } from "react"
-import SearchProduct from "../products/search-product"
 import { Button } from "../ui/button"
-import { IconSearch, IconShoppingCart } from "@tabler/icons-react"
+import { IconShoppingCart } from "@tabler/icons-react"
 import { useSidebar } from "../ui/sidebar"
 import BackButton from "../ui/back-button"
+import { SearchButton, SearchInput } from "../ui/search"
+import { devLog } from "@/lib/utils"
 
 interface NavbarNewOrderProps {
     setShowCart: Dispatch<SetStateAction<boolean>>
-    searchProduct: (keyword: string) => Promise<void>
-    setIsLoading: (v: boolean) => void
+    onSearch: (keyword: string) => Promise<void>
 }
 
 const NavbarNewOrder = memo(
-    ({ setShowCart, searchProduct, setIsLoading }: NavbarNewOrderProps) => {
-        console.log("render navbar")
+    ({ setShowCart, onSearch }: NavbarNewOrderProps) => {
+        devLog("render navbar")
         const { open, setOpen } = useSidebar()
         const [showSearchInput, setShowSearchInput] = useState(true)
 
@@ -38,26 +38,20 @@ const NavbarNewOrder = memo(
                 <div className="flex items-center justify-between gap-3">
                     <div className="flex-1 flex items-center">
                         <BackButton />
-                        <SearchProduct
-                            searchProduct={searchProduct}
-                            setIsLoading={setIsLoading}
-                            setShow={setShowSearchInput}
-                            show={showSearchInput}
-                        />
-                        {!showSearchInput && (
+                        {showSearchInput ? (
+                            <SearchInput
+                                placeholder="Cari SKU atau nama produk..."
+                                onSearch={onSearch}
+                                onClose={() => setShowSearchInput(false)}
+                            />
+                        ) : (
                             <h2 className="font-bold text-lg">Buat Order</h2>
                         )}
                     </div>
                     <div>
-                        {!showSearchInput && (
-                            <Button
-                                variant="ghost"
-                                className="mr-1"
-                                onClick={() => setShowSearchInput(true)}
-                            >
-                                <IconSearch />
-                            </Button>
-                        )}
+                        <SearchButton
+                            onClick={() => setShowCart((prev) => !prev)}
+                        />
                         <Button onClick={handleShowCart} className="relative">
                             {/* <div className="relative"> */}
                             <IconShoppingCart />
@@ -72,5 +66,7 @@ const NavbarNewOrder = memo(
         )
     }
 )
+
+NavbarNewOrder.displayName = "NavbarNewOrder"
 
 export default NavbarNewOrder

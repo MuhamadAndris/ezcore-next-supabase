@@ -1,29 +1,9 @@
+"use client"
+
 import DashboardProduct from "@/components/products/dashboard-products"
-import TableProducts from "@/components/products/table-products"
-import { createClient } from "@/lib/server"
-import { productSchema } from "@/schemas/product.schema"
+import TableProducts from "@/components/products/table-product/table-products"
 
-export default async function ProductsPage() {
-    const supabase = await createClient()
-
-    const { count, data, error } = await supabase
-        .from("products")
-        .select("*", { count: "exact" })
-        .eq("isDeleted", false)
-        .order("createdAt", { ascending: false })
-        .order("id", { ascending: false })
-        .range(0, 14)
-
-    if (error) console.error(error)
-
-    const parsed = productSchema.array().safeParse(data ?? [])
-
-    if (!parsed.success) {
-        console.error(parsed.error)
-    }
-
-    const products = parsed.success ? parsed.data : []
-
+export default function ProductsPage() {
     return (
         <div className="space-y-4 md:p-4">
             {/* header */}
@@ -48,7 +28,11 @@ export default async function ProductsPage() {
             <DashboardProduct />
 
             {/* table */}
-            <TableProducts count={count} data={products} />
+            <TableProducts />
+
+            {/* <Dialog open={open} onOpenChange={setOpen}>
+                <DialogContent></DialogContent>
+            </Dialog> */}
         </div>
     )
 }

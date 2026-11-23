@@ -3,7 +3,7 @@ import { Calendar } from "../ui/calendar"
 import { Field, FieldLabel } from "../ui/field"
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover"
 import { Button } from "../ui/button"
-import { formatDate } from "@/lib/utils"
+import { devLog, formatDate } from "@/lib/utils"
 import { memo } from "react"
 
 interface SelectDateProps {
@@ -20,7 +20,7 @@ const SelectDate = memo(
         purchasedAt,
         updatePurchasedAt,
     }: SelectDateProps) => {
-        console.log("render select date")
+        devLog("render select date")
         return (
             <Field>
                 <FieldLabel htmlFor="date">Tanggal</FieldLabel>
@@ -59,5 +59,7 @@ const SelectDate = memo(
         )
     }
 )
+
+SelectDate.displayName = "SelectDate"
 
 export default SelectDate

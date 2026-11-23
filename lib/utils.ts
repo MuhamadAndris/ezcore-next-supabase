@@ -3,7 +3,7 @@ import { clsx, type ClassValue } from "clsx"
 import { format } from "date-fns"
 import { id } from "date-fns/locale"
 import { twMerge } from "tailwind-merge"
-import z, { maxSize } from "zod"
+import z from "zod"
 
 export function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs))
@@ -32,7 +32,7 @@ export function devError(...args: unknown[]) {
 
     for (const arg of args) {
         if (arg instanceof z.ZodError) {
-            console.log("Error form ZOD")
+            devLog("Error form ZOD")
             console.table(
                 arg.issues.map((issue) => ({
                     field: issue.path.join(".") || "(root)",

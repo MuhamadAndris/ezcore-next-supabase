@@ -1,16 +1,4 @@
-import product from "@/lib/query/product"
 import { formatNumber } from "@/lib/utils"
-import { Checkbox } from "@/components/ui/checkbox"
-import { Button } from "@/components/ui/button"
-import { IconDotsVertical, IconLuggage } from "@tabler/icons-react"
-import { cn } from "cn"
-import Image from "next/image"
-import {
-    DropdownMenu,
-    DropdownMenuTrigger,
-    DropdownMenuContent,
-    DropdownMenuItem,
-} from "../ui/dropdown-menu"
 import { TableRow, TableCell } from "../ui/table"
 import {
     Item,
@@ -19,6 +7,7 @@ import {
     ItemMedia,
     ItemTitle,
 } from "../ui/item"
+import Image from "next/image"
 
 export default function ReceiptRow() {
     return (

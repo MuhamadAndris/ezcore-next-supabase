@@ -2,7 +2,6 @@
 
 import Link from "next/link"
 import { items } from "./app-sidebar"
-import { Button } from "./button"
 import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
 

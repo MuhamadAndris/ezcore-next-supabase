@@ -1,38 +1,44 @@
 import FormBaseProduct from "@/components/products/form-base-product"
 import FormImageProduct from "@/components/products/form-image-product"
 import FormPriceProduct from "@/components/products/form-price-product"
-import AppBreadcrumb, { AppBreadcrumbMenu } from "@/components/ui/app-breadcrumb"
+import AppBreadcrumb, {
+    AppBreadcrumbMenu,
+} from "@/components/ui/app-breadcrumb"
 import { FieldGroup } from "@/components/ui/field"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
+import { devLog } from "@/lib/utils"
 
-const MENUS:AppBreadcrumbMenu[] = [
+const MENUS: AppBreadcrumbMenu[] = [
     {
         label: "Beranda",
-        url: "/"
+        url: "/",
     },
     {
         label: "Katalog Produk",
-        url: "/products"
+        url: "/products",
     },
     {
         label: "Ubah Produk",
     },
-    
 ]
 
-export default async function ProductUpdatePage(
-    { params } : { params: Promise<{ product_id: string}> }
-) {
+export default async function ProductUpdatePage({
+    params,
+}: {
+    params: Promise<{ product_id: string }>
+}) {
     const { product_id } = await params
-    console.log(product_id)
+    devLog(product_id)
 
-     return (
+    return (
         <div className="max-w-200 mx-auto my-4 md:my-8">
             <div className="mx-4 md:mx-0">
                 <AppBreadcrumb menus={MENUS} />
 
-                <h1 className="text-xl md:text-[32px] font-semibold mb-3 md:mb-6 mt-2">Ubah Produk</h1>
+                <h1 className="text-xl md:text-[32px] font-semibold mb-3 md:mb-6 mt-2">
+                    Ubah Produk
+                </h1>
             </div>
 
             <form className="space-y-6">

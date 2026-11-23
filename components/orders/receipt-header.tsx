@@ -1,19 +1,7 @@
-import { Dispatch, memo, SetStateAction, useEffect, useState } from "react"
-import { Checkbox } from "../ui/checkbox"
 import { TableHead, TableHeader, TableRow } from "../ui/table"
-import {
-    DropdownMenu,
-    DropdownMenuCheckboxItem,
-    DropdownMenuContent,
-    DropdownMenuGroup,
-    DropdownMenuLabel,
-    DropdownMenuTrigger,
-} from "../ui/dropdown-menu"
-import { Button } from "../ui/button"
-import { IconChevronDown } from "@tabler/icons-react"
 import { cn } from "@/lib/utils"
 
-const ReceiptHeader = memo(() => {
+const ReceiptHeader = () => {
     return (
         <TableHeader>
             <TableRow>
@@ -45,6 +33,6 @@ const ReceiptHeader = memo(() => {
             </TableRow>
         </TableHeader>
     )
-})
+}
 
 export default ReceiptHeader

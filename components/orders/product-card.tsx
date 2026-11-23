@@ -1,7 +1,6 @@
 import { Product } from "@/schemas/product.schema"
 import {
     Card,
-    CardAction,
     CardDescription,
     CardFooter,
     CardHeader,
@@ -9,11 +8,9 @@ import {
 } from "../ui/card"
 import { Button } from "../ui/button"
 import Image from "next/image"
-import { Badge } from "../ui/badge"
 import { formatNumber } from "@/lib/utils"
 import { memo } from "react"
-import { IconInfoCircle, IconShoppingCartPlus } from "@tabler/icons-react"
-import { Alert, AlertAction, AlertDescription, AlertTitle } from "../ui/alert"
+import { IconShoppingCartPlus } from "@tabler/icons-react"
 import { toast } from "../ui/toast"
 
 interface ProductCardProps {
@@ -24,7 +21,7 @@ const TOAST_ID = "add-to-cart-toast"
 
 const ProductCard = memo(({ product, onAddToCart }: ProductCardProps) => {
     const handleClick = () => {
-        const productInfo = onAddToCart(product)
+        onAddToCart(product)
         toast.add({
             id: TOAST_ID,
             title: "Dimasukan ke keranjang",
@@ -67,5 +64,7 @@ const ProductCard = memo(({ product, onAddToCart }: ProductCardProps) => {
         </Card>
     )
 })
+
+ProductCard.displayName = "ProductCard"
 
 export default ProductCard

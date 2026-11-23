@@ -153,4 +153,6 @@ const CartItem = memo(
     }
 )
 
+CartItem.displayName = "CartItem"
+
 export default CartItem

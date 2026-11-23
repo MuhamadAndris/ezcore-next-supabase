@@ -1,6 +1,6 @@
 import { Product } from "@/schemas/product.schema"
 import ProductCard from "./product-card"
-import { cn } from "@/lib/utils"
+import { cn, devLog } from "@/lib/utils"
 import { memo } from "react"
 import SkeletonProductGrid from "../skeleton/product-grid"
 
@@ -12,7 +12,7 @@ interface ProductGridProps {
 
 const ProductGrid = memo(
     ({ products, isLoading, onAddToCart }: ProductGridProps) => {
-        console.log("render product grid")
+        devLog("render product grid")
 
         const qty = products.length
 
@@ -46,5 +46,7 @@ const ProductGrid = memo(
         )
     }
 )
+
+ProductGrid.displayName = "ProductGrid"
 
 export default ProductGrid

@@ -2,6 +2,7 @@ import { Product, productSchema } from "@/schemas/product.schema"
 import { useCallback, useRef, useState } from "react"
 import getProductsQuery, { searchProductQuery } from "@/lib/query/product"
 import { toast } from "@/components/ui/toast"
+import useTotalProducts from "./use-total-products"
 
 const PAGE_SIZE = 15
 
@@ -11,12 +12,14 @@ const isSameProduct = (a: Product, b: Product) =>
     productKeys.every((key) => a[key] === b[key])
 
 export default function useProducts(initialData: Product[]) {
+    const total = useTotalProducts()
     const currentpage = useRef(1)
     const [products, setProducts] = useState<Product[]>(initialData)
     const [hasMore, setHasMore] = useState<boolean>(
         initialData.length === PAGE_SIZE
     )
     const [isLoading, setIsLoading] = useState(false)
+    const loadingRef = useRef(false)
 
     const replaceProducts = useCallback((newProduts: Product[]) => {
         setProducts((prev) => {
@@ -43,12 +46,12 @@ export default function useProducts(initialData: Product[]) {
 
     const fetchProduct = useCallback(
         async (from: number = 0, to: number = PAGE_SIZE) => {
+            if (loadingRef.current) return
+            loadingRef.current = true
+            setIsLoading(true)
             try {
-                if (isLoading) return
-                setIsLoading(true)
-
                 return await getProductsQuery(from, to)
-            } catch (err) {
+            } catch {
                 toast.add({
                     title: "Gagal memuat produk",
                     type: "error",
@@ -56,17 +59,18 @@ export default function useProducts(initialData: Product[]) {
                         "Gagal mencari produk. Periksa koneksi internet kamu.",
                 })
             } finally {
+                loadingRef.current = false
                 setIsLoading(false)
             }
         },
-        [isLoading]
+        []
     )
 
     const loadMore = useCallback(async () => {
+        if (loadingRef.current) return
+        loadingRef.current = true
+        setIsLoading(true)
         try {
-            if (isLoading) return
-            setIsLoading(true)
-
             const nextPage = currentpage.current + 1
             const from = (nextPage - 1) * PAGE_SIZE
             const to = nextPage * PAGE_SIZE - 1
@@ -77,16 +81,17 @@ export default function useProducts(initialData: Product[]) {
                 currentpage.current = nextPage
                 if (result.length < PAGE_SIZE) setHasMore(false)
             }
-        } catch (err) {
+        } catch {
             toast.add({
                 type: "error",
                 description:
                     "Gagal mencari produk. Periksa koneksi internet kamu.",
             })
         } finally {
+            loadingRef.current = false
             setIsLoading(false)
         }
-    }, [isLoading, fetchProduct])
+    }, [fetchProduct])
 
     const searchProduct = useCallback(
         async (keyword: string) => {
@@ -96,7 +101,7 @@ export default function useProducts(initialData: Product[]) {
                     replaceProducts(result)
                     setHasMore(false)
                 }
-            } catch (err) {
+            } catch {
                 toast.add({
                     type: "error",
                     description:
@@ -108,6 +113,7 @@ export default function useProducts(initialData: Product[]) {
     )
 
     return {
+        total,
         products,
         hasMore,
         loadMore,
@@ -115,6 +121,5 @@ export default function useProducts(initialData: Product[]) {
         fetchProduct,
         searchProduct,
         isLoading,
-        setIsLoading,
     }
 }

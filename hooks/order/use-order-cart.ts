@@ -129,7 +129,7 @@ const useOrderCart = () => {
         } finally {
             isLoading.current = false
         }
-    }, [receipts, defaultReceipts])
+    }, [receipts, purchasedAt])
 
     const currentReceipt = useMemo(
         () => receipts.find((r) => r.no === currentReceiptNo) || receipts[0],
@@ -175,19 +175,18 @@ const useOrderCart = () => {
     )
 
     const addCartReceipt = useCallback(() => {
-        const { no, ...defaultReceipt } = defaultReceipts[0]
         setReceipts((prev) => {
             const newReceiptNo = Math.max(0, ...prev.map((r) => r.no)) + 1
             setCurrentReceiptNo(newReceiptNo)
             return [
                 ...prev,
                 {
+                    ...defaultReceipts[0],
                     no: newReceiptNo,
-                    ...defaultReceipt,
                 },
             ]
         })
-    }, [defaultReceipts])
+    }, [])
 
     const addPaymentProof = useCallback(
         (proof: File | null) => {

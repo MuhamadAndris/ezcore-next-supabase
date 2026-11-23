@@ -4,6 +4,22 @@ import { devError, devLog } from "../utils"
 
 const supabase = createClient()
 
+export async function getTotalProdutQuery() {
+    try {
+        const { count, error } = await supabase
+            .from("products")
+            .select("*", { count: "exact", head: true })
+
+        if (error) throw error
+
+        return count ?? 0
+    } catch (err) {
+        devLog("Gagal ambil total produk.")
+        devError(err)
+        throw err
+    }
+}
+
 export default async function getProductsQuery(
     from: number = 0,
     to: number = 14

@@ -11,7 +11,6 @@ import {
     ResizablePanelGroup,
 } from "@/components/ui/resizable"
 import useOrderCart from "@/hooks/order/use-order-cart"
-import { useSidebar } from "@/components/ui/sidebar"
 
 export default function NewOrderPage() {
     const [isLoading, setIsLoading] = useState(true)
@@ -35,7 +34,7 @@ export default function NewOrderPage() {
         return () => {
             replaceProducts([])
         }
-    }, [])
+    }, [replaceProducts, fetchProduct])
 
     // State Cart
     const [showCart, setShowCart] = useState(false)
@@ -48,8 +47,7 @@ export default function NewOrderPage() {
                     {/* Header */}
                     <NavbarNewOrder
                         setShowCart={setShowCart}
-                        setIsLoading={setIsLoading}
-                        searchProduct={searchProduct}
+                        onSearch={searchProduct}
                     />
 
                     {/* Porodct */}

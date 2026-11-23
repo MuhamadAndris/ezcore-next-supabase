@@ -1,14 +1,9 @@
-import {
-    IconPlus,
-    IconCameraPlus,
-    IconCameraRotate,
-    IconX,
-} from "@tabler/icons-react"
+import { IconPlus, IconCameraPlus } from "@tabler/icons-react"
 import { ButtonGroup } from "../ui/button-group"
 import { Field, FieldLabel } from "../ui/field"
 import { Button } from "../ui/button"
 import Image from "next/image"
-import { ChangeEvent, memo, RefObject, useRef } from "react"
+import { ChangeEvent, memo, useRef } from "react"
 import { devLog, formatNumber } from "@/lib/utils"
 import SelectUser from "./select-user"
 import CartItem from "./cart-item"

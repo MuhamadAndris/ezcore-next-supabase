@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useRef, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 import {
     Card,
     CardAction,
@@ -55,21 +55,15 @@ const TableProducts = () => {
         keyRef.current = k
         searchProduct(k)
     }
-    const refreshData = async () => {
-        const keyword = keyRef.current
-        if (keyword.length > 0) {
-            searchProduct(keyword)
-        } else {
-            const results = await fetchProduct()
-
-            if (!results || results.length === 0) return
-            replaceProducts(results)
-        }
-    }
+    const refreshData = useCallback(async () => {
+        const results = await fetchProduct()
+        if (!results || results.length === 0) return
+        replaceProducts(results)
+    }, [fetchProduct, replaceProducts])
 
     useEffect(() => {
         refreshData()
-    }, [fetchProduct, replaceProducts])
+    }, [refreshData])
     return (
         <Card className="gap-0 p-0">
             <CardHeader className="items-center flex justify-between py-2 gap-2">

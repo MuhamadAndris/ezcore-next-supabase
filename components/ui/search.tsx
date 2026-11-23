@@ -2,7 +2,6 @@ import { IconRefresh, IconSearch } from "@tabler/icons-react"
 import { Button } from "./button"
 import { InputGroup, InputGroupInput, InputGroupAddon } from "./input-group"
 import { useEffect, useRef, useState } from "react"
-import { cn } from "@/lib/utils"
 import { useMinimumLoading } from "@/hooks/use-minimum-loading"
 
 type SearchInputProps = Omit<

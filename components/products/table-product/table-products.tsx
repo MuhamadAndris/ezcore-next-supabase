@@ -19,6 +19,12 @@ import ItemSkeleton from "../../skeleton/item"
 import { Skeleton } from "@/components/ui/skeleton"
 import { SearchButton, SearchInput } from "@/components/ui/search"
 import { devLog } from "@/lib/utils"
+import { IconPlus } from "@tabler/icons-react"
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipTrigger,
+} from "@/components/ui/tooltip"
 
 export type ColumnVisible = {
     label: string
@@ -69,12 +75,21 @@ const TableProducts = () => {
                         onClick={() => setShowSearchInput((prev) => !prev)}
                         isSearchOpen={showSearchInput}
                     />
-                    <Button>Tambah Produk</Button>
+                    <Tooltip>
+                        <TooltipTrigger
+                            render={
+                                <Button>
+                                    <IconPlus />
+                                </Button>
+                            }
+                        />
+                        <TooltipContent>Buat Produk Baru</TooltipContent>
+                    </Tooltip>
                 </CardAction>
             </CardHeader>
             <Separator />
             {isLoading ? (
-                <ItemSkeleton qty={3} />
+                <ItemSkeleton qty={16} />
             ) : (
                 <CardContent className="p-0">
                     {!isLoading && products.length > 0 ? (

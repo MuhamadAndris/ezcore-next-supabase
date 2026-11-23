@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import {
     Card,
     CardAction,
@@ -18,13 +18,15 @@ import { Item, ItemContent, ItemTitle } from "../../ui/item"
 import ItemSkeleton from "../../skeleton/item"
 import { Skeleton } from "@/components/ui/skeleton"
 import { SearchButton, SearchInput } from "@/components/ui/search"
-import { devLog } from "@/lib/utils"
-import { IconPlus } from "@tabler/icons-react"
+import { cn, devLog } from "@/lib/utils"
+import { IconPlus, IconRefresh } from "@tabler/icons-react"
 import {
     Tooltip,
     TooltipContent,
     TooltipTrigger,
 } from "@/components/ui/tooltip"
+import FilterProduct from "./table-filter"
+import { useMinimumLoading } from "@/hooks/use-minimum-loading"
 
 export type ColumnVisible = {
     label: string
@@ -45,25 +47,37 @@ const TableProducts = () => {
         replaceProducts,
         searchProduct,
     } = useProducts([])
+    const showSpinner = useMinimumLoading(isLoading, 900)
 
-    useEffect(() => {
-        const loadData = async () => {
+    const keyRef = useRef("")
+
+    const handleSearch = (k: string) => {
+        keyRef.current = k
+        searchProduct(k)
+    }
+    const refreshData = async () => {
+        const keyword = keyRef.current
+        if (keyword.length > 0) {
+            searchProduct(keyword)
+        } else {
             const results = await fetchProduct()
 
             if (!results || results.length === 0) return
             replaceProducts(results)
         }
+    }
 
-        loadData()
+    useEffect(() => {
+        refreshData()
     }, [fetchProduct, replaceProducts])
     return (
-        <Card className="gap-0">
-            <CardHeader className="items-center flex justify-between pb-2 gap-2">
+        <Card className="gap-0 p-0">
+            <CardHeader className="items-center flex justify-between py-2 gap-2">
                 <CardTitle className="w-full">
                     {showSearchInput ? (
                         <SearchInput
                             placeholder="Cari SKU atau nama produk..."
-                            onSearch={(keyword) => searchProduct(keyword)}
+                            onSearch={handleSearch}
                             onClose={() => setShowSearchInput(false)}
                         />
                     ) : (
@@ -71,10 +85,38 @@ const TableProducts = () => {
                     )}
                 </CardTitle>
                 <CardAction className="flex gap-1 items-center">
+                    {/* Search Product */}
                     <SearchButton
-                        onClick={() => setShowSearchInput((prev) => !prev)}
+                        onClick={() => {
+                            if (showSearchInput) keyRef.current = ""
+                            setShowSearchInput((prev) => !prev)
+                        }}
                         isSearchOpen={showSearchInput}
                     />
+                    <FilterProduct />
+
+                    {/* Refresh button */}
+                    <Tooltip>
+                        <TooltipTrigger
+                            render={
+                                <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    onClick={refreshData}
+                                >
+                                    <IconRefresh
+                                        className={cn(
+                                            showSpinner &&
+                                                "animate-spin motion-reduce:animate-none"
+                                        )}
+                                    />
+                                </Button>
+                            }
+                        />
+                        <TooltipContent>Refresh</TooltipContent>
+                    </Tooltip>
+
+                    {/* Create new produk */}
                     <Tooltip>
                         <TooltipTrigger
                             render={

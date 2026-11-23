@@ -1,7 +1,9 @@
-import { IconSearch } from "@tabler/icons-react"
+import { IconRefresh, IconSearch } from "@tabler/icons-react"
 import { Button } from "./button"
 import { InputGroup, InputGroupInput, InputGroupAddon } from "./input-group"
 import { useEffect, useRef, useState } from "react"
+import { cn } from "@/lib/utils"
+import { useMinimumLoading } from "@/hooks/use-minimum-loading"
 
 type SearchInputProps = Omit<
     React.ComponentProps<typeof InputGroupInput>,
@@ -10,11 +12,13 @@ type SearchInputProps = Omit<
     onSearch: (keyword: string) => void | Promise<void>
     onClose?: () => void
     debounceMs?: number
+    isLoading?: boolean
 }
 
 export function SearchInput({
     onClose,
     onSearch,
+    isLoading,
     debounceMs = 500,
     placeholder = "Cari...",
     ...inputProps
@@ -27,7 +31,7 @@ export function SearchInput({
     useEffect(() => {
         onSearchRef.current = onSearch
     })
-    useEffect(() => clearTimeout(timeoutRef.current), [])
+    useEffect(() => () => clearTimeout(timeoutRef.current), [])
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const next = e.target.value
@@ -45,6 +49,8 @@ export function SearchInput({
         if (value.trim()) return // masih ada keyword → jangan tutup
         onClose?.()
     }
+
+    const showSpinner = useMinimumLoading(isLoading ?? false, 600)
     return (
         <InputGroup>
             <InputGroupInput
@@ -60,6 +66,11 @@ export function SearchInput({
             <InputGroupAddon>
                 <IconSearch />
             </InputGroupAddon>
+            {showSpinner && (
+                <InputGroupAddon align="inline-end">
+                    <IconRefresh className="animate-spin motion-reduce:animate-none" />
+                </InputGroupAddon>
+            )}
         </InputGroup>
     )
 }

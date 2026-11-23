@@ -19,7 +19,7 @@ import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 
-export default function TableFilter() {
+export default function FilterProduct() {
     const [category, setCategory] = useState("Semua")
     const [brand, setBrand] = useState("Semua")
 
@@ -30,7 +30,7 @@ export default function TableFilter() {
             <DropdownMenuTrigger
                 render={
                     <Button
-                        variant="outline"
+                        variant="ghost"
                         className={cn(isFilter && "bg-accent")}
                     >
                         <IconFilter />

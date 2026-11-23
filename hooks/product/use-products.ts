@@ -93,20 +93,24 @@ export default function useProducts(initialData: Product[]) {
         }
     }, [fetchProduct])
 
+    const searchIdRef = useRef(0)
+
     const searchProduct = useCallback(
         async (keyword: string) => {
+            const id = ++searchIdRef.current
+            setIsLoading(true)
             try {
                 const result = await searchProductQuery(keyword, 0)
-                if (result.length > 0) {
-                    replaceProducts(result)
-                    setHasMore(false)
-                }
+                if (id !== searchIdRef.current) return
+                replaceProducts(result)
             } catch {
                 toast.add({
                     type: "error",
                     description:
                         "Gagal mencari produk. Periksa koneksi internet kamu.",
                 })
+            } finally {
+                if (id === searchIdRef.current) setIsLoading(false)
             }
         },
         [replaceProducts]

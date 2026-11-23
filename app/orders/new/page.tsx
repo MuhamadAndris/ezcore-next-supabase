@@ -13,20 +13,20 @@ import {
 import useOrderCart from "@/hooks/order/use-order-cart"
 
 export default function NewOrderPage() {
-    const [isLoading, setIsLoading] = useState(true)
-
     // State Produk
-    const { products, replaceProducts, fetchProduct, searchProduct } =
-        useProducts([])
+    const {
+        products,
+        replaceProducts,
+        fetchProduct,
+        searchProduct,
+        isLoading,
+    } = useProducts([])
 
     useEffect(() => {
         const firstLoad = async () => {
-            try {
-                const result = await fetchProduct()
-                if (result) replaceProducts(result)
-            } finally {
-                setIsLoading(false)
-            }
+            const result = await fetchProduct()
+            if (!result || result.length === 0) return
+            replaceProducts(result)
         }
 
         firstLoad()
@@ -46,6 +46,7 @@ export default function NewOrderPage() {
                 <div className="flex h-full min-h-0 flex-col">
                     {/* Header */}
                     <NavbarNewOrder
+                        isLoading={isLoading}
                         setShowCart={setShowCart}
                         onSearch={searchProduct}
                     />
@@ -53,7 +54,6 @@ export default function NewOrderPage() {
                     {/* Porodct */}
                     <div className="min-h-0 flex-1 overflow-auto pt-3">
                         <ProductGrid
-                            isLoading={isLoading}
                             products={products}
                             onAddToCart={(product) => {
                                 cart.addCartItem(product)

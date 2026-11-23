@@ -9,10 +9,11 @@ import { devLog } from "@/lib/utils"
 interface NavbarNewOrderProps {
     setShowCart: Dispatch<SetStateAction<boolean>>
     onSearch: (keyword: string) => Promise<void>
+    isLoading: boolean
 }
 
 const NavbarNewOrder = memo(
-    ({ setShowCart, onSearch }: NavbarNewOrderProps) => {
+    ({ setShowCart, onSearch, isLoading }: NavbarNewOrderProps) => {
         devLog("render navbar")
         const { open, setOpen } = useSidebar()
         const [showSearchInput, setShowSearchInput] = useState(true)
@@ -40,6 +41,7 @@ const NavbarNewOrder = memo(
                         <BackButton />
                         {showSearchInput ? (
                             <SearchInput
+                                isLoading={isLoading}
                                 placeholder="Cari SKU atau nama produk..."
                                 onSearch={onSearch}
                                 onClose={() => setShowSearchInput(false)}
@@ -50,15 +52,14 @@ const NavbarNewOrder = memo(
                     </div>
                     <div>
                         <SearchButton
-                            onClick={() => setShowCart((prev) => !prev)}
+                            isSearchOpen={showSearchInput}
+                            onClick={() => setShowSearchInput((prev) => !prev)}
                         />
                         <Button onClick={handleShowCart} className="relative">
-                            {/* <div className="relative"> */}
                             <IconShoppingCart />
                             <span className="absolute -top-2 -right-1 bg-secondary rounded-full text-xs aspect-square w-5 flex justify-center items-center">
                                 2
                             </span>
-                            {/* </div> */}
                         </Button>
                     </div>
                 </div>

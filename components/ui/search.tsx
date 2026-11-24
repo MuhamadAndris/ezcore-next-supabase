@@ -1,8 +1,9 @@
-import { IconRefresh, IconSearch } from "@tabler/icons-react"
+import { IconSearch } from "@tabler/icons-react"
 import { Button } from "./button"
 import { InputGroup, InputGroupInput, InputGroupAddon } from "./input-group"
 import { useEffect, useRef, useState } from "react"
 import { useMinimumLoading } from "@/hooks/use-minimum-loading"
+import { Spinner } from "./spinner"
 
 type SearchInputProps = Omit<
     React.ComponentProps<typeof InputGroupInput>,
@@ -63,11 +64,7 @@ export function SearchInput({
             />
 
             <InputGroupAddon>
-                {showSpinner ? (
-                    <IconRefresh className="animate-spin motion-reduce:animate-none" />
-                ) : (
-                    <IconSearch />
-                )}
+                {showSpinner ? <Spinner /> : <IconSearch />}
             </InputGroupAddon>
         </InputGroup>
     )

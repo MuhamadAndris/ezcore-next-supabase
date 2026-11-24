@@ -11,9 +11,9 @@ import { devLog, formatNumber } from "@/lib/utils"
 import { Popover, PopoverTrigger } from "../../ui/popover"
 import {
     IconDotsVertical,
-    IconSelect,
     IconEdit,
     IconTrash,
+    IconSelectAll,
 } from "@tabler/icons-react"
 import { cn } from "cn"
 import { PopoverContent } from "../../ui/popover"
@@ -23,9 +23,10 @@ import { Button } from "../../ui/button"
 
 interface TableRowProps {
     product: Product
+    onSelected: (p: Product) => void
 }
 
-const TableRow = memo(({ product }: TableRowProps) => {
+const TableRow = memo(({ product, onSelected }: TableRowProps) => {
     devLog("render table row")
     const [selected, setSelected] = useState<number | null>(null)
     const productDesc = [
@@ -41,8 +42,19 @@ const TableRow = memo(({ product }: TableRowProps) => {
                 "flex-nowrap",
                 selected === product.id ? "bg-muted" : "hover:bg-muted"
             )}
+            onClick={() => {
+                if (selected) {
+                    setSelected(null)
+                } else {
+                    onSelected(product)
+                }
+            }}
         >
-            <ItemMedia variant="image" className="relative">
+            <ItemMedia
+                variant="image"
+                className="relative"
+                onClick={(e) => e.stopPropagation()}
+            >
                 <Image
                     alt="dumy product"
                     src="https://s1.lojelcdn.com/wp-content/uploads/2017/11/Lojel-Voja-WarmGray-Front-Small.jpg"
@@ -58,7 +70,10 @@ const TableRow = memo(({ product }: TableRowProps) => {
                     Rp. {formatNumber(product.normalPrice)} /pcs
                 </ItemDescription>
             </ItemContent>
-            <ItemActions className="shrink-0">
+            <ItemActions
+                className="shrink-0"
+                onClick={(e) => e.stopPropagation()}
+            >
                 <Popover
                     open={selected === product.id}
                     onOpenChange={(open) =>
@@ -81,7 +96,7 @@ const TableRow = memo(({ product }: TableRowProps) => {
                             size="sm"
                             className="justify-start"
                         >
-                            <IconSelect />
+                            <IconSelectAll />
                             <span>Pilih</span>
                         </Button>
                         <Button

@@ -11,12 +11,24 @@ const isSameProduct = (a: Product, b: Product) =>
     productKeys.every((key) => a[key] === b[key])
 
 export default function useProducts() {
+    const [openDetail, setOpenDetail] = useState(false)
     const currentpage = useRef(1)
     const [total, setTotal] = useState(0)
     const [filter, setFilter] = useState<ProductFilter>({})
     const [products, setProducts] = useState<Product[]>([])
     const [keyword, setKeyword] = useState("")
     const [isLoading, setIsLoading] = useState(false)
+    const [selectedProduct, setSelectedProduct] = useState<Product>({
+        id: 0,
+        sku: "",
+        name: "",
+        brand: "",
+        color: null,
+        size: null,
+        normalPrice: 0,
+        category: "",
+        subCategory: "",
+    })
     const loadingRef = useRef(false)
 
     const replaceProducts = useCallback((newProducts: Product[]) => {
@@ -103,6 +115,11 @@ export default function useProducts() {
         await fetchProduct({}, "")
     }, [fetchProduct])
 
+    const selectProduct = useCallback((product: Product) => {
+        setOpenDetail(true)
+        setSelectedProduct(product)
+    }, [])
+
     return {
         total,
         products,
@@ -114,5 +131,9 @@ export default function useProducts() {
         fetchProduct,
         onSearch,
         onFilter,
+        selectProduct,
+        productSelected: selectedProduct,
+        isOpen: openDetail,
+        onOpenChange: setOpenDetail,
     }
 }

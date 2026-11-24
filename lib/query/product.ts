@@ -61,14 +61,17 @@ export default async function getProductsQuery(
             )
         }
 
-        const { data, error } = await query
+        const { data, error, count } = await query
             .order("createdAt", { ascending: false })
             .order("id", { ascending: false })
             .range(from, to)
 
         if (error) throw error
 
-        return productSchema.array().parse(data)
+        return {
+            products: productSchema.array().parse(data),
+            count: count ?? 0,
+        }
     } catch (err) {
         devLog("Gagal cari produk")
         devError(err)

@@ -15,13 +15,19 @@ import useOrderCart from "@/hooks/order/use-order-cart"
 export default function NewOrderPage() {
     // State Produk
     const { products, isLoading, onSearch, refreshData, onFilter } =
-        useProducts([])
+        useProducts()
 
     // State Cart
     const [showCart, setShowCart] = useState(false)
     const { cart } = useOrderCart()
 
-    useEffect(() => refreshData(), [refreshData])
+    useEffect(() => {
+        const firstLoad = async () => {
+            await refreshData()
+        }
+
+        firstLoad()
+    }, [refreshData])
 
     return (
         <ResizablePanelGroup className="flex w-full h-full min-h-0 bg-popover">

@@ -43,11 +43,22 @@ const TableProducts = () => {
         isLoading,
         refreshData,
         hasMore,
-        // loadMore,
+        loadMore,
         onSearch,
         onFilter,
-    } = useProducts([])
+    } = useProducts()
     const showSpinner = useMinimumLoading(isLoading, 900)
+    const [showSkeleton, setShowSkeleton] = useState(false)
+
+    const handleRefresh = async () => {
+        setShowSearchInput(false)
+        setShowSkeleton(true)
+        try {
+            await refreshData()
+        } finally {
+            setShowSkeleton(false)
+        }
+    }
 
     return (
         <Card className="gap-0 p-0">
@@ -79,10 +90,7 @@ const TableProducts = () => {
                                 <Button
                                     variant="ghost"
                                     size="icon"
-                                    onClick={() => {
-                                        setShowSearchInput(false)
-                                        refreshData()
-                                    }}
+                                    onClick={handleRefresh}
                                 >
                                     <IconRefresh
                                         className={cn(
@@ -110,11 +118,11 @@ const TableProducts = () => {
                 </CardAction>
             </CardHeader>
             <Separator />
-            {isLoading ? (
+            {showSkeleton ? (
                 <ItemSkeleton qty={16} />
             ) : (
                 <CardContent className="p-0">
-                    {!isLoading && products.length > 0 ? (
+                    {products.length > 0 ? (
                         products.map((product) => (
                             <TableRow key={product.id} product={product} />
                         ))
@@ -140,9 +148,9 @@ const TableProducts = () => {
                 )}
                 {hasMore && (
                     <CardAction>
-                        {/* <Button variant="outline" onClick={loadMore}>
+                        <Button variant="outline" onClick={loadMore}>
                             Muat lebih banyak
-                        </Button> */}
+                        </Button>
                     </CardAction>
                 )}
             </CardFooter>

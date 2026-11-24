@@ -2,69 +2,69 @@ import { Product, ProductFilter, productSchema } from "@/schemas/product.schema"
 import { useCallback, useRef, useState } from "react"
 import getProductsQuery from "@/lib/query/product"
 import { toast } from "@/components/ui/toast"
-import useTotalProducts from "./use-total-products"
 
-const PAGE_SIZE = 15
+const PAGE_SIZE = 14
 
 const productKeys = Object.keys(productSchema.shape) as (keyof Product)[]
 
 const isSameProduct = (a: Product, b: Product) =>
     productKeys.every((key) => a[key] === b[key])
 
-export default function useProducts(initialData: Product[]) {
-    const total = useTotalProducts()
-    const [filter, setFilter] = useState<ProductFilter>({})
+export default function useProducts() {
     const currentpage = useRef(1)
-    const [products, setProducts] = useState<Product[]>(initialData)
-    const [hasMore, setHasMore] = useState<boolean>(
-        initialData.length === PAGE_SIZE
-    )
+    const [total, setTotal] = useState(0)
+    const [filter, setFilter] = useState<ProductFilter>({})
+    const [products, setProducts] = useState<Product[]>([])
     const [keyword, setKeyword] = useState("")
     const [isLoading, setIsLoading] = useState(false)
     const loadingRef = useRef(false)
 
-    const replaceProducts = useCallback((newProduts: Product[]) => {
+    const replaceProducts = useCallback((newProducts: Product[]) => {
         setProducts((prev) => {
             const prevById = new Map(prev.map((p) => [p.id, p]))
-
-            const merged = newProduts.map((newItem) => {
-                const oldItem = prevById.get(newItem.id)
-
-                return oldItem && isSameProduct(oldItem, newItem)
-                    ? oldItem
-                    : newItem
+            const merged = newProducts.map((n) => {
+                const old = prevById.get(n.id)
+                return old && isSameProduct(old, n) ? old : n
             })
-
             const identical =
                 merged.length === prev.length &&
                 merged.every((item, i) => item === prev[i])
-
             return identical ? prev : merged
         })
-
-        currentpage.current = 1
-        setHasMore(false)
     }, [])
 
     const fetchProduct = useCallback(
-        async (nextFilter: ProductFilter, nextKeyword: string) => {
+        async (nextFilter: ProductFilter, nextKeyword: string, page = 1) => {
             if (loadingRef.current) return
             loadingRef.current = true
             setIsLoading(true)
             try {
-                const results = await getProductsQuery(
-                    0,
-                    PAGE_SIZE,
+                const from = (page - 1) * PAGE_SIZE
+                const to = page * PAGE_SIZE - 1
+                const { products: result, count } = await getProductsQuery(
+                    from,
+                    to,
                     nextFilter,
                     nextKeyword
                 )
-                replaceProducts(results)
+
+                if (page === 1) {
+                    replaceProducts(result)
+                } else {
+                    setProducts((prev) => {
+                        const ids = new Set(prev.map((p) => p.id))
+                        return [
+                            ...prev,
+                            ...result.filter((p) => !ids.has(p.id)),
+                        ]
+                    })
+                }
+
+                currentpage.current = page
+                setTotal(count)
             } catch {
                 toast.add({
-                    title: "Gagal memuat produk",
-                    type: "error",
-                    description:
-                        "Gagal mencari produk. Periksa koneksi internet kamu.",
+                    /* ... */
                 })
             } finally {
                 loadingRef.current = false
@@ -74,32 +74,12 @@ export default function useProducts(initialData: Product[]) {
         [replaceProducts]
     )
 
-    // const loadMore = useCallback(async () => {
-    //     if (loadingRef.current) return
-    //     loadingRef.current = true
-    //     setIsLoading(true)
-    //     try {
-    //         const nextPage = currentpage.current + 1
-    //         const from = (nextPage - 1) * PAGE_SIZE
-    //         const to = nextPage * PAGE_SIZE - 1
+    const loadMore = useCallback(
+        () => fetchProduct(filter, keyword, currentpage.current + 1),
+        [fetchProduct, filter, keyword]
+    )
 
-    //         const result = await fetchProduct(from, to)
-    //         if (result) {
-    //             setProducts((prev) => [...prev, ...result]) // note: cek dulu harusnya agar tidak ada data yang duplikat
-    //             currentpage.current = nextPage
-    //             if (result.length < PAGE_SIZE) setHasMore(false)
-    //         }
-    //     } catch {
-    //         toast.add({
-    //             type: "error",
-    //             description:
-    //                 "Gagal mencari produk. Periksa koneksi internet kamu.",
-    //         })
-    //     } finally {
-    //         loadingRef.current = false
-    //         setIsLoading(false)
-    //     }
-    // }, [fetchProduct])
+    const hasMore = products.length < total
 
     const onSearch = useCallback(
         (kw: string) => {
@@ -117,10 +97,10 @@ export default function useProducts(initialData: Product[]) {
         [keyword, fetchProduct]
     )
 
-    const refreshData = useCallback(() => {
+    const refreshData = useCallback(async () => {
         setKeyword("")
         setFilter({})
-        fetchProduct({}, "")
+        await fetchProduct({}, "")
     }, [fetchProduct])
 
     return {
@@ -129,7 +109,7 @@ export default function useProducts(initialData: Product[]) {
         hasMore,
         isLoading,
         filter,
-        // loadMore,
+        loadMore,
         refreshData,
         fetchProduct,
         onSearch,

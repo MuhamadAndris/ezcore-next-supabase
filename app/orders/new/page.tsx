@@ -14,31 +14,14 @@ import useOrderCart from "@/hooks/order/use-order-cart"
 
 export default function NewOrderPage() {
     // State Produk
-    const {
-        products,
-        replaceProducts,
-        fetchProduct,
-        searchProduct,
-        isLoading,
-    } = useProducts([])
-
-    useEffect(() => {
-        const firstLoad = async () => {
-            const result = await fetchProduct()
-            if (!result || result.length === 0) return
-            replaceProducts(result)
-        }
-
-        firstLoad()
-
-        return () => {
-            replaceProducts([])
-        }
-    }, [replaceProducts, fetchProduct])
+    const { products, isLoading, onSearch, refreshData, onFilter } =
+        useProducts([])
 
     // State Cart
     const [showCart, setShowCart] = useState(false)
     const { cart } = useOrderCart()
+
+    useEffect(() => refreshData(), [refreshData])
 
     return (
         <ResizablePanelGroup className="flex w-full h-full min-h-0 bg-popover">
@@ -48,7 +31,8 @@ export default function NewOrderPage() {
                     <NavbarNewOrder
                         isLoading={isLoading}
                         setShowCart={setShowCart}
-                        onSearch={searchProduct}
+                        onSearch={onSearch}
+                        onFilter={onFilter}
                     />
 
                     {/* Porodct */}

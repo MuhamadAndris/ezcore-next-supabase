@@ -12,4 +12,9 @@ export const productSchema = z.object({
     subCategory: z.string(),
 })
 
+export const productFilterSchema = productSchema
+    .pick({ category: true, brand: true })
+    .partial()
+
+export type ProductFilter = z.infer<typeof productFilterSchema>
 export type Product = z.infer<typeof productSchema>

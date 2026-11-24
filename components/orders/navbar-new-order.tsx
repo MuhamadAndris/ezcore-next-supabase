@@ -5,15 +5,18 @@ import { useSidebar } from "../ui/sidebar"
 import BackButton from "../ui/back-button"
 import { SearchButton, SearchInput } from "../ui/search"
 import { devLog } from "@/lib/utils"
+import FilterProductTriggerd from "../products/table-product/filter-product"
+import { ProductFilter } from "@/schemas/product.schema"
 
 interface NavbarNewOrderProps {
     setShowCart: Dispatch<SetStateAction<boolean>>
-    onSearch: (keyword: string) => Promise<void>
+    onSearch: (keyword: string) => void
     isLoading: boolean
+    onFilter: (v: ProductFilter) => void
 }
 
 const NavbarNewOrder = memo(
-    ({ setShowCart, onSearch, isLoading }: NavbarNewOrderProps) => {
+    ({ setShowCart, onSearch, isLoading, onFilter }: NavbarNewOrderProps) => {
         devLog("render navbar")
         const { open, setOpen } = useSidebar()
         const [showSearchInput, setShowSearchInput] = useState(true)
@@ -50,11 +53,12 @@ const NavbarNewOrder = memo(
                             <h2 className="font-bold text-lg">Buat Order</h2>
                         )}
                     </div>
-                    <div>
+                    <div className="flex gap-1">
                         <SearchButton
                             isSearchOpen={showSearchInput}
                             onClick={() => setShowSearchInput((prev) => !prev)}
                         />
+                        <FilterProductTriggerd onFilter={onFilter} />
                         <Button onClick={handleShowCart} className="relative">
                             <IconShoppingCart />
                             <span className="absolute -top-2 -right-1 bg-secondary rounded-full text-xs aspect-square w-5 flex justify-center items-center">

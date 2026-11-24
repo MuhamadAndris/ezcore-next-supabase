@@ -45,7 +45,7 @@ export function SearchInput({
     const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
         const next = e.relatedTarget as HTMLElement | null
         if (next?.closest("[data-search-trigger]")) return
-        if (value.trim()) return // masih ada keyword → jangan tutup
+        if (value.trim()) return
         onClose?.()
     }
 
@@ -63,13 +63,12 @@ export function SearchInput({
             />
 
             <InputGroupAddon>
-                <IconSearch />
-            </InputGroupAddon>
-            {showSpinner && (
-                <InputGroupAddon align="inline-end">
+                {showSpinner ? (
                     <IconRefresh className="animate-spin motion-reduce:animate-none" />
-                </InputGroupAddon>
-            )}
+                ) : (
+                    <IconSearch />
+                )}
+            </InputGroupAddon>
         </InputGroup>
     )
 }

@@ -1,6 +1,6 @@
 "use client"
 
-import { useCallback, useEffect, useRef, useState } from "react"
+import { useState } from "react"
 import {
     Card,
     CardAction,
@@ -25,7 +25,7 @@ import {
     TooltipContent,
     TooltipTrigger,
 } from "@/components/ui/tooltip"
-import FilterProduct from "./table-filter"
+import FilterProductTriggerd from "./filter-product"
 import { useMinimumLoading } from "@/hooks/use-minimum-loading"
 
 export type ColumnVisible = {
@@ -41,37 +41,23 @@ const TableProducts = () => {
         total,
         products,
         isLoading,
-        fetchProduct,
+        refreshData,
         hasMore,
-        loadMore,
-        replaceProducts,
-        searchProduct,
+        // loadMore,
+        onSearch,
+        onFilter,
     } = useProducts([])
     const showSpinner = useMinimumLoading(isLoading, 900)
 
-    const keyRef = useRef("")
-
-    const handleSearch = (k: string) => {
-        keyRef.current = k
-        searchProduct(k)
-    }
-    const refreshData = useCallback(async () => {
-        const results = await fetchProduct()
-        if (!results || results.length === 0) return
-        replaceProducts(results)
-    }, [fetchProduct, replaceProducts])
-
-    useEffect(() => {
-        refreshData()
-    }, [refreshData])
     return (
         <Card className="gap-0 p-0">
             <CardHeader className="items-center flex justify-between py-2 gap-2">
                 <CardTitle className="w-full">
                     {showSearchInput ? (
                         <SearchInput
+                            isLoading={showSpinner}
                             placeholder="Cari SKU atau nama produk..."
-                            onSearch={handleSearch}
+                            onSearch={onSearch}
                             onClose={() => setShowSearchInput(false)}
                         />
                     ) : (
@@ -81,13 +67,10 @@ const TableProducts = () => {
                 <CardAction className="flex gap-1 items-center">
                     {/* Search Product */}
                     <SearchButton
-                        onClick={() => {
-                            if (showSearchInput) keyRef.current = ""
-                            setShowSearchInput((prev) => !prev)
-                        }}
+                        onClick={() => setShowSearchInput((prev) => !prev)}
                         isSearchOpen={showSearchInput}
                     />
-                    <FilterProduct />
+                    <FilterProductTriggerd onFilter={onFilter} />
 
                     {/* Refresh button */}
                     <Tooltip>
@@ -96,7 +79,10 @@ const TableProducts = () => {
                                 <Button
                                     variant="ghost"
                                     size="icon"
-                                    onClick={refreshData}
+                                    onClick={() => {
+                                        setShowSearchInput(false)
+                                        refreshData()
+                                    }}
                                 >
                                     <IconRefresh
                                         className={cn(
@@ -154,9 +140,9 @@ const TableProducts = () => {
                 )}
                 {hasMore && (
                     <CardAction>
-                        <Button variant="outline" onClick={loadMore}>
+                        {/* <Button variant="outline" onClick={loadMore}>
                             Muat lebih banyak
-                        </Button>
+                        </Button> */}
                     </CardAction>
                 )}
             </CardFooter>

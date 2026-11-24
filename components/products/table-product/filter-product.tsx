@@ -15,13 +15,28 @@ import {
     DropdownMenuSubTrigger,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
+import { ProductFilter } from "@/schemas/product.schema"
 
-export default function FilterProduct() {
+interface FilterProdctProps {
+    onFilter: (v: ProductFilter) => void
+}
+
+const categorys = ["Semua", "Luggage Accessories", "Travel Bags"]
+const brands = ["Semua", "LOJEL", "BAGASI"]
+
+export default function FilterProductTriggerd({ onFilter }: FilterProdctProps) {
     const [category, setCategory] = useState("Semua")
     const [brand, setBrand] = useState("Semua")
+
+    useEffect(() => {
+        onFilter({
+            brand: brand === "Semua" ? undefined : brand,
+            category: category === "Semua" ? undefined : category,
+        })
+    }, [category, brand, onFilter])
 
     const isFilter = category !== "Semua" || brand !== "Semua"
 
@@ -51,15 +66,14 @@ export default function FilterProduct() {
                                     value={category}
                                     onValueChange={setCategory}
                                 >
-                                    <DropdownMenuRadioItem value="Semua">
-                                        Semua
-                                    </DropdownMenuRadioItem>
-                                    <DropdownMenuRadioItem value="Travel">
-                                        Travel
-                                    </DropdownMenuRadioItem>
-                                    <DropdownMenuRadioItem value="Non Travel">
-                                        Non Travel
-                                    </DropdownMenuRadioItem>
+                                    {categorys.map((c) => (
+                                        <DropdownMenuRadioItem
+                                            key={c}
+                                            value={c}
+                                        >
+                                            {c}
+                                        </DropdownMenuRadioItem>
+                                    ))}
                                 </DropdownMenuRadioGroup>
                             </DropdownMenuSubContent>
                         </DropdownMenuPortal>
@@ -79,15 +93,14 @@ export default function FilterProduct() {
                                     value={brand}
                                     onValueChange={setBrand}
                                 >
-                                    <DropdownMenuRadioItem value="Semua">
-                                        Semua
-                                    </DropdownMenuRadioItem>
-                                    <DropdownMenuRadioItem value="LOJEL">
-                                        LOJEL
-                                    </DropdownMenuRadioItem>
-                                    <DropdownMenuRadioItem value="BAGASI">
-                                        BAGASI
-                                    </DropdownMenuRadioItem>
+                                    {brands.map((b) => (
+                                        <DropdownMenuRadioItem
+                                            key={b}
+                                            value={b}
+                                        >
+                                            {b}
+                                        </DropdownMenuRadioItem>
+                                    ))}
                                 </DropdownMenuRadioGroup>
                             </DropdownMenuSubContent>
                         </DropdownMenuPortal>

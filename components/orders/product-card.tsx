@@ -10,26 +10,22 @@ import { Button } from "../ui/button"
 import Image from "next/image"
 import { formatNumber } from "@/lib/utils"
 import { memo } from "react"
-import { IconShoppingCartPlus } from "@tabler/icons-react"
-import { toast } from "../ui/toast"
+import {
+    IconShoppingCartCheck,
+    IconShoppingCartPlus,
+} from "@tabler/icons-react"
+import { useMessage } from "@/contexts/message-context"
 
 interface ProductCardProps {
     product: Product
     onAddToCart: (product: Product) => void
 }
-const TOAST_ID = "add-to-cart-toast"
 
 const ProductCard = memo(({ product, onAddToCart }: ProductCardProps) => {
+    const { showMessage } = useMessage()
     const handleClick = () => {
         onAddToCart(product)
-        toast.add({
-            id: TOAST_ID,
-            title: "Dimasukan ke keranjang",
-            description: [product.name, product.size, product.color]
-                .filter(Boolean)
-                .join(" | "),
-            timeout: 2000,
-        })
+        showMessage("Dimasukan ke keranjang", IconShoppingCartCheck)
     }
     return (
         <Card className="pt-0">

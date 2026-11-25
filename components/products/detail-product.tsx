@@ -9,9 +9,11 @@ import {
 } from "../ui/dialog"
 import { Button } from "../ui/button"
 import Image from "next/image"
-import { IconCopy, IconEdit, IconTrash } from "@tabler/icons-react"
+import { IconCheck, IconCopy, IconEdit, IconTrash } from "@tabler/icons-react"
 import { Item, ItemActions, ItemContent } from "../ui/item"
 import { formatNumber } from "@/lib/utils"
+import { useState } from "react"
+import { useMessage } from "@/contexts/message-context"
 
 interface DetailProductProps {
     product: Product
@@ -30,6 +32,37 @@ export default function DetailProductContent({
         product.color,
         product.size,
     ].join(" ")
+
+    const [copied, setCopied] = useState(false)
+    const { showMessage } = useMessage()
+
+    const handleCopy = async () => {
+        try {
+            if (navigator.clipboard?.writeText) {
+                await navigator.clipboard.writeText(product.sku)
+            } else {
+                const textarea = document.createElement("textarea")
+
+                textarea.value = product.sku
+                textarea.style.position = "fixed"
+                textarea.style.opacity = "0"
+
+                document.body.appendChild(textarea)
+                textarea.select()
+
+                const success = document.execCommand("copy")
+                document.body.removeChild(textarea)
+
+                if (!success) throw new Error("Copy failed")
+            }
+
+            setCopied(true)
+            showMessage("SKU berhasil di salin")
+            setTimeout(() => setCopied(false), 2000)
+        } catch (error) {
+            console.error("Gagal menyalin:", error)
+        }
+    }
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogContent>
@@ -62,8 +95,12 @@ export default function DetailProductContent({
                                 SKU
                             </span>
                             <span className="text-xs">{product.sku}</span>
-                            <Button variant="outline" size="icon-xs">
-                                <IconCopy />
+                            <Button
+                                variant="outline"
+                                size="icon-xs"
+                                onClick={handleCopy}
+                            >
+                                {copied ? <IconCheck /> : <IconCopy />}
                             </Button>
                         </span>
                         <span className="flex gap-2 items-center  py-1 px-2 rounded-sm">

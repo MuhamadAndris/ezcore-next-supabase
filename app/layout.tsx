@@ -46,15 +46,11 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
                     disableTransitionOnChange
                 >
                     <SidebarProvider>
-                        <AppSidebar />
-                        <AppMobileSidebar />
-                        {/* <main> */}
                         <TooltipProvider>
                             <MessageProvider>{children}</MessageProvider>
                         </TooltipProvider>
 
                         <Toaster />
-                        {/* </main> */}
                     </SidebarProvider>
                 </ThemeProvider>
             </body>

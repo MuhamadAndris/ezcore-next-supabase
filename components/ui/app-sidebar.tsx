@@ -30,7 +30,7 @@ export const items = [
     },
     {
         title: "Orders",
-        url: "/orders",
+        url: "/orders/dashboard",
         icon: IconShoppingCart,
         iconFilled: IconShoppingCartFilled,
     },

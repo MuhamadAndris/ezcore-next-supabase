@@ -54,7 +54,7 @@ import {
     ItemMedia,
     ItemTitle,
 } from "@/components/ui/item"
-import OrderReceipt from "@/components/orders/order-receipt"
+import OrderLists from "@/components/orders/list-order/order-list"
 
 const items = [
     {
@@ -103,7 +103,7 @@ const salesLastYearConfig = {
     },
 } satisfies ChartConfig
 
-export default function OrderPage() {
+export default function OrderDashbordPage() {
     return (
         <div className="w-full lg:container mx-auto p-2 md:p-4 space-y-4 overflow-auto">
             <div className="flex gap-6 justify-between items-center p-2 ">
@@ -410,29 +410,7 @@ export default function OrderPage() {
                 </div>
             </div>
 
-            <Card className="gap-0">
-                <CardHeader>
-                    <Item>
-                        <ItemMedia>
-                            <IconReceipt />
-                        </ItemMedia>
-                        <ItemContent>
-                            <ItemTitle>Daftar Transaksi</ItemTitle>
-                            <ItemDescription>24 Oktober 2026</ItemDescription>
-                        </ItemContent>
-                    </Item>
-                </CardHeader>
-                <Separator />
-                <CardContent className="p-4">
-                    <div className="border rounded-lg ">
-                        <OrderReceipt />
-                        <Separator />
-                        <OrderReceipt />
-                        <Separator />
-                        <OrderReceipt />
-                    </div>
-                </CardContent>
-            </Card>
+            <OrderLists />
         </div>
     )
 }

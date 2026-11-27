@@ -11,7 +11,7 @@ import { Button } from "../ui/button"
 import Image from "next/image"
 import { IconCheck, IconCopy, IconEdit, IconTrash } from "@tabler/icons-react"
 import { Item, ItemActions, ItemContent } from "../ui/item"
-import { formatNumber } from "@/lib/utils"
+import { devError, formatNumber } from "@/lib/utils"
 import { useState } from "react"
 import { useMessage } from "@/contexts/message-context"
 
@@ -60,7 +60,7 @@ export default function DetailProductContent({
             showMessage("SKU berhasil di salin")
             setTimeout(() => setCopied(false), 2000)
         } catch (error) {
-            console.error("Gagal menyalin:", error)
+            devError("Gagal menyalin:", error)
         }
     }
     return (

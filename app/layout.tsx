@@ -6,8 +6,6 @@ import { ThemeProvider } from "next-themes"
 import { Toaster } from "@/components/ui/toast"
 import { SidebarProvider } from "@/components/ui/sidebar"
 import { TooltipProvider } from "@/components/ui/tooltip"
-import { AppSidebar } from "@/components/ui/app-sidebar"
-import AppMobileSidebar from "@/components/ui/app-mobile-sidebar"
 import { MessageProvider } from "@/contexts/message-context"
 
 const hankenGrotesk = Hanken_Grotesk({

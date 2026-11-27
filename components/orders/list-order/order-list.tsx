@@ -1,5 +1,5 @@
 import { IconChevronDown, IconLuggage } from "@tabler/icons-react"
-import { Card, CardContent, CardFooter, CardHeader } from "../../ui/card"
+import { Card, CardContent, CardHeader } from "../../ui/card"
 import {
     Item,
     ItemMedia,

@@ -1,7 +1,5 @@
-import { IconPlus, ReactNode } from "@tabler/icons-react"
+import { ReactNode } from "@tabler/icons-react"
 import BackButton from "./back-button"
-import { Button } from "./button"
-import Link from "next/link"
 
 interface AppHeaderProps {
     children: ReactNode

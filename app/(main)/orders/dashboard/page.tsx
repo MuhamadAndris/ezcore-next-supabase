@@ -24,7 +24,6 @@ import {
     SelectValue,
 } from "@/components/ui/select"
 import {
-    IconReceipt,
     IconTrendingUp,
     IconUserSquareRounded,
     IconWallet,

@@ -1,4 +1,4 @@
-import { IconArrowLeft, IconChevronLeft } from "@tabler/icons-react"
+import { IconChevronLeft } from "@tabler/icons-react"
 import { Button } from "./button"
 import { useRouter } from "next/navigation"
 

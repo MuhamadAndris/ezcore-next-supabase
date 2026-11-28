@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import {
     Card,
     CardAction,
@@ -11,7 +11,6 @@ import {
     CardTitle,
 } from "../../ui/card"
 import { Button } from "../../ui/button"
-import { Separator } from "../../ui/separator"
 import TableRow from "./table-row"
 import useProducts from "@/hooks/product/use-products"
 import { Item, ItemContent, ItemTitle } from "../../ui/item"
@@ -28,6 +27,7 @@ import {
 import FilterProductTriggerd from "./filter-product"
 import { useMinimumLoading } from "@/hooks/use-minimum-loading"
 import DetailProductContent from "../detail-product"
+import { Spinner } from "@/components/ui/spinner"
 
 export type ColumnVisible = {
     label: string
@@ -53,7 +53,7 @@ const TableProducts = () => {
         isOpen,
     } = useProducts()
     const showSpinner = useMinimumLoading(isLoading, 900)
-    const [showSkeleton, setShowSkeleton] = useState(false)
+    const [showSkeleton, setShowSkeleton] = useState(true)
 
     const handleRefresh = async () => {
         setShowSearchInput(false)
@@ -65,9 +65,21 @@ const TableProducts = () => {
         }
     }
 
+    useEffect(() => {
+        const firstLoad = async () => {
+            try {
+                await refreshData()
+            } finally {
+                setShowSkeleton(false)
+            }
+        }
+
+        firstLoad()
+    }, [refreshData])
+
     return (
-        <Card className="gap-0 p-0">
-            <CardHeader className="items-center flex justify-between py-2 gap-2">
+        <Card className="gap-0 p-0 overflow-visible">
+            <CardHeader className="items-center flex py-2! gap-2 sticky top-0 z-10 bg-popover border-b">
                 <CardTitle className="w-full">
                     {showSearchInput ? (
                         <SearchInput
@@ -122,7 +134,6 @@ const TableProducts = () => {
                     </Tooltip>
                 </CardAction>
             </CardHeader>
-            <Separator />
             {showSkeleton ? (
                 <ItemSkeleton qty={16} />
             ) : (
@@ -157,8 +168,19 @@ const TableProducts = () => {
                 )}
                 {hasMore && (
                     <CardAction>
-                        <Button variant="outline" onClick={loadMore}>
-                            Muat lebih banyak
+                        <Button
+                            variant="outline"
+                            disabled={isLoading}
+                            onClick={loadMore}
+                        >
+                            {isLoading ? (
+                                <>
+                                    <Spinner />
+                                    Memuat...
+                                </>
+                            ) : (
+                                "Muat lebih banyak"
+                            )}
                         </Button>
                     </CardAction>
                 )}

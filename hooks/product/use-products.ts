@@ -2,6 +2,7 @@ import { Product, ProductFilter, productSchema } from "@/schemas/product.schema"
 import { useCallback, useRef, useState } from "react"
 import getProductsQuery from "@/lib/query/product"
 import { toast } from "@/components/ui/toast"
+import { devError } from "@/lib/utils"
 
 const PAGE_SIZE = 14
 
@@ -17,7 +18,7 @@ export default function useProducts() {
     const [filter, setFilter] = useState<ProductFilter>({})
     const [products, setProducts] = useState<Product[]>([])
     const [keyword, setKeyword] = useState("")
-    const [isLoading, setIsLoading] = useState(false)
+    const [isLoading, setIsLoading] = useState(true)
     const [selectedProduct, setSelectedProduct] = useState<Product>({
         id: 0,
         sku: "",
@@ -29,7 +30,7 @@ export default function useProducts() {
         category: "",
         subCategory: "",
     })
-    const loadingRef = useRef(false)
+    const loadingPromiseRef = useRef<Promise<void> | null>(null)
 
     const replaceProducts = useCallback((newProducts: Product[]) => {
         setProducts((prev) => {
@@ -46,41 +47,66 @@ export default function useProducts() {
     }, [])
 
     const fetchProduct = useCallback(
-        async (nextFilter: ProductFilter, nextKeyword: string, page = 1) => {
-            if (loadingRef.current) return
-            loadingRef.current = true
-            setIsLoading(true)
-            try {
-                const from = (page - 1) * PAGE_SIZE
-                const to = page * PAGE_SIZE - 1
-                const { products: result, count } = await getProductsQuery(
-                    from,
-                    to,
-                    nextFilter,
-                    nextKeyword
-                )
+        async (
+            nextFilter: ProductFilter,
+            nextKeyword: string,
+            page = 1
+        ): Promise<void> => {
+            // Cegah request berjalan bersamaan
+            if (loadingPromiseRef.current) {
+                return loadingPromiseRef.current
+            }
 
-                if (page === 1) {
-                    replaceProducts(result)
-                } else {
-                    setProducts((prev) => {
-                        const ids = new Set(prev.map((p) => p.id))
-                        return [
-                            ...prev,
-                            ...result.filter((p) => !ids.has(p.id)),
-                        ]
+            const request = (async () => {
+                setIsLoading(true)
+
+                try {
+                    const from = (page - 1) * PAGE_SIZE
+                    const to = page * PAGE_SIZE - 1
+
+                    const { products, count } = await getProductsQuery(
+                        from,
+                        to,
+                        nextFilter,
+                        nextKeyword
+                    )
+
+                    if (page === 1) {
+                        replaceProducts(products)
+                    } else {
+                        setProducts((prev) => {
+                            const existingIds = new Set(
+                                prev.map((product) => product.id)
+                            )
+
+                            return [
+                                ...prev,
+                                ...products.filter(
+                                    (product) => !existingIds.has(product.id)
+                                ),
+                            ]
+                        })
+                    }
+
+                    currentpage.current = page
+                    setTotal(count)
+                } catch (error) {
+                    devError(error)
+                    toast.add({
+                        type: "error",
+                        description: "Gagal memuat produk",
                     })
+                } finally {
+                    setIsLoading(false)
                 }
+            })()
 
-                currentpage.current = page
-                setTotal(count)
-            } catch {
-                toast.add({
-                    /* ... */
-                })
+            loadingPromiseRef.current = request
+
+            try {
+                await request
             } finally {
-                loadingRef.current = false
-                setIsLoading(false)
+                loadingPromiseRef.current = null
             }
         },
         [replaceProducts]

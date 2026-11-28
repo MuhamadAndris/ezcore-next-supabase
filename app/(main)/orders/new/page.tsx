@@ -11,6 +11,7 @@ import {
     ResizablePanelGroup,
 } from "@/components/ui/resizable"
 import useOrderCart from "@/hooks/order/use-order-cart"
+import SkeletonProductGrid from "@/components/skeleton/product-grid"
 
 export default function NewOrderPage() {
     // State Produk
@@ -20,10 +21,15 @@ export default function NewOrderPage() {
     // State Cart
     const [showCart, setShowCart] = useState(false)
     const { cart } = useOrderCart()
+    const [showSkeleton, setShowSkeleton] = useState(true)
 
     useEffect(() => {
         const firstLoad = async () => {
-            await refreshData()
+            try {
+                await refreshData()
+            } finally {
+                setShowSkeleton(false)
+            }
         }
 
         firstLoad()
@@ -43,12 +49,16 @@ export default function NewOrderPage() {
 
                     {/* Porodct */}
                     <div className="min-h-0 flex-1 overflow-auto pt-3">
-                        <ProductGrid
-                            products={products}
-                            onAddToCart={(product) => {
-                                cart.addCartItem(product)
-                            }}
-                        />
+                        {showSkeleton ? (
+                            <SkeletonProductGrid />
+                        ) : (
+                            <ProductGrid
+                                products={products}
+                                onAddToCart={(product) => {
+                                    cart.addCartItem(product)
+                                }}
+                            />
+                        )}
                     </div>
                 </div>
             </ResizablePanel>

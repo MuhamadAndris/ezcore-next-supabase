@@ -22,7 +22,7 @@ export default function DashboardCard({ card }: { card: DashboardCardProps }) {
     const IconDesc = card.descriptionIcon
 
     return (
-        <Card className="gap-0">
+        <Card className="gap-0 bg-muted/50">
             <CardHeader>
                 <CardTitle className="text-xs md:text-lg">
                     {card.label}

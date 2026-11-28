@@ -39,7 +39,7 @@ const CARDS: DashboardCardProps[] = [
 
 export default function DashboardProduct() {
     return (
-        <div className="grid gap-3 grid-cols-4 md:grid-cols-4 p-2 md:p-0">
+        <div className="grid gap-3 grid-cols-4 md:grid-cols-4">
             {CARDS.map((card) => (
                 <DashboardCard key={card.label} card={card} />
             ))}

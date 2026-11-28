@@ -15,7 +15,7 @@ import {
     DropdownMenuSubTrigger,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 import { ProductFilter } from "@/schemas/product.schema"
@@ -30,13 +30,6 @@ const brands = ["Semua", "LOJEL", "BAGASI"]
 export default function FilterProductTriggerd({ onFilter }: FilterProdctProps) {
     const [category, setCategory] = useState("Semua")
     const [brand, setBrand] = useState("Semua")
-
-    useEffect(() => {
-        onFilter({
-            brand: brand === "Semua" ? undefined : brand,
-            category: category === "Semua" ? undefined : category,
-        })
-    }, [category, brand, onFilter])
 
     const isFilter = category !== "Semua" || brand !== "Semua"
 
@@ -64,7 +57,19 @@ export default function FilterProductTriggerd({ onFilter }: FilterProdctProps) {
                             <DropdownMenuSubContent>
                                 <DropdownMenuRadioGroup
                                     value={category}
-                                    onValueChange={setCategory}
+                                    onValueChange={(value) => {
+                                        setCategory(value)
+                                        onFilter({
+                                            brand:
+                                                brand === "Semua"
+                                                    ? undefined
+                                                    : brand,
+                                            category:
+                                                value === "Semua"
+                                                    ? undefined
+                                                    : value,
+                                        })
+                                    }}
                                 >
                                     {categorys.map((c) => (
                                         <DropdownMenuRadioItem
@@ -91,7 +96,19 @@ export default function FilterProductTriggerd({ onFilter }: FilterProdctProps) {
                             <DropdownMenuSubContent>
                                 <DropdownMenuRadioGroup
                                     value={brand}
-                                    onValueChange={setBrand}
+                                    onValueChange={(value) => {
+                                        setBrand(value)
+                                        onFilter({
+                                            brand:
+                                                value === "Semua"
+                                                    ? undefined
+                                                    : value,
+                                            category:
+                                                category === "Semua"
+                                                    ? undefined
+                                                    : category,
+                                        })
+                                    }}
                                 >
                                     {brands.map((b) => (
                                         <DropdownMenuRadioItem

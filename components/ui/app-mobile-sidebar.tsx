@@ -9,7 +9,7 @@ export default function AppMobileSidebar() {
     const pathName = usePathname()
 
     return (
-        <div className="md:hidden fixed bottom-0 w-full flex justify-between bg-background z-10">
+        <div className="md:hidden fixed bottom-0 w-full flex justify-between bg-popover z-10 border-t">
             {items.map((item) => {
                 const isActive =
                     item.url.split("/")[1] === pathName.split("/")[1]

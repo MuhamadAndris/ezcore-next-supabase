@@ -43,7 +43,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
                     enableSystem
                     disableTransitionOnChange
                 >
-                    <SidebarProvider>
+                    <SidebarProvider defaultOpen={false}>
                         <TooltipProvider>
                             <MessageProvider>{children}</MessageProvider>
                         </TooltipProvider>

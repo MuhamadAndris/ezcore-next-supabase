@@ -2,32 +2,36 @@
 
 import DashboardProduct from "@/components/products/dashboard-products"
 import TableProducts from "@/components/products/table-product/table-products"
+import {
+    Card,
+    CardContent,
+    CardDescription,
+    CardHeader,
+    CardTitle,
+} from "@/components/ui/card"
 
 export default function ProductsPage() {
     return (
-        <div className="space-y-4 md:p-4">
-            {/* header */}
-            <div className="flex gap-6 justify-between items-center p-2 md:p-0">
-                <div>
-                    <h1
+        <div className="space-y-2 md:space-y-4 md:p-4">
+            <Card className="pb-4!">
+                <CardHeader>
+                    <CardTitle
                         className="
-                        font-semibold
                         text-2xl
-                        md:text-[32px]
+                        md:text-4xl
                     "
                     >
                         Katalog Produk
-                    </h1>
-                    <p className="text-muted-foreground text-sm md:text-md">
+                    </CardTitle>
+                    <CardDescription className="text-sm md:text-md">
                         Kelola inventaris, harga, dan ketersedian produk
-                    </p>
-                </div>
-            </div>
+                    </CardDescription>
+                </CardHeader>
+                <CardContent>
+                    <DashboardProduct />
+                </CardContent>
+            </Card>
 
-            {/* Dashboard - cards */}
-            <DashboardProduct />
-
-            {/* table */}
             <TableProducts />
 
             {/* <Dialog open={open} onOpenChange={setOpen}>

@@ -1,7 +1,7 @@
 "use client"
 
 import OrderLists from "@/components/orders/list-order/order-list"
-import AppHeader from "@/components/ui/app-header"
+import AppHeader, { AppHeaderAction } from "@/components/ui/app-header"
 import { Button } from "@/components/ui/button"
 
 import { IconPlus } from "@tabler/icons-react"
@@ -19,10 +19,10 @@ export default function orderPage() {
                 </Link>
             </AppHeader>
 
-            <div className="p-4 space-y-6">
+            <AppHeaderAction className="p-4 space-y-6">
                 <OrderLists />
                 <OrderLists />
-            </div>
+            </AppHeaderAction>
         </section>
     )
 }

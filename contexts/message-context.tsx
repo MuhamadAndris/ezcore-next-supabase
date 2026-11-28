@@ -54,9 +54,9 @@ export function MessageProvider({ children }: { children: ReactNode }) {
             {children}
 
             {message && (
-                <div className="fixed bottom-1/2 left-1/2 -translate-x-1/2 z-100 border">
-                    <div className="flex items-center gap-2 rounded-lg bg-foreground px-4 py-2 text-sm text-background shadow-lg">
-                        <Icon className="size-4" />
+                <div className="fixed bottom-1/2 left-1/2 -translate-x-1/2 z-100">
+                    <div className="flex flex-col items-center gap-2 rounded-lg bg-foreground px-4 py-2 text-sm text-background shadow-lg">
+                        <Icon className="size-7" />
                         {message}
                     </div>
                 </div>

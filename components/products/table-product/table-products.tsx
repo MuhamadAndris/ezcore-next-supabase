@@ -26,7 +26,6 @@ import {
 } from "@/components/ui/tooltip"
 import FilterProductTriggerd from "./filter-product"
 import { useMinimumLoading } from "@/hooks/use-minimum-loading"
-import DetailProductContent from "../detail-product"
 import { Spinner } from "@/components/ui/spinner"
 
 export type ColumnVisible = {
@@ -47,10 +46,6 @@ const TableProducts = () => {
         loadMore,
         onSearch,
         onFilter,
-        productSelected,
-        selectProduct,
-        onOpenChange,
-        isOpen,
     } = useProducts()
     const showSpinner = useMinimumLoading(isLoading, 900)
     const [showSkeleton, setShowSkeleton] = useState(true)
@@ -140,11 +135,7 @@ const TableProducts = () => {
                 <CardContent className="p-0">
                     {products.length > 0 ? (
                         products.map((product) => (
-                            <TableRow
-                                key={product.id}
-                                product={product}
-                                onSelected={selectProduct}
-                            />
+                            <TableRow key={product.id} product={product} />
                         ))
                     ) : (
                         <Item>
@@ -185,12 +176,6 @@ const TableProducts = () => {
                     </CardAction>
                 )}
             </CardFooter>
-
-            <DetailProductContent
-                onOpenChange={onOpenChange}
-                open={isOpen}
-                product={productSelected}
-            />
         </Card>
     )
 }

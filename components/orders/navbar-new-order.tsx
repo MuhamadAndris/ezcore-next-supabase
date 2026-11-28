@@ -61,7 +61,7 @@ const NavbarNewOrder = memo(
                         <FilterProductTriggerd onFilter={onFilter} />
                         <Button onClick={handleShowCart} className="relative">
                             <IconShoppingCart />
-                            <span className="absolute -top-2 -right-1 bg-secondary rounded-full text-xs aspect-square w-5 flex justify-center items-center">
+                            <span className="absolute -top-2 -right-1 bg-secondary text-secondary-foreground rounded-full text-xs aspect-square w-5 flex justify-center items-center">
                                 2
                             </span>
                         </Button>

@@ -20,13 +20,13 @@ import { PopoverContent } from "../../ui/popover"
 import Image from "next/image"
 import { Product } from "@/schemas/product.schema"
 import { Button } from "../../ui/button"
+import Link from "next/link"
 
 interface TableRowProps {
     product: Product
-    onSelected: (p: Product) => void
 }
 
-const TableRow = memo(({ product, onSelected }: TableRowProps) => {
+const TableRow = memo(({ product }: TableRowProps) => {
     devLog("render table row")
     const [selected, setSelected] = useState<number | null>(null)
     const productDesc = [
@@ -42,19 +42,8 @@ const TableRow = memo(({ product, onSelected }: TableRowProps) => {
                 "flex-nowrap",
                 selected === product.id ? "bg-muted" : "hover:bg-muted"
             )}
-            onClick={() => {
-                if (selected) {
-                    setSelected(null)
-                } else {
-                    onSelected(product)
-                }
-            }}
         >
-            <ItemMedia
-                variant="image"
-                className="relative"
-                onClick={(e) => e.stopPropagation()}
-            >
+            <ItemMedia variant="image" className="relative">
                 <Image
                     alt="dumy product"
                     src="https://s1.lojelcdn.com/wp-content/uploads/2017/11/Lojel-Voja-WarmGray-Front-Small.jpg"
@@ -63,12 +52,14 @@ const TableRow = memo(({ product, onSelected }: TableRowProps) => {
                 />
             </ItemMedia>
             <ItemContent className="min-w-0 flex-1">
-                <ItemTitle className="max-w-[70%] ">
-                    <p className="truncate">{productDesc}</p>
-                </ItemTitle>
-                <ItemDescription>
-                    Rp. {formatNumber(product.normalPrice)} /pcs
-                </ItemDescription>
+                <Link href={`/products/${product.id}`}>
+                    <ItemTitle className="max-w-[70%] ">
+                        <p className="truncate">{productDesc}</p>
+                    </ItemTitle>
+                    <ItemDescription>
+                        Rp. {formatNumber(product.normalPrice)} /pcs
+                    </ItemDescription>
+                </Link>
             </ItemContent>
             <ItemActions
                 className="shrink-0"

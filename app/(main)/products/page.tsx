@@ -33,10 +33,6 @@ export default function ProductsPage() {
             </Card>
 
             <TableProducts />
-
-            {/* <Dialog open={open} onOpenChange={setOpen}>
-                <DialogContent></DialogContent>
-            </Dialog> */}
         </div>
     )
 }
